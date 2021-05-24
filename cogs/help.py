@@ -10,6 +10,7 @@ class Help(commands.Cog):
     async def help(self, ctx):
         embedVar = discord.Embed(title="QuoteBot Help Menu", description="Displays all available commands for QuoteBot", color=0x00ff00)
         embedVar.add_field(name="q!help", value="displays this message", inline=False)
+        embedVar.add_field(name="q!invite", value="sends the invite link for Quotebot")
         embedVar.add_field(name="q!info", value="displays info on QuoteBot")
         embedVar.add_field(name="q!setlogger", value="usage: q!setlogger\n Sets the current selected channel as the log channel")
         embedVar.add_field(name="q!setlogger", value="usage: q!setupdater\n Sets the current selected channel as the update channel")
