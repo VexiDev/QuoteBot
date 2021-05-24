@@ -24,7 +24,7 @@ class Help(commands.Cog):
         embedVar.add_field(name="q!permission", value="usage: q!permission <action> <user> <permission>\n**REQUIRES ADMINISTRATOR**\nActions = add/remove/show\npermissions = name of command (lowercase)\n\n",inline=False)        
         embedVar.add_field(name="q!geraltcock", value="usage: q!geraltcock\n**REQUIRES GERALTCOCK PERMISSION**\nSends geralt cock\n\n", inline=False)
         embedVar.add_field(name="q!dm", value="usage: q!dm <@user> <message>\n**REQUIRES DM PERMISSION**\nMakes the bot sends a custom dm to a user\n\n", inline=False)
-        embedVar.add_field(name="q!dmspam", value="usage: q!dmspam <@user> <amount> <message>\n**REQUIRES DMSPAM PERMISSION**\n Makes the bot spam a custom dm to a user\n(sends 5msgs/5s)\n\n Developped by vexi#0420", inline=False)
+        embedVar.add_field(name="q!dmspam", value="usage: q!dmspam <@user> <amount> <message>\n**REQUIRES DMSPAM PERMISSION**\n Makes the bot spam a custom dm to a user\n(sends 5msgs/5s)\n\n Developed by vexi#0420 and pastaslayer#8502", inline=False)
         message = await ctx.send("Help has been sent")
         await message.add_reaction("😇")
         await ctx.author.send(embed=embedVar)
