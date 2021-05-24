@@ -73,8 +73,8 @@ class Misc(commands.Cog):
         log = self.bot.get_cog("Logger")
         await log.logger(command=f"Used **sleeptest** for {time1} second(s)", user=ctx.author, channel=ctx.channel, color="#42f5b3", guild=ctx.message.guild.id)
         
-    @client.command()
-    async def invite(ctx):
+    @commands.command()
+    async def invite(self,ctx):
             await ctx.send("https://discord.com/api/oauth2/authorize?client_id=814379239930331157&permissions=8&scope=bot")
     
 
