@@ -36,10 +36,10 @@ class Misc(commands.Cog):
     async def geraltcock(self,ctx):
         author = ctx.message.author
         conn = psycopg2.connect(
-        host="ec2-107-20-153-39.compute-1.amazonaws.com",
-        database="d54rrbkoagiuqg",
-        user="bcqrzmrdonxkml",
-        password="006986da51bca028a4af7404fde38e18c9f8a6208b495187b93d4744632b652d")
+        host="host",
+        database="dbname",
+        user="user",
+        password="pass")
         c = conn.cursor()
         command = f"SELECT perm FROM permission WHERE uid = {author.id}"
         print(command)
