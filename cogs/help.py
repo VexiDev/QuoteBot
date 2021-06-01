@@ -28,12 +28,6 @@ class Help(commands.Cog):
         message = await ctx.send("Help has been sent")
         await message.add_reaction("😇")
         await ctx.author.send(embed=embedVar)
-        if ctx.author.id == 274213987514580993:
-            await ctx.author.send("**FOR YOUR EYES ONLY**")
-            await asyncio.sleep(3)
-            await ctx.author.send("-----------------------")
-            await ctx.author.send("**q!update - usage: q!update <level> <changelog> - level: major/minor/undomajor/undominor changelog: whatever you changed**")
-            await ctx.author.send("-----------------------")
 
 def setup(bot):
     bot.add_cog(Help(bot))
