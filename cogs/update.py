@@ -7,6 +7,7 @@ import os
 import random
 import asyncio
 import datetime
+import math
 import psycopg2
 
 class Updater(commands.Cog):
@@ -22,10 +23,10 @@ class Updater(commands.Cog):
         guild = ctx.guild.id
         print(guild)
         conn = psycopg2.connect(
-        host="adwess",
-        database="databasename",
-        user="username",
-        password="password here")
+        host="host",
+        database="database",
+        user="user",
+        password="password")
         c = conn.cursor()
         print("Connected and cursored")
         command = f"select id from channels where guild_id={guild} and type='update'"
@@ -64,10 +65,10 @@ class Updater(commands.Cog):
             await ctx.message.delete()
             if level=="major":
                 conn = psycopg2.connect(
-                host="adwess",
-                database="databasename",
-                user="username",
-                password="password here")
+                host="host",
+                database="database",
+                user="user",
+                password="password")
                 c = conn.cursor()
                 command = f"SELECT version FROM version WHERE id = 1"
                 print(command)
@@ -80,13 +81,13 @@ class Updater(commands.Cog):
                 conn.commit()
                 c.close()
                 conn.close()
-                results = float(results)+1
+                results = math.ceil(float(results))
                 print(results)
                 conn = psycopg2.connect(
-                host="adwess",
-                database="databasename",
-                user="username",
-                password="password here")
+                host="host",
+                database="database",
+                user="user",
+                password="password")
                 c = conn.cursor()
                 command = f"UPDATE version SET ver='{results}' WHERE id=1"
                 print(command)
@@ -97,10 +98,10 @@ class Updater(commands.Cog):
                 print("executed")
                 #-------get updater channel---------
                 conn = psycopg2.connect(
-                host="adwess",
-                database="databasename",
-                user="username",
-                password="password here")
+                host="host",
+                database="database",
+                user="user",
+                password="password")
                 c = conn.cursor()
                 command2 = f"select * from channels where type = 'update'"
                 print(command2)
@@ -126,10 +127,10 @@ class Updater(commands.Cog):
                 
             if level=="minor":
                 conn = psycopg2.connect(
-                host="ec2-107-20-153-39.compute-1.amazonaws.com",
-                database="d54rrbkoagiuqg",
-                user="bcqrzmrdonxkml",
-                password="006986da51bca028a4af7404fde38e18c9f8a6208b495187b93d4744632b652d")
+                host="host",
+                database="database",
+                user="user",
+                password="password")
                 c = conn.cursor()
                 command = f"SELECT version FROM version WHERE id = 1"
                 print(command)
@@ -145,10 +146,10 @@ class Updater(commands.Cog):
                 results = "{:.1f}".format(results)
                 print(f"Formated version value: {results}")
                 conn = psycopg2.connect(
-                host="adwess",
-                database="databasename",
-                user="username",
-                password="password here")
+                host="host",
+                database="database",
+                user="user",
+                password="password")
                 c = conn.cursor()
                 command = f'UPDATE version SET ver={results} WHERE id=1;'
                 print(command)
@@ -158,10 +159,10 @@ class Updater(commands.Cog):
                 conn.close()
                 #-------get updater channel---------
                 conn = psycopg2.connect(
-                host="adwess",
-                database="databasename",
-                user="username",
-                password="password here")
+                host="host",
+                database="database",
+                user="user",
+                password="password")
                 c = conn.cursor()
                 command2 = f"select * from channels where type = 'update'"
                 print(command2)
@@ -174,118 +175,6 @@ class Updater(commands.Cog):
                 #------------------------------------
                 updateEmbed = discordembed=discord.Embed(title=f"Updated to v{results}", description=f"{ctx.author.name} updated QuoteBot", color=0xf5e642)
                 updateEmbed.add_field(name="Changelog:", value=f"{updated}",inline=False)
-                updateEmbed.set_thumbnail(url="https://cdn1.iconfinder.com/data/icons/lightly-selected/30/loop-480.png")
-                for total in range(len(results2)):
-                    sendchannel = self.bot.get_channel(results2[total][2])
-                    print(sendchannel)
-                    print(results2[total][2])
-                    await sendchannel.send(embed=updateEmbed)
-
-            if level=="undominor":
-                conn = psycopg2.connect(
-                host="adwess",
-                database="databasename",
-                user="username",
-                password="password here") 
-                c = conn.cursor()
-                command = f"SELECT version FROM version WHERE id = 1"
-                print(command)
-                c.execute(command)
-                results = c.fetchall()
-                results = str(results).replace("[('(1,", "")
-                results = str(results).replace(")',)]", "")
-                print(results)
-                conn.commit()
-                c.close()
-                conn.close()
-                results = float(results)-0.1
-                results = "{:.1f}".format(results)
-                print(f"Formated version value: {results}")
-                print(results)
-                conn = psycopg2.connect(
-                host="adwess",
-                database="databasename",
-                user="username",
-                password="password here")
-                c = conn.cursor()
-                command = f'UPDATE version SET ver={results} WHERE id=1;'
-                print(command)
-                c.execute(command)
-                conn.commit()
-                c.close()
-                conn.close()
-                #-------get updater channel---------
-                conn = psycopg2.connect(
-                host="adwess",
-                database="databasename",
-                user="username",
-                password="password here")
-                c = conn.cursor()
-                command2 = f"select * from channels where type = 'update'"
-                print(command2)
-                c.execute(command2)
-                results2 = c.fetchall()
-                print(results2)
-                conn.commit()
-                c.close()
-                conn.close()
-                #------------------------------------
-                updateEmbed = discordembed=discord.Embed(title=f"Undid previous minor update", description=f"{ctx.author.name} reverted QuoteBot\n\nNew version: {results}", color=0xf5e642)
-                updateEmbed.set_thumbnail(url="https://cdn1.iconfinder.com/data/icons/lightly-selected/30/loop-480.png")
-                for total in range(len(results2)):
-                    sendchannel = self.bot.get_channel(results2[total][2])
-                    print(sendchannel)
-                    print(results2[total][2])
-                    await sendchannel.send(embed=updateEmbed)
-
-            if level=="undomajor":
-                conn = psycopg2.connect(
-                host="adwess",
-                database="databasename",
-                user="username",
-                password="password here")
-                c = conn.cursor()
-                command = f"SELECT version FROM version WHERE id = 1"
-                print(command)
-                c.execute(command)
-                results = c.fetchall()
-                results = str(results).replace("[('(1,", "")
-                results = str(results).replace(")',)]", "")
-                print(results)
-                conn.commit()
-                c.close()
-                conn.close()
-                results = float(results)-1
-                print(results)
-                conn = psycopg2.connect(
-                host="adwess",
-                database="databasename",
-                user="username",
-                password="password here")
-                c = conn.cursor()
-                command = f'UPDATE version SET ver={results} WHERE id=1;'
-                print(command)
-                c.execute(command)
-                conn.commit()
-                c.close()
-                conn.close()
-                #-------get updater channel---------
-                conn = psycopg2.connect(
-                host="adwess",
-                database="databasename",
-                user="username",
-                password="password here")
-                c = conn.cursor()
-                command2 = f"select * from channels where type = 'update'"
-                print(command2)
-                c.execute(command2)
-                results2 = c.fetchall()
-                print(results2)
-                conn.commit()
-                c.close()
-                conn.close()
-                #------------------------------------
-                updateEmbed = discordembed=discord.Embed(title=f"Undid previous major update", description=f"{ctx.author.name} reverted QuoteBot\n\nNew version: {results}", color=0xf5e642)
                 updateEmbed.set_thumbnail(url="https://cdn1.iconfinder.com/data/icons/lightly-selected/30/loop-480.png")
                 for total in range(len(results2)):
                     sendchannel = self.bot.get_channel(results2[total][2])

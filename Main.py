@@ -41,7 +41,15 @@ for filename in os.listdir('./cogs'):
 
 @bot.event
 async def on_ready():
-    await bot.change_presence(status=discord.Status.online, activity=discord.Activity(type=discord.ActivityType.watching, name="for funny hahas"))
     print("Sucessfully connected to Quotebot!")
+    statusType=0
+    while True:
+        if statusType == 0:
+            await bot.change_presence(status=discord.Status.online, activity=discord.Activity(type=discord.ActivityType.playing, name="with q!help"))
+            statusType = 1
+        else:
+            await bot.change_presence(status=discord.Status.online, activity=discord.Activity(type=discord.ActivityType.watching, name="for funny hahas"))
+            statusType=0
+        await asyncio.sleep(20)
 
-bot.run(ToKeN)
+bot.run('TOKEN')

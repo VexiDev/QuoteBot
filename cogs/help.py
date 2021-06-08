@@ -10,10 +10,10 @@ class Help(commands.Cog):
     async def help(self, ctx):
         embedVar = discord.Embed(title="QuoteBot Help Menu", description="Displays all available commands for QuoteBot", color=0x00ff00)
         embedVar.add_field(name="q!help", value="displays this message", inline=False)
-        embedVar.add_field(name="q!invite", value="sends the invite link for Quotebot")
-        embedVar.add_field(name="q!info", value="displays info on QuoteBot")
-        embedVar.add_field(name="q!setlogger", value="usage: q!setlogger\n Sets the current selected channel as the log channel")
-        embedVar.add_field(name="q!setlogger", value="usage: q!setupdater\n Sets the current selected channel as the update channel")
+        embedVar.add_field(name="q!invite", value="sends the invite link for Quotebot", inline=False)
+        embedVar.add_field(name="q!info", value="displays info on QuoteBot", inline=False)
+        embedVar.add_field(name="q!setlogger", value="usage: q!setlogger\n Sets the current selected channel as the log channel", inline=False)
+        embedVar.add_field(name="q!setupdater", value="usage: q!setupdater\n Sets the current selected channel the bot update channel")
         embedVar.add_field(name="q!quote", value="usage: q!quote <user> \nQuotes a random quote of a user\n",inline=False)
         embedVar.add_field(name="q!addquote", value="usage: q!addquote <user> <quote> \nAdds a quote to their stored quotes\n\n",inline=False)
         embedVar.add_field(name="q!delquote", value="usage: q!delquote <user> <part-of-quote> \nRemoves a quote from a users stored quotes\n\n",inline=False)
@@ -28,6 +28,12 @@ class Help(commands.Cog):
         message = await ctx.send("Help has been sent")
         await message.add_reaction("😇")
         await ctx.author.send(embed=embedVar)
+        if ctx.author.id == 274213987514580993:
+            await ctx.author.send("**FOR YOUR EYES ONLY**")
+            await asyncio.sleep(2)
+            await ctx.author.send("-----------------------")
+            await ctx.author.send("**q!update - usage: q!update <level> <changelog> - level: major/minor/undomajor/undominor changelog: whatever you changed**")
+            await ctx.author.send("-----------------------")
 
 def setup(bot):
     bot.add_cog(Help(bot))

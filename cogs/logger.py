@@ -28,10 +28,10 @@ class Logger(commands.Cog):
         logEmbed.set_thumbnail(url=user.avatar_url)
         print("set embed thumbnail")
         conn = psycopg2.connect(
-        host="adwess",
-        database="databasename",
-        user="username",
-        password="password here")
+        host="host",
+        database="database",
+        user="user",
+        password="password")
         c = conn.cursor()
         print("connected and cursored")
         command = f"select * from channels where type = 'logger' and guild_id = {guild}"
@@ -79,10 +79,10 @@ class Logger(commands.Cog):
         guild = ctx.guild.id
         print(guild)
         conn = psycopg2.connect(
-        host="adwess",
-        database="databasename",
-        user="username",
-        password="password here")
+        host="host",
+        database="database",
+        user="user",
+        password="password")
         c = conn.cursor()
         print("Connected and cursored")
         command = f"select id from channels where guild_id={guild} and type='logger'"

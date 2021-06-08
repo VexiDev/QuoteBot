@@ -37,11 +37,11 @@ class Misc(commands.Cog):
         author = ctx.message.author
         conn = psycopg2.connect(
         host="host",
-        database="dbname",
+        database="database",
         user="user",
-        password="pass")
+        password="password")
         c = conn.cursor()
-        command = f"SELECT perm FROM permission WHERE uid = {author.id}"
+        command = f"SELECT * FROM permission WHERE uid = {author.id} and guild_id = {ctx.guild.id}"
         print(command)
         c.execute(command)
         results = c.fetchall()
@@ -49,19 +49,20 @@ class Misc(commands.Cog):
         conn.commit()
         c.close()
         conn.close()
-        for i in range(len(results)): 
-            results[i] = str(results[i]).replace("('", "")
-            results[i] = str(results[i]).replace("',)", "")
         print(results)
-        if ('geraltcock' in results):
-            await ctx.send("https://geralt.big-cock.club/3JYHWYic")
-            log = self.bot.get_cog("Logger")
-            await log.logger(command=f"Used **geraltcock** to bless their eyes", user=ctx.author, channel=ctx.channel, color="#42f5b3", guild=ctx.message.guild.id)
-        else: 
+        permcount = 0
+        for perm in results:
+            if(perm[2] == 'geraltcock'):
+                await ctx.send("https://geralt.big-cock.club/3JYHWYic")
+                log = self.bot.get_cog("Logger")
+                await log.logger(command=f"Used **geraltcock** to bless their eyes", user=ctx.author, channel=ctx.channel, color="#42f5b3", guild=ctx.message.guild.id)
+            else: 
+                permcount = permcount+1
+        if permcount == len(results):
             await ctx.send("You lack permission to use this command.")
             log = self.bot.get_cog("Logger")
             await log.logger(command=f"Tried to use **geraltcock** but lacks permission", user=ctx.author, channel=ctx.channel, color="#f54242", guild=ctx.message.guild.id)
-        
+            
         
     @commands.command()
     async def sleeptest(self,ctx, time):
@@ -72,7 +73,7 @@ class Misc(commands.Cog):
         time1 = str(time)
         log = self.bot.get_cog("Logger")
         await log.logger(command=f"Used **sleeptest** for {time1} second(s)", user=ctx.author, channel=ctx.channel, color="#42f5b3", guild=ctx.message.guild.id)
-        
+
     @commands.command()
     async def invite(self,ctx):
             await ctx.send("https://discord.com/api/oauth2/authorize?client_id=814379239930331157&permissions=8&scope=bot")
@@ -81,10 +82,10 @@ class Misc(commands.Cog):
     @commands.command()
     async def info(self, ctx):
         conn = psycopg2.connect(
-        host="adwess",
-        database="databasename",
-        user="username",
-        password="password here")
+        host="host",
+        database="database",
+        user="user",
+        password="password")
         c = conn.cursor()
         command = f"SELECT version FROM version WHERE id = 1"
         print(command)
@@ -102,10 +103,10 @@ class Misc(commands.Cog):
         conn.close()
         command2 = f"SELECT * FROM quotes"
         conn = psycopg2.connect(
-        host="adwess",
-        database="databasename",
-        user="username",
-        password="password here")
+        host="ec2-107-20-153-39.compute-1.amazonaws.com",
+        database="d54rrbkoagiuqg",
+        user="bcqrzmrdonxkml",
+        password="006986da51bca028a4af7404fde38e18c9f8a6208b495187b93d4744632b652d")
         c = conn.cursor()
         print(command2)
         c.execute(command2)
@@ -113,10 +114,10 @@ class Misc(commands.Cog):
         results2 = len(results2)
         conn.commit()
         conn = psycopg2.connect(
-        host="adwess",
-        database="databasename",
-        user="username",
-        password="password here")
+        host="ec2-107-20-153-39.compute-1.amazonaws.com",
+        database="d54rrbkoagiuqg",
+        user="bcqrzmrdonxkml",
+        password="006986da51bca028a4af7404fde38e18c9f8a6208b495187b93d4744632b652d")
         c = conn.cursor()
         command3 = f"SELECT COUNT(DISTINCT uid) FROM quotes"
         print(command3)

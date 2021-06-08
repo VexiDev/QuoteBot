@@ -26,7 +26,7 @@ schedule==1.0.0
 six==1.15.0
 Twisted==21.2.0
 typing-extensions==3.7.4.3
-urllib3>=1.26.4
+urllib3==1.26.3
 yarg==0.1.9
 yarl==1.6.3
 youtube-dl==2021.4.26
