@@ -2,14 +2,16 @@
 
 ## Info
 
-> Use this bot to save quotes from your friends or any user, using simple and straightforward commands.
-> The bot stores all of your quotes into the cloud and makes backup everday at midnight.
+> Use this bot to save quotes from your friends or any user in your server, using simple and straightforward commands.
 
+> The bot stores all of your quotes into the cloud and you can see them at any time
+
+> use q!help for a list of all available commands on quotebot
 
 ## Add the Bot
 
-> If you don't want to figure out how to host QuoteBot yourself you can always use the version I host. This version will get updates sooner and more consistently then this github.
-  
+> If you don't want to figure out how to host QuoteBot yourself you can always use the version I host. 
+This version will get updates sooner and more consistently then this github.
 > if you are in a server that has QuoteBot already running you can use the q!invite command to get the link
 
   if not
@@ -17,20 +19,25 @@
 > You can use this [link](https://discord.com/api/oauth2/authorize?client_id=814379239930331157&permissions=8&scope=bot)
 
 
-## Self Hosting (WIP incomplete)
+## Self Hosting
 
-MAKE SURE YOU HAVE PYTHON 3.9+
+If you want to host the bot yourself the bot was designed to run on heroku follow the steps below to set it up;
 
-If your planning on hosting on heroku you're in luck everything is basically setup for you;
-Just clone the repository using 
+Clone the repository using 
 
-> $ git clone
+> $ git clone https://github.com/VexiDev/QuoteBot.git
 
-Then follow the CLI instructions on your heroku app's deploy tab
+Create a heroku app at https://dashboard.heroku.com/deploy
+Then follow the CLI instructions on your heroku app's deploy tab (https://dashboard.heroku.com/apps/<appname>/deploy/heroku-git)
 
-If your using a database from heroku, use PostgreSQL. Then navigate to ~/cogs/setup.py in your cloned repository and insert your credentials
+Add a database to your heroku app ([add a database](https://elements.heroku.com/addons/heroku-postgresql)). Then navigate to 
+> ~/cogs/setup.py
 
-Then run the following
+in your cloned repository and insert your credentials ([find your credentials here](https://data.heroku.com/))
+
+Then run the following in your directory
+
+> $ git add *
 
 > $ git commit -am "all"
 
@@ -38,37 +45,12 @@ Then run the following
 
 after that heroku will launch QuoteBot
 
-
-If your not using heroku and plan to local host then its almost as easy,
-
-You'll want to clone the repository
-> $ git clone
-
-Navigate to the installed folder then run
-
-> $ pip3 install -r requirements.txt
-
-After that open the cogs folder. Find setup.py and enter your database credentials
-
-Currently only supporting PostgreSQL, more soon.
-
-Next open Main.py, at the bottom and add your bot token where it says TOKEN
-
-(If you do not know what/where your bot token is then read this [guide](https://www.freecodecamp.org/news/create-a-discord-bot-with-python/))
-
-To start the bot in the orignial directory run 
-
-> $ python Main.py
-
-
-
-If everything worked you should see
-
+If everything worked you should see this in your heroku console 
 > Successfully connected to QuoteBot! 
 
+You can see your app logs by running the following
 
-REMINDER SELF HOSTING IS NOT YET AVAILABLE
+> $ heroku logs -a {appname} -t
 
-If you encounter any issues or bugs please dm me on discord vexi#0420 or join this server and make a ticket (link coming)
+in your command prompt program
 
-## Developed by vexi#0420
