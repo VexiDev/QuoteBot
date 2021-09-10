@@ -33,7 +33,7 @@ Then follow the CLI instructions on your heroku app's deploy tab (https://dashbo
 Add a database to your heroku app ([add a database](https://elements.heroku.com/addons/heroku-postgresql)). Then navigate to 
 > ~/cogs/setup.py
 
-in your cloned repository and insert your credentials [find your credentials here](https://data.heroku.com/))
+in your cloned repository and insert your credentials ([find your credentials here](https://data.heroku.com/))
 
 Then run the following in your directory
 
