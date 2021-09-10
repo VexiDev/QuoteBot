@@ -28,7 +28,7 @@ Clone the repository using
 > $ git clone https://github.com/VexiDev/QuoteBot.git
 
 Create a heroku app at https://dashboard.heroku.com/deploy
-Then follow the CLI instructions on your heroku app's deploy tab (https://dashboard.heroku.com/apps/<appname>/deploy/heroku-git)
+Then follow the CLI instructions on your heroku app's deploy tab ([deploy](https://dashboard.heroku.com/apps/<appname>/deploy/heroku-git))
 
 Add a database to your heroku app ([add a database](https://elements.heroku.com/addons/heroku-postgresql)). Then navigate to 
 > ~/cogs/setup.py
