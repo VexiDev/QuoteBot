@@ -40,4 +40,4 @@ async def on_ready():
     print("Sucessfully connected to Quotebot!")
     await bot.change_presence(status=discord.Status.online, activity=discord.Activity(type=discord.ActivityType.playing, name="q!help"))
 
-bot.run('TOKEN')
+bot.run('ODE0Mzc5MjM5OTMwMzMxMTU3.YDc_xQ.Tud62bhKLaaWGGlpfWr-lJWZe5w')
