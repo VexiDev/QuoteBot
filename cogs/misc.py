@@ -19,10 +19,10 @@ class Misc(commands.Cog):
 
     def connectdb(self):
         conn = psycopg2.connect(        
-        host="address",
-        database="database name",
-        user="user",
-        password="pass") 
+        host="ec2-107-20-153-39.compute-1.amazonaws.com",
+        database="d54rrbkoagiuqg",
+        user="bcqrzmrdonxkml",
+        password="006986da51bca028a4af7404fde38e18c9f8a6208b495187b93d4744632b652d") 
         return(conn)
 
     @commands.command()
