@@ -33,7 +33,7 @@ async def reload(ctx, extension):
 for filename in os.listdir('./cogs'):
     if filename.endswith('.py') and filename:
         bot.load_extension(f'cogs.{filename[:-3]}')
-        print(f'Loaded {filename[:-3]}')
+        print(f'Loaded cog - {filename[:-3]}')
 
 @bot.event
 async def on_ready():
