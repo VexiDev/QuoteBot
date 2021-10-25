@@ -26,7 +26,7 @@ class Help(commands.Cog):
             message = await ctx.send("Help has been sent!\n*check your dms*")
             await message.add_reaction("😇")
         except Forbidden:
-            await ctx.send('Your dms are not open! use **q!qhelp** to get help sent in this channel or enable dms for server members')
+            await ctx.send('Your dms are not open! use **q!qhelp** to get help sent to this channel or enable dms from server members')
 
     @commands.command()
     async def qhelp(self, ctx):
