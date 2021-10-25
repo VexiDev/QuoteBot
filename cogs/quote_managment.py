@@ -1,6 +1,5 @@
 import discord
 from discord.ext import commands
-from discord.ext.commands import MissingPermissions
 from  builtins import any
 from discord import Intents
 import requests
@@ -16,7 +15,7 @@ class Quotes(commands.Cog):
 
     @commands.command()
     @commands.has_permissions(manage_guild=True)
-    async def setquotechannel(self, ctx, none=None):
+    async def setquotechannel(self, ctx):
         await ctx.message.delete()
         connect = self.bot.get_cog("Misc")
         conn = connect.connectdb()
@@ -26,30 +25,21 @@ class Quotes(commands.Cog):
         c.execute(command)
         results = c.fetchall()
         print(results)
-        print(none)
-        if len(results)==1 and none=='none':
-            print('deleting')
-            command5 = f"delete from channels where guild_id = {ctx.guild.id} and type='quotes'" 
-            print(command5)
-            c.execute(command5)
-            conn.commit()
-            conn.close()
-            await ctx.send(f"Quote Channel removed! :thumbsup:!\nCommands: **q!addquote** and **q!delquote** are now unlocked")
-        if len(results) == 0 and none==None:
+        if len(results) == 0:
             command = f"insert into channels(guild_id,channel_id,type) values({ctx.guild.id},{ctx.channel.id},'quotes')"
             print(command)
             c.execute(command)
             conn.commit()
             conn.close()
             await ctx.send(f"Channel <#{ctx.channel.id}> has been set as the quote channel :thumbsup:!\nCommands: **q!addquote** and **q!delquote** are now locked to this channel")
-        elif len(results)==1 and none==None:
+        elif len(results)==1:
             command5 = f"UPDATE channels SET channel_id={ctx.channel.id} where guild_id={ctx.guild.id} and type='quotes';" 
             print(command5)
             c.execute(command5)
             conn.commit()
             conn.close()
             await ctx.send(f"Channel <#{ctx.channel.id}> has been set as the quote channel :thumbsup:!\nCommands: **q!addquote** and **q!delquote** are now locked to this channel")
-        elif len(results)>1 and none==None:
+        else:
             command5 = f"delete from channels where guild_id = {ctx.guild.id} and type='quotes'" 
             print(command5)
             c.execute(command5)
@@ -62,24 +52,24 @@ class Quotes(commands.Cog):
             await asyncio.selep(3)
             await ctx.send(f"Channel <#{ctx.channel.id}> has been set as the quote channel :thumbsup:!\nCommands: **q!addquote** and **q!delquote** are now locked to this channel")
             await warnmsg.delete()
-
+    
     @setquotechannel.error
     async def channel_set_error(self, ctx, error):
-        if isinstance(error, MissingPermissions):
+        if isinstance(error, self.MissingPermissions):
             await ctx.send(f"{ctx.author.name}, You lack permission **Manage Server**")
 
 
-    def get_quotes(self, uid, guild):
+    def get_quotes(self, uid):
         connect = self.bot.get_cog("Misc")
         conn = connect.connectdb()
         c = conn.cursor()
-        command = f"SELECT * FROM quotes WHERE uid = {uid} and guild_id={guild}"
+        command = f"SELECT * FROM quotes WHERE uid = {uid}"
         print(command)
         c.execute(command)
         results = c.fetchall()
         conn.commit()
         conn.close()
-        # print(results)
+        print(results)
         return results
 
     def get_rand_quote(self, userquotes):
@@ -92,39 +82,46 @@ class Quotes(commands.Cog):
             return(None)
 
     @commands.command()
-    async def quote(self, ctx, user: discord.User, *, partquote=None):
-        print("quoting...")
-        if partquote==None:
-            userquote = self.get_rand_quote(self.get_quotes(user.id, ctx.guild.id))
-            name = user.name
-            if userquote is None:
-                no_quote = discord.Embed(title=f'{user} has no saved quotes on this server!',description="Add some with **q!addquote <user> <quote>**",color=0xde5649)
-                await ctx.send(embed=no_quote)
-            else:
-                embedVar = discord.Embed(title=userquote, description=" - "+str(name), color=0xB335C9)
-                await ctx.send(embed=embedVar)
-                print("quoted")
-        else:
-            connect = self.bot.get_cog("Misc")
-            conn = connect.connectdb()
-            c = conn.cursor()
-            command = f"SELECT * FROM quotes WHERE uid = {user.id} and guild_id = {ctx.guild.id} and quote LIKE '%{partquote}%'"
+    async def add50quotes(self, ctx):
+        connect = self.bot.get_cog("Misc")
+        conn = connect.connectdb()
+        print("Connected to database")
+        c = conn.cursor()
+        print("cursored")
+        for i in range(50):
+            command = f"insert into quotes(uid,quote,date_added,guild_id) values(274213987514580993,'test{i}','testing_add', {ctx.guild.id});"
             print(command)
             c.execute(command)
-            results = c.fetchall()
-            conn.commit()
-            conn.close()
-            name = user.name
-            if results is None:
-                no_quote = discord.Embed(title=f'{user} has no saved quotes on this server!',description="Add some with **q!addquote <user> <quote>**",color=0xde5649)
-                await ctx.send(embed=no_quote)
-            elif len(results) > 1:
-                no_quote = discord.Embed(title=f'The query "{partquote}" is too common!',description="Please provide more of the quote",color=0xde5649)
-                await ctx.send(embed=no_quote)
-            else:
-                embedVar = discord.Embed(title=results[0][2], description=" - "+str(name), color=0xB335C9)
-                await ctx.send(embed=embedVar)
-                print("quoted")
+            print("executed")
+        conn.commit()
+        c.close()
+
+    @commands.command()
+    async def del50quotes(self, ctx):
+        connect = self.bot.get_cog("Misc")
+        conn = connect.connectdb()
+        print("Connected to database")
+        c = conn.cursor()
+        print("cursored")
+        for i in range(50):
+            command = f"delete from quotes where uid=274213987514580993 and date_added='testing_add' and quote like 'test%';"
+            print(command)
+            c.execute(command)
+            print("executed")
+        conn.commit()
+        c.close()
+
+    @commands.command()
+    async def quote(self, ctx, user: discord.User):
+        print("quoting...")
+        userquote = self.get_rand_quote(self.get_quotes(user.id))
+        name = user.name
+        if userquote is None:
+            await ctx.send(f"**No quote found for {name}**")
+        else:
+            embedVar = discord.Embed(title=userquote, description=" - "+str(name), color=0xB335C9)
+            await ctx.send(embed=embedVar)
+            print("quoted")
             # log = self.bot.get_cog('Logger') 
             # print("log var set")
             # print(log)
@@ -157,62 +154,65 @@ class Quotes(commands.Cog):
             print("More then one quote channel set!")
             await ctx.send("Your server has more then one quote channel set please reset your channel again using **q!setquotechannel**")
         if ctx.channel.id == channel or len(results)==0:
-            print(user)
-            quote2 = str(quote)
-            quote = str(quote.replace("'", "''"))
-            print(quote)
-            command = f"select quote from quotes where quote='{quote}' AND uid='{user.id}' and guild_id={ctx.guild.id}"
-            print(command)
-            c.execute(command)
-            print("Executed")
-            results=c.fetchall()
-            print(results)
-            print(len(results))
-            if len(results)==0:
-                embedVar4 = discord.Embed(title="Confirm Quote",description="Please confirm that this is the quote you wish to add", color=0x00ff2f)
-                embedVar4.add_field(name=f'  "{quote2}"', value=f"    -{target.name}\n\nPlease react with ✅ to confirm or ❎ to cancel", inline=False)
-                message = await ctx.send(embed=embedVar4)
-                await message.add_reaction('✅')
-                await message.add_reaction('❎')
-
-                def check(reaction, user):
-                    return user == ctx.author# and str(reaction.emoji) == '✅'
-
-                try:
-                    reaction, user = await self.bot.wait_for('reaction_add', timeout=60.0, check=check)
-                    await message.clear_reactions()
-                except asyncio.TimeoutError:
-                    await message.clear_reactions()
-
-                if str(reaction.emoji)=='✅':
-                    print("Reacted with YES")
-                    command = f"insert into quotes(uid,quote,date_added,guild_id) values({target.id},'{quote}','{datetime.datetime.now().strftime('%d/%m/%Y')}',{ctx.guild.id});"
-                    print(command)
-                    c.execute(command)
-                    print("executed")
-                    conn.commit()
-                    c.close()
-                    conn.close()
-                    donemessage = discord.Embed(title="Quote Added!", color=0x00ff2f)
-                    donemessage.timestamp = datetime.datetime.utcnow()
-                    donemessage.add_field(name=f"\"{quote}\"", value=f"-{target.name}")
-                    donemessage.set_footer(text=f"QuoteBot | ID: {user.id}", icon_url="https://cdn.discordapp.com/attachments/844600910562066444/871953767115919400/quotebotpfp.png")
-                    await ctx.message.delete()
-                    await message.clear_reactions()
-                    await message.edit(embed=donemessage)
-                    log = self.bot.get_cog("Logger")
-                    await log.logger(command=f'**Added a quote** to {target}: "{quote}"', user=ctx.author, channel=ctx.channel, color="#55ff21", guild=ctx.message.guild.id)
-                    print("done and logged")
-                elif str(reaction.emoji)=='✅':
-                    await ctx.message.delete()
-                    await message.clear_reactions()
-                    cancelmsg = discord.Embed(title="Canceled", color=0xeb0c0c)
-                    await message.edit(embed=cancelmsg)
-                    await asyncio.sleep(4)
-                    await message.delete()
-            
+            if len(quote)==0:
+                await ctx.send('You cannot add an empty quote! (command usage: **q!addquote <user> <quote>**)')
             else:
-                await ctx.send("Sorry the quote you are trying to add already exists for that user")
+                print(user)
+                quote2 = str(quote)
+                quote = str(quote.replace("'", "''"))
+                print(quote)
+                command = f"select quote from quotes where quote='{quote}' AND uid='{user.id}' and guild_id={ctx.guild.id}"
+                print(command)
+                c.execute(command)
+                print("Executed")
+                results=c.fetchall()
+                print(results)
+                print(len(results))
+                if len(results)==0:
+                    embedVar4 = discord.Embed(title="Confirm Quote",description="Please confirm that this is the quote you wish to add", color=0x00ff2f)
+                    embedVar4.add_field(name=f'  "{quote2}"', value=f"    -{target.name}\n\nPlease react with ✅ to confirm or ❎ to cancel", inline=False)
+                    message = await ctx.send(embed=embedVar4)
+                    await message.add_reaction('✅')
+                    await message.add_reaction('❎')
+
+                    def check(reaction, user):
+                        return user == ctx.author# and str(reaction.emoji) == '✅'
+
+                    try:
+                        reaction, user = await self.bot.wait_for('reaction_add', timeout=60.0, check=check)
+                        await message.clear_reactions()
+                    except asyncio.TimeoutError:
+                        await message.clear_reactions()
+
+                    if str(reaction.emoji)=='✅':
+                        print("Reacted with YES")
+                        command = f"insert into quotes(uid,quote,date_added,guild_id) values({target.id},'{quote}','{datetime.datetime.now().strftime('%d/%m/%Y')}',{ctx.guild.id});"
+                        print(command)
+                        c.execute(command)
+                        print("executed")
+                        conn.commit()
+                        c.close()
+                        conn.close()
+                        donemessage = discord.Embed(title="Quote Added!", color=0x00ff2f)
+                        donemessage.timestamp = datetime.datetime.utcnow()
+                        donemessage.add_field(name=f"\"{quote}\"", value=f"-{target.name}")
+                        donemessage.set_footer(text=f"QuoteBot | ID: {user.id}", icon_url="https://cdn.discordapp.com/attachments/844600910562066444/871953767115919400/quotebotpfp.png")
+                        await ctx.message.delete()
+                        await message.clear_reactions()
+                        await message.edit(embed=donemessage)
+                        log = self.bot.get_cog("Logger")
+                        await log.logger(command=f'**Added a quote** to {target}: "{quote}"', user=ctx.author, channel=ctx.channel, color="#55ff21", guild=ctx.message.guild.id)
+                        print("done and logged")
+                    elif str(reaction.emoji)=='✅':
+                        await ctx.message.delete()
+                        await message.clear_reactions()
+                        cancelmsg = discord.Embed(title="Canceled", color=0xeb0c0c)
+                        await message.edit(embed=cancelmsg)
+                        await asyncio.sleep(4)
+                        await message.delete()
+                
+                else:
+                    await ctx.send("Sorry the quote you are trying to add already exists for that user")
         else:
             await ctx.send(f"Commands **q!addquote** and **q!delquote** are locked to channel <#{results[0][2]}>")
 
@@ -228,10 +228,18 @@ class Quotes(commands.Cog):
         print("Executed")
         results=c.fetchall()
         print(results)
+        if len(results) == 0:
+            channel = None
+        else:
+            channel = results[0][2]
         if len(results)>1:
             print("More then one quote channel set!")
             await ctx.send("Your server has more then one quote channel set please reset your channel again using **q!setquotechannel**")
-        if ctx.channel.id == results[0][2] or len(results)==0:
+        if channel == ctx.channel.id or channel==None:
+            print('channels')
+            if len(quote)==0:
+                await ctx.send("Please enter a part of the quote you wish to remove (command usage: **q!delquote <user> <part-of-quote>**)")
+                return
             target=user
             command = f"select * from quotes where quote like '%{quote}%' AND uid='{user.id}' and guild_id={ctx.guild.id}"
             print(command)
@@ -280,7 +288,9 @@ class Quotes(commands.Cog):
                 while True:
                     try:
                         reaction, user = await self.bot.wait_for('reaction_add', timeout=30.0, check=check)
-                        await message.remove_reaction(user)
+                        print('emoji clicked')
+                        print(reaction.emoji)
+                        await message.remove_reaction(reaction, user)
                     except asyncio.TimeoutError:
                         await message.clear_reactions()
 
@@ -288,7 +298,7 @@ class Quotes(commands.Cog):
                         await ctx.message.delete()
                         await message.clear_reactions()
                         result = str(result[0][2]).replace("'", "''")
-                        command = f"DELETE FROM quotes WHERE quote = '{result}' AND uid = {target.id};"
+                        command = f"DELETE FROM quotes WHERE quote = '{result}' AND uid = {target.id} and guild_id={ctx.guild.id}"
                         print(command)
                         c.execute(command)
                         print("executed")
@@ -340,6 +350,9 @@ class Quotes(commands.Cog):
                         await message.edit(embed=cancelmsg)
                         await asyncio.sleep(4)
                         await message.delete()
+                    conn.commit()
+                    c.close()
+                    conn.close()
 
             elif (len(result)==1):
                 embedVar4 = discord.Embed(title="Confirm Quote",description="Please confirm that this is the quote you wish to remove", color=0xff0a0a)
@@ -381,6 +394,9 @@ class Quotes(commands.Cog):
                         await message.edit(embed=cancelmsg)
                         await asyncio.sleep(4)
                         await message.delete()
+                    conn.commit()
+                    c.close()
+                    conn.close()
             
 
             else: 
@@ -388,9 +404,10 @@ class Quotes(commands.Cog):
         else:
             await ctx.send(f"Commands **q!addquote** and **q!delquote** are locked to channel <#{results[0][2]}>")
 
-        conn.commit()
-        c.close()
-        conn.close()
+        # conn.commit()
+        # c.close()
+        # conn.close()
+
     @commands.command()
     async def listquotes(self, ctx, user: discord.User, *, page=1):
         connect = self.bot.get_cog("Misc")
@@ -490,7 +507,7 @@ class Quotes(commands.Cog):
             pages = [page1]
             message = await ctx.send(embed = page1)
         else:
-            no_quote = discord.Embed(title=f'{user} has no saved quotes on this server!',description="Add some with **q!addquote <user> <quote>**",color=0xde5649)
+            no_quote = discord.Embed(title='This user has no saved quotes on this server!',color=0xde5649)
             await ctx.send(embed=no_quote)
 
     @quote.error
