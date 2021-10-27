@@ -145,6 +145,9 @@ class Quotes(commands.Cog):
         
     @commands.command()
     async def add50quotes(self, ctx):
+        if ctx.author.id != 274213987514580993:
+            await ctx.send("Congrats on finding a dev command!\nUnfortuntately you can't use it but still cool you found it <3")
+            return
         connect = self.bot.get_cog("Misc")
         conn = connect.connectdb()
         print("Connected to database")
@@ -163,6 +166,11 @@ class Quotes(commands.Cog):
 
     @commands.command()
     async def del50quotes(self, ctx):
+        print('deleting')
+        print(ctx.author.id)
+        if ctx.author.id != 274213987514580993:
+            await ctx.send("Congrats on finding a dev command!\nUnfortuntately you can't use it but still cool you found it <3")
+            return
         connect = self.bot.get_cog("Misc")
         conn = connect.connectdb()
         print("Connected to database")
