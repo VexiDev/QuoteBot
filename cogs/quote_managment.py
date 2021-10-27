@@ -1,4 +1,5 @@
 import discord
+from discord import message
 from discord.ext import commands
 from  builtins import any
 from discord import Intents
@@ -58,18 +59,17 @@ class Quotes(commands.Cog):
         if isinstance(error, self.MissingPermissions):
             await ctx.send(f"{ctx.author.name}, You lack permission **Manage Server**")
 
-
-    def get_quotes(self, uid):
+    def get_quotes(self, uid, guild):
         connect = self.bot.get_cog("Misc")
         conn = connect.connectdb()
         c = conn.cursor()
-        command = f"SELECT * FROM quotes WHERE uid = {uid}"
+        command = f"SELECT * FROM quotes WHERE uid = {uid} and guild_id={guild}"
         print(command)
         c.execute(command)
         results = c.fetchall()
         conn.commit()
         conn.close()
-        print(results)
+        # print(results)
         return results
 
     def get_rand_quote(self, userquotes):
@@ -82,6 +82,68 @@ class Quotes(commands.Cog):
             return(None)
 
     @commands.command()
+    async def quote(self, ctx, user: discord.User, *,partquote=None, owo=False):
+        print("quoting...")
+        print(partquote)
+        print(f'is owo: {owo}')
+        if partquote==None:
+            userquote = self.get_rand_quote(self.get_quotes(user.id, ctx.guild.id))
+            name = user.name
+            if userquote is None:
+                if owo==True:
+                    no_quote = discord.Embed(title=f'OWNWO!!! {user} has no saved quotes on this server! uwu',description="Pwease add some with **q!addquote <user> <quote>** owo",color=0xde5649)
+                else:
+                    no_quote = discord.Embed(title=f'{user} has no saved quotes on this server!',description="Add some with **q!addquote <user> <quote>**",color=0xde5649)
+                await ctx.send(embed=no_quote)
+            else:
+                # print('not empty! is owo?')
+                # print(f'owo: {owo}')
+                if owo==True:
+                    # print('yes')
+                    await ctx.send(f"OwO <@{user.id}>, <@{ctx.author.id}> is qowoting you UwU <3")
+                embedVar = discord.Embed(title=userquote, description=" - "+str(name), color=0xB335C9)
+                await ctx.send(embed=embedVar)
+                print("quoted")
+        else:
+            # print('secondary')
+            connect = self.bot.get_cog("Misc")
+            conn = connect.connectdb()
+            c = conn.cursor()
+            command = f"SELECT * FROM quotes WHERE uid = {user.id} and guild_id = {ctx.guild.id} and quote LIKE '%{partquote}%'"
+            print(command)
+            c.execute(command)
+            results = c.fetchall()
+            conn.commit()
+            conn.close()
+            name = user.name
+            if results is None:
+                if owo==True:
+                    no_quote = discord.Embed(title=f'OWNWO!!! {user} has no saved quotes on this server! uwu',description="Pwease add some with **q!addquote <user> <quote>** owo",color=0xde5649)
+                else:
+                    no_quote = discord.Embed(title=f'{user} has no saved quotes on this server!',description="Add some with **q!addquote <user> <quote>**",color=0xde5649)
+                await ctx.send(embed=no_quote)
+            elif len(results) > 1:
+                # print('is loong')
+                if owo==True:
+                    no_quote = discord.Embed(title=f'OOPSY WOOPSY! Your query is too common!',description="This made us make a fucky wucky owo\npwetty pwease could u provide more of the quote for us uwu\nTHWANKS >.< <3\n\nA list of all your fwends qwotes can be fownd using\nq!listquotes <@fwend/fwend#0000>",color=0xde5649)
+                else:
+                    no_quote = discord.Embed(title=f'Your query "{partquote}" is too common!',description="Please provide more of the quote\n\nYou can get a list of a users quote by using\nq!listquotes <@user/user#0000>",color=0xde5649)
+                await ctx.send(embed=no_quote)
+            else:
+                if owo==True:
+                    # print('yes')
+                    await ctx.send(f"OwO <@{user.id}>, <@{ctx.author.id}> is qowoting you UwU <3")
+                embedVar = discord.Embed(title=results[0][2], description=" - "+str(name), color=0xB335C9)
+                await ctx.send(embed=embedVar)
+                print("quoted")
+
+
+    @commands.command()
+    async def qowote(self, ctx, user: discord.User,*,quote=None):
+        # print(f"qowoting: {quote}")
+        await self.quote(ctx, user, owo=True, partquote=quote)
+        
+    @commands.command()
     async def add50quotes(self, ctx):
         connect = self.bot.get_cog("Misc")
         conn = connect.connectdb()
@@ -89,7 +151,10 @@ class Quotes(commands.Cog):
         c = conn.cursor()
         print("cursored")
         for i in range(50):
-            command = f"insert into quotes(uid,quote,date_added,guild_id) values(274213987514580993,'test{i}','testing_add', {ctx.guild.id});"
+            words = ["word", "bazinga", "we do be zoomin", "yup theres multiple of these fuckers!"]
+            randomword = words[random.randint(0,3)]
+            print(randomword)
+            command = f"insert into quotes(uid,quote,date_added,guild_id) values(274213987514580993,'test{i}_{randomword}','testing_add', {ctx.guild.id});"
             print(command)
             c.execute(command)
             print("executed")
@@ -103,37 +168,14 @@ class Quotes(commands.Cog):
         print("Connected to database")
         c = conn.cursor()
         print("cursored")
-        for i in range(50):
-            command = f"delete from quotes where uid=274213987514580993 and date_added='testing_add' and quote like 'test%';"
-            print(command)
-            c.execute(command)
-            print("executed")
+        command = f"delete from quotes where uid=274213987514580993 and date_added='testing_add' and quote like 'test%';"
+        print(command)
+        c.execute(command)
+        print("executed")
         conn.commit()
         c.close()
 
-    @commands.command()
-    async def quote(self, ctx, user: discord.User):
-        print("quoting...")
-        userquote = self.get_rand_quote(self.get_quotes(user.id))
-        name = user.name
-        if userquote is None:
-            await ctx.send(f"**No quote found for {name}**")
-        else:
-            embedVar = discord.Embed(title=userquote, description=" - "+str(name), color=0xB335C9)
-            await ctx.send(embed=embedVar)
-            print("quoted")
-            # log = self.bot.get_cog('Logger') 
-            # print("log var set")
-            # print(log)
-            # await log.logger(command=f"**Quoted** {user}", user=ctx.author, channel=ctx.channel, color="#55ff21", guild=ctx.guild.id)
-            # # await log.logger("QUOTE UWU", ctx.author)
-            # print("ran logger line")
 
-    @commands.command()
-    async def qowote(self, ctx, user: discord.User):
-        await ctx.send(f"OwO <@{user.id}>, <@{ctx.author.id}> is qowoting you UwU <3")
-        await self.quote(ctx, user)
-        
     @commands.command()
     async def addquote(self, ctx, user: discord.User,*, quote=""):
         target=user
@@ -203,7 +245,7 @@ class Quotes(commands.Cog):
                         log = self.bot.get_cog("Logger")
                         await log.logger(command=f'**Added a quote** to {target}: "{quote}"', user=ctx.author, channel=ctx.channel, color="#55ff21", guild=ctx.message.guild.id)
                         print("done and logged")
-                    elif str(reaction.emoji)=='✅':
+                    elif str(reaction.emoji)=='❎':
                         await ctx.message.delete()
                         await message.clear_reactions()
                         cancelmsg = discord.Embed(title="Canceled", color=0xeb0c0c)
@@ -399,8 +441,13 @@ class Quotes(commands.Cog):
                     conn.close()
             
 
-            else: 
-                await ctx.send("No quote found or filter term to common (q!listquotes)")
+            elif len(result)>3: 
+                no_quote = discord.Embed(title=f'The query "{quote}" is too common!',description="Please provide more of the quote",color=0xde5649)
+                await ctx.send(embed=no_quote)
+
+            elif len(result)==0: 
+                no_quote = discord.Embed(title=f'No quote "{quote}" found!',color=0xde5649)
+                await ctx.send(embed=no_quote)
         else:
             await ctx.send(f"Commands **q!addquote** and **q!delquote** are locked to channel <#{results[0][2]}>")
 
@@ -512,28 +559,30 @@ class Quotes(commands.Cog):
 
     @quote.error
     async def arg_error_quote(self, ctx, error):
-        if isinstance(error, commands.MissingRequiredArgument):
-            await ctx.send('Incorrect arguments entered | usage: **q!quote <@user/user#0000>**')
+        if isinstance(error, commands.MissingRequiredArgument) or isinstance(error, commands.BadArgument):
+            await ctx.send('Incorrect arguments entered | usage: **q!quote <@user/user#0000> <part-of-quote>**')
 
     @qowote.error
     async def arg_error_qowote(self, ctx, error):
-        if isinstance(error, commands.MissingRequiredArgument):
-            await ctx.send('Incorrect arguments entered | usage: **q!qowote <@user/user#0000>**')
+        if isinstance(error, commands.MissingRequiredArgument) or isinstance(error, commands.BadArgument):
+            await ctx.send('Incorrect arguments entered | usage: **q!qowote <@user/user#0000> <part-of-quote>**')
 
     @addquote.error
     async def arg_error_addquote(self, ctx, error):
-        if isinstance(error, commands.MissingRequiredArgument):
+        if isinstance(error, commands.MissingRequiredArgument) or isinstance(error, commands.BadArgument):
             await ctx.send('Incorrect arguments entered | usage: **q!addquote <@user/user#0000> <quote>**')
 
     @delquote.error
     async def arg_error_delquote(self, ctx, error):
-        if isinstance(error, commands.MissingRequiredArgument):
+        if isinstance(error, commands.MissingRequiredArgument) or isinstance(error, commands.BadArgument):
             await ctx.send('Incorrect arguments entered | usage: **q!delquote <@user/user#0000> <part-of-quote>**')
+        
 
     @listquotes.error
     async def arg_error_listquotes(self, ctx, error):
-        if isinstance(error, commands.MissingRequiredArgument):
+        if isinstance(error, commands.MissingRequiredArgument) or isinstance(error, commands.BadArgument):
             await ctx.send('Incorrect arguments entered | usage: **q!listquotes <@user/user#0000>**')
+
 
 
 
