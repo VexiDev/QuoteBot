@@ -354,7 +354,7 @@ class Help(commands.Cog):
                         print('added user\n----------')
                     else:
                         print("duplicate user or bot\n----------")
-                    await asyncio.sleep(0.5)
+                    # await asyncio.sleep(0.5)
         except:
             trace.print_exc()
         conn.commit()
