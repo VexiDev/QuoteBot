@@ -9,6 +9,7 @@ import asyncio
 import datetime
 import psycopg2
 import topgg
+import traceback
 
 class Misc(commands.Cog):
     def __init__(self, bot):
@@ -168,6 +169,47 @@ class Misc(commands.Cog):
     async def invite(self,ctx):
             await ctx.send("https://discord.com/oauth2/authorize?client_id=814379239930331157&permissions=93264&scope=bot")
     
+
+    @commands.Cog.listener()
+    async def on_guild_join(self, guild):
+        for channel in guild.channels:
+            print(channel.name)
+            try:
+                msg = await channel.send("Thanks for inviting Quotebot! I am currently setting up your server for use. This may take a couple minutes.\n\nStatus: <a:loading:892534287415525386> Setting everything up")
+                break
+            except:
+                traceback.print_exc
+                pass
+        connect = self.bot.get_cog("Misc")
+        conn = connect.connectdb()
+        print("Connected to database")
+        c = conn.cursor()
+        # print("cursored")
+        try:
+                print(f'Checking for guild: {guild.name}\n------------')
+                for user in guild.members:
+                    date=datetime.datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')
+                    print(date)
+                    print(f'checking user: {user}')
+                    command = f"select * from users where uid={user.id}"
+                    # print(command)
+                    c.execute(command)
+                    # print("executed")
+                    result = c.fetchall()
+                    if len(result)==0 and user.bot==False:
+                        command = f"insert into users(uid, nsfw, global_blist, support_blist,support_cooldown, support_time) values({user.id}, False, False, False, False, '{date}')"
+                        # print(command)
+                        c.execute(command)
+                        # print("executed")
+                        print('added user\n----------')
+                    else:
+                        print("duplicate user or bot\n----------")
+                    await asyncio.sleep(0.2)
+        except:
+            trace.print_exc()
+        conn.commit()
+        c.close()
+        await msg.edit("Your server is ready to use quotebot! Get a list of commands using **q!help**")
 
     @commands.command()
     async def info(self, ctx):

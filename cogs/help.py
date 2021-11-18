@@ -85,7 +85,7 @@ class Help(commands.Cog):
         await ctx.send(embed=embedVar)
 
     @commands.command()
-    async def support(self, ctx, *, support=None):
+    async def request(self, ctx, *, support=None):
         try:
             connect = self.bot.get_cog("Misc")
             # print('gotten connect')
@@ -131,12 +131,12 @@ class Help(commands.Cog):
                     if check==True:
                         await self.supportrun(ctx, guild, user, dev, support)
                     else:
-                        print(f'support cooldown | uid:{ctx.author.id} | gid: {ctx.guild.id}')
+                        print(f'request cooldown | uid:{ctx.author.id} | gid: {ctx.guild.id}')
                         # print(check.seconds/3600)
-                        failed = discord.Embed(title="<:no:907768020561190983> Cooldown", description=f"You can only send one support request per day!\n*You will be able to send another request in* **{check}h**", color=0xff0000)
+                        failed = discord.Embed(title="<:no:907768020561190983> Cooldown", description=f"You can only send one request per day!\n*You will be able to send another request in* **{check}h**", color=0xff0000)
                         await ctx.send(embed=failed)
                 else:
-                    print('support error, supportcooldown not True/False')
+                    print('request error, supportcooldown not True/False')
             except:
                 trace.print_exc()
         except:
@@ -176,7 +176,7 @@ class Help(commands.Cog):
                 elif len(support) > 500:
                     await ctx.send("Your description is too long (500+ characters). To send this in please contact **vexi#0420** directly")
                 else:
-                    embed=discord.Embed(title="Your Support Request:", description=f"---------\n{support}\n---------\n*You can only send* ***1*** *request per day*", color=0x00ff00)
+                    embed=discord.Embed(title="Your Request:", description=f"---------\n{support}\n---------\n*You can only send* ***1*** *request per day*", color=0x00ff00)
                     confmsg = await ctx.send("Please confirm your support request", embed=embed, components=[[Button(label="Send", style=3, custom_id=f"Confirm_Reply_{id}"),Button(label="Cancel", style=4, custom_id=f"Cancel_Reply_{id}")]])
                     print('confirming...')
                     # try:
@@ -185,9 +185,9 @@ class Help(commands.Cog):
                     response = await self.bot.wait_for("button_click", check=check)
                     # if response.custom_id==""
                     support_id = ''.join(random.choices(string.ascii_letters + string.digits, k=16))
-                    print(f'adding support request | ID: {support_id}')
+                    print(f'adding request | ID: {support_id}')
                     # print('setting embed')
-                    embed = discord.Embed(title=f"Support Request {support_id}", description=f'**Request:**\n {support}\n\n------------------------------------------------------------------------------------------', color=0x00ff00)
+                    embed = discord.Embed(title=f"Request {support_id}", description=f'**Request:**\n {support}\n\n------------------------------------------------------------------------------------------', color=0x00ff00)
                     embed.add_field(name="Server Info:", value=f"**Name:** {ctx.guild.name}\n**ID:** {ctx.guild.id}\n**Members:** {len(ctx.guild.members)}", inline=True)
                     connect = self.bot.get_cog("Misc")
                     conn = connect.connectdb()
@@ -208,7 +208,7 @@ class Help(commands.Cog):
                     await dev.send(embed=embed)
                     # print('set')
                     #success = discord.Embed(title="Success <:yes:892537190347837450>", description="Your support request was successfully sent in!\n\n**Status:** *Open*\n**Comment:** *None*\n\nOnce your issue is resolved this message will update\n*You can only send one ticket every day*", color=0x00ff00)
-                    success = discord.Embed(title="<:yes:892537190347837450> Success", description=f"Your support request was successfully sent in!\n-------\n{support}\n-------\n\n**Status:** Open <:status_online:907767064926769242>\n**DevNote:** This message will update once I take action on your request\n\n*You can only send one request every day*", color=0x00ff00)
+                    success = discord.Embed(title="<:yes:892537190347837450> Success", description=f"Your request was successfully sent in!\n-------\n{support}\n-------\n\n**Status:** Open <:status_online:907767064926769242>\n**DevNote:** This message will update once I take action on your request\n\n*You can only send one request every day*", color=0x00ff00)
                     success.timestamp = datetime.datetime.utcnow()
                     success.set_footer(text=f"QuoteBot | ID: {support_id}", icon_url="https://cdn.discordapp.com/attachments/844600910562066444/871953767115919400/quotebotpfp.png")
                     await confmsg.edit(content=f"<@{ctx.author.id}>",embed=success, components=[])
@@ -267,22 +267,22 @@ class Help(commands.Cog):
                 trace.print_exc()
             if status.lower()=="complete":
                 status="Complete <:status_online:907767064926769242>"
-                newmsg = discord.Embed(title=f"<:complete:907780896722153573> Complete", description=f"Your support request has been completed!\n-------\n{support}\n-------\n\n**Status:** {status}\n**DevNote:** {comment}\n\n*You can only send one ticket every day*", color=0x82ff47)
+                newmsg = discord.Embed(title=f"<:complete:907780896722153573> Complete", description=f"Your request has been completed!\n-------\n{support}\n-------\n\n**Status:** {status}\n**DevNote:** {comment}\n\n*You can only send one request every day*", color=0x82ff47)
                 newmsg.timestamp = datetime.datetime.utcnow()
                 newmsg.set_footer(text=f"QuoteBot | ID: {id}", icon_url="https://cdn.discordapp.com/attachments/844600910562066444/871953767115919400/quotebotpfp.png")
             elif status.lower()=="deny":
                 status="Denied <:dnd:907767435262828565>"
-                newmsg = discord.Embed(title=f"<:Warning:909946407673274398> Denied", description=f"Your support request has been denied!\n-------\n{support}\n-------\n\n**Status:** {status}\n**DevNote:** {comment}\n\n*You can only send one ticket every day*", color=0xff4f4f)
+                newmsg = discord.Embed(title=f"<:Warning:909946407673274398> Denied", description=f"Your request has been denied!\n-------\n{support}\n-------\n\n**Status:** {status}\n**DevNote:** {comment}\n\n*You can only send one request every day*", color=0xff4f4f)
                 newmsg.timestamp = datetime.datetime.utcnow()
                 newmsg.set_footer(text=f"QuoteBot | ID: {id}", icon_url="https://cdn.discordapp.com/attachments/844600910562066444/871953767115919400/quotebotpfp.png")
             elif status.lower()=="wip":
                 status="In-Progress <:status_idle:907767529139740722>"
-                newmsg = discord.Embed(title=f"<:gears:907780900811583508> Updated", description=f"Your support request has been updated!\n-------\n{support}\n-------\n\n**Status:** {status}\n**DevNote:** {comment}\n\n*You can only send one ticket every day*", color=0xffb521)
+                newmsg = discord.Embed(title=f"<:gears:907780900811583508> Updated", description=f"Your request has been updated!\n-------\n{support}\n-------\n\n**Status:** {status}\n**DevNote:** {comment}\n\n*You can only send one request every day*", color=0xffb521)
                 newmsg.timestamp = datetime.datetime.utcnow()
                 newmsg.set_footer(text=f"QuoteBot | ID: {id}", icon_url="https://cdn.discordapp.com/attachments/844600910562066444/871953767115919400/quotebotpfp.png")
             
             else:
-                newmsg = discord.Embed(title=f"<:gears:907780900811583508> Updated", description=f"Your support request has been updated!\n-------\n{support}\n-------\n\n**Status:** {status}\n**DevNote:** {comment}\n\n*You can only send one ticket every day*", color=0xffb521)
+                newmsg = discord.Embed(title=f"<:gears:907780900811583508> Updated", description=f"Your request has been updated!\n-------\n{support}\n-------\n\n**Status:** {status}\n**DevNote:** {comment}\n\n*You can only send one request every day*", color=0xffb521)
                 newmsg.timestamp = datetime.datetime.utcnow()
                 newmsg.set_footer(text=f"QuoteBot | ID: {id}", icon_url="https://cdn.discordapp.com/attachments/844600910562066444/871953767115919400/quotebotpfp.png")
 
@@ -301,8 +301,8 @@ class Help(commands.Cog):
         if response.custom_id == f"Confirm_Reply_{id}":
             print("Confirmed")
             await msg.edit(content=f"<:member_join:908033530901192734> {msg.content}",embed=newmsg)
-            await channel.send(f'<@{result[0][2]}>, Your support request from **{result[0][6].strftime("%d/%m/%Y")}** has been updated!\n*the message has been pinned*')
-            await msg.pin(reason=f"Support Request Updated - ID:{id}")
+            await channel.send(f'<@{result[0][2]}>, Your request from **{result[0][6].strftime("%d/%m/%Y")}** has been updated!\n*the message has been pinned*')
+            await msg.pin(reason=f"Request Updated - ID:{id}")
             print('updating databse')
             status = status.replace("'","''")
             command = f"UPDATE support SET status='{status}' where sid='{id}'"
