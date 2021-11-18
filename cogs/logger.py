@@ -52,12 +52,27 @@ class Logger(commands.Cog):
     @commands.command()
     @commands.has_permissions(manage_guild=True)
     async def setlogger(self, ctx):
+        connect = self.bot.get_cog("Misc")
+        # print('gotten connect')
+        try:
+            blist = await connect.checkblist(ctx, ctx.author)
+        except:
+            trace.print_exc()
+        # print(f'connecting, {blist}')
+        if blist is not None:
+            if blist[1]=="global":
+                # print('is global blist')
+                await ctx.send(embed=blist[0])
+                return
+            else:
+                pass
+        else:
+            pass
         print(f"Channel {ctx.channel.id} selected")
         channel = ctx.channel.id
         print(channel)
         guild = ctx.guild.id
         print(guild)
-        connect = self.bot.get_cog("Misc")
         conn = connect.connectdb()
         c = conn.cursor()
         print("Connected and cursored")

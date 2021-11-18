@@ -17,8 +17,23 @@ class Quotes(commands.Cog):
     @commands.command()
     @commands.has_permissions(manage_guild=True)
     async def setquotechannel(self, ctx):
-        await ctx.message.delete()
         connect = self.bot.get_cog("Misc")
+        # print('gotten connect')
+        try:
+            blist = await connect.checkblist(ctx, ctx.author)
+        except:
+            trace.print_exc()
+        # print(f'connecting, {blist}')
+        if blist is not None:
+            if blist[1]=="global":
+                # print('is global blist')
+                await ctx.send(embed=blist[0])
+                return
+            else:
+                pass
+        else:
+            pass
+        await ctx.message.delete()
         conn = connect.connectdb()
         c = conn.cursor()
         command = f"SELECT * FROM channels WHERE guild_id = {ctx.guild.id} and type='quotes'"
@@ -83,6 +98,22 @@ class Quotes(commands.Cog):
 
     @commands.command()
     async def quote(self, ctx, user: discord.User, *,partquote=None, owo=False):
+        connect = self.bot.get_cog("Misc")
+        # print('gotten connect')
+        try:
+            blist = await connect.checkblist(ctx, ctx.author)
+        except:
+            trace.print_exc()
+        # print(f'connecting, {blist}')
+        if blist is not None:
+            if blist[1]=="global":
+                # print('is global blist')
+                await ctx.send(embed=blist[0])
+                return
+            else:
+                pass
+        else:
+            pass
         print("quoting...")
         print(partquote)
         print(f'is owo: {owo}')
@@ -91,9 +122,9 @@ class Quotes(commands.Cog):
             name = user.name
             if userquote is None:
                 if owo==True:
-                    no_quote = discord.Embed(title=f'OWNWO!!! {user} has no saved quotes on this server! uwu',description="Pwease add some with **q!addquote <user> <quote>** owo",color=0xde5649)
+                    no_quote = discord.Embed(title=f'OWNWO!!! {user} has no saved quotes on this server! uwu',description="Pwease add some with **q!addquote <user> <quote>** owo",color=0x0fff23)
                 else:
-                    no_quote = discord.Embed(title=f'{user} has no saved quotes on this server!',description="Add some with **q!addquote <user> <quote>**",color=0xde5649)
+                    no_quote = discord.Embed(title=f'{user} has no saved quotes on this server!',description="Add some with **q!addquote <user> <quote>**",color=0x0fff23)
                 await ctx.send(embed=no_quote)
             else:
                 # print('not empty! is owo?')
@@ -118,16 +149,16 @@ class Quotes(commands.Cog):
             name = user.name
             if results is None:
                 if owo==True:
-                    no_quote = discord.Embed(title=f'OWNWO!!! {user} has no saved quotes on this server! uwu',description="Pwease add some with **q!addquote <user> <quote>** owo",color=0xde5649)
+                    no_quote = discord.Embed(title=f'OWNWO!!! {user} has no saved quotes on this server! uwu',description="Pwease add some with **q!addquote <user> <quote>** owo",color=0x0fff23)
                 else:
-                    no_quote = discord.Embed(title=f'{user} has no saved quotes on this server!',description="Add some with **q!addquote <user> <quote>**",color=0xde5649)
+                    no_quote = discord.Embed(title=f'{user} has no saved quotes on this server!',description="Add some with **q!addquote <user> <quote>**",color=0x0fff23)
                 await ctx.send(embed=no_quote)
             elif len(results) > 1:
                 # print('is loong')
                 if owo==True:
-                    no_quote = discord.Embed(title=f'OOPSY WOOPSY! Your query is too common!',description="This made us make a fucky wucky owo\npwetty pwease could u provide more of the quote for us uwu\nTHWANKS >.< <3\n\nA list of all your fwends qwotes can be fownd using\nq!listquotes <@fwend/fwend#0000>",color=0xde5649)
+                    no_quote = discord.Embed(title=f'OOPSY WOOPSY! Your query is too common!',description="This made us make a fucky wucky owo\npwetty pwease could u provide more of the quote for us uwu\nTHWANKS >.< <3\n\nA list of all your fwends qwotes can be fownd using\nq!listquotes <@fwend/fwend#0000>",color=0x0fff23)
                 else:
-                    no_quote = discord.Embed(title=f'Your query "{partquote}" is too common!',description="Please provide more of the quote\n\nYou can get a list of a users quote by using\nq!listquotes <@user/user#0000>",color=0xde5649)
+                    no_quote = discord.Embed(title=f'Your query "{partquote}" is too common!',description="Please provide more of the quote\n\nYou can get a list of a users quote by using\nq!listquotes <@user/user#0000>",color=0x0fff23)
                 await ctx.send(embed=no_quote)
             else:
                 if owo==True:
@@ -140,6 +171,22 @@ class Quotes(commands.Cog):
 
     @commands.command()
     async def qowote(self, ctx, user: discord.User,*,quote=None):
+        connect = self.bot.get_cog("Misc")
+        # print('gotten connect')
+        try:
+            blist = await connect.checkblist(ctx, ctx.author)
+        except:
+            trace.print_exc()
+        # print(f'connecting, {blist}')
+        if blist is not None:
+            if blist[1]=="global":
+                # print('is global blist')
+                await ctx.send(embed=blist[0])
+                return
+            else:
+                pass
+        else:
+            pass
         # print(f"qowoting: {quote}")
         await self.quote(ctx, user, owo=True, partquote=quote)
         
@@ -186,8 +233,23 @@ class Quotes(commands.Cog):
 
     @commands.command()
     async def addquote(self, ctx, user: discord.User,*, quote=""):
-        target=user
         connect = self.bot.get_cog("Misc")
+        # print('gotten connect')
+        try:
+            blist = await connect.checkblist(ctx, ctx.author)
+        except:
+            trace.print_exc()
+        # print(f'connecting, {blist}')
+        if blist is not None:
+            if blist[1]=="global":
+                # print('is global blist')
+                await ctx.send(embed=blist[0])
+                return
+            else:
+                pass
+        else:
+            pass
+        target=user
         conn = connect.connectdb()
         c = conn.cursor()
         command = f"select * from channels where guild_id={ctx.guild.id} and type='quotes'"
@@ -268,8 +330,23 @@ class Quotes(commands.Cog):
 
     @commands.command()
     async def delquote(self, ctx, user: discord.User,*, quote=""):
-        target=user
         connect = self.bot.get_cog("Misc")
+        # print('gotten connect')
+        try:
+            blist = await connect.checkblist(ctx, ctx.author)
+        except:
+            trace.print_exc()
+        # print(f'connecting, {blist}')
+        if blist is not None:
+            if blist[1]=="global":
+                # print('is global blist')
+                await ctx.send(embed=blist[0])
+                return
+            else:
+                pass
+        else:
+            pass
+        target=user
         conn = connect.connectdb()
         c = conn.cursor()
         command = f"select * from channels where guild_id={ctx.guild.id} and type='quotes'"
@@ -450,11 +527,11 @@ class Quotes(commands.Cog):
             
 
             elif len(result)>3: 
-                no_quote = discord.Embed(title=f'The query "{quote}" is too common!',description="Please provide more of the quote",color=0xde5649)
+                no_quote = discord.Embed(title=f'The query "{quote}" is too common!',description="Please provide more of the quote",color=0x0fff23)
                 await ctx.send(embed=no_quote)
 
             elif len(result)==0: 
-                no_quote = discord.Embed(title=f'No quote "{quote}" found!',color=0xde5649)
+                no_quote = discord.Embed(title=f'No quote "{quote}" found!',color=0x0fff23)
                 await ctx.send(embed=no_quote)
         else:
             await ctx.send(f"Commands **q!addquote** and **q!delquote** are locked to channel <#{results[0][2]}>")
@@ -466,6 +543,21 @@ class Quotes(commands.Cog):
     @commands.command()
     async def listquotes(self, ctx, user: discord.User, *, page=1):
         connect = self.bot.get_cog("Misc")
+        # print('gotten connect')
+        try:
+            blist = await connect.checkblist(ctx, ctx.author)
+        except:
+            trace.print_exc()
+        # print(f'connecting, {blist}')
+        if blist is not None:
+            if blist[1]=="global":
+                # print('is global blist')
+                await ctx.send(embed=blist[0])
+                return
+            else:
+                pass
+        else:
+            pass
         conn = connect.connectdb()
         c = conn.cursor()
         command = f"SELECT * FROM quotes WHERE uid = {user.id} and guild_id = {ctx.guild.id}"
@@ -484,24 +576,26 @@ class Quotes(commands.Cog):
             except:
                 pass
         # print(type(results))
-        if len(results)>25:
+        if len(results)>10:
             print("greater then 25")
             pages = []
-            split_quotes = [n_results[x:x+25] for x in range(0, len(n_results),25)]
-            print("Split")
-            print(split_quotes)
+            split_quotes = [n_results[x:x+10] for x in range(0, len(n_results),10)]
+            print("Split to page count")
+            # print(split_quotes)
             print(len(split_quotes))
             i=0
             pagenum=1
             for pagess in split_quotes:
-                print(pagess)
+                # print(pagess)
                 page = discord.Embed (
                     title = f'Quotes for {user.name} (Page {pagenum}/{len(split_quotes)})',
                     description = f'*from server: {ctx.guild.name}*',
                     colour = 0x00ff00
                 )
+                page.timestamp = datetime.datetime.utcnow()
+                page.set_footer(text=f"QuoteBot | ID: {ctx.author.id}", icon_url="https://cdn.discordapp.com/attachments/844600910562066444/871953767115919400/quotebotpfp.png")
                 for quotes in split_quotes[i]:
-                    print(quotes)
+                    # print(quotes)
                     page.add_field(name=f"{quotes}", value=f"-{user.name}")
                 pages.append(page)
                 i=i+1
@@ -514,7 +608,7 @@ class Quotes(commands.Cog):
             await message.add_reaction('▶')
 
             def check(reaction, user):
-                return user == ctx.author# and str(reaction.emoji) == '✅'
+                return user == ctx.author
             timeouts=False
             i = 0
             while timeouts==False:
@@ -551,18 +645,24 @@ class Quotes(commands.Cog):
                         await message.add_reaction('▶')
 
             
-        elif len(results)<=25 and len(results)>0:
+        elif len(results)<=10 and len(results)>0:
             page1 = discord.Embed (
                 title = f'Quotes for {user.name} (Page 1/1)',
                 description = f'*from server: {ctx.guild.name}*',
                 colour = 0x00ff00
             )
+            page1.timestamp = datetime.datetime.utcnow()
+            page1.set_footer(text=f"QuoteBot | ID: {ctx.author.id}", icon_url="https://cdn.discordapp.com/attachments/844600910562066444/871953767115919400/quotebotpfp.png")
+                
             for i in range(len(n_results)):
                 page1.add_field(name=f"{n_results[i]}", value=f"-{user.name}")
             pages = [page1]
             message = await ctx.send(embed = page1)
         else:
-            no_quote = discord.Embed(title='This user has no saved quotes on this server!',color=0xde5649)
+            no_quote = discord.Embed(title='This user has no saved quotes on this server!',color=0x0fff23)
+            no_quote.timestamp = datetime.datetime.utcnow()
+            no_quote.set_footer(text=f"QuoteBot | ID: {ctx.author.id}", icon_url="https://cdn.discordapp.com/attachments/844600910562066444/871953767115919400/quotebotpfp.png")
+                
             await ctx.send(embed=no_quote)
 
     @quote.error

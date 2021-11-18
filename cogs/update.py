@@ -17,6 +17,22 @@ class Updater(commands.Cog):
 
     @commands.command()
     async def setupdater(self, ctx):
+        connect = self.bot.get_cog("Misc")
+        # print('gotten connect')
+        try:
+            blist = await connect.checkblist(ctx, ctx.author)
+        except:
+            trace.print_exc()
+        # print(f'connecting, {blist}')
+        if blist is not None:
+            if blist[1]=="global":
+                # print('is global blist')
+                await ctx.send(embed=blist[0])
+                return
+            else:
+                pass
+        else:
+            pass
         print(f"Channel {ctx.channel.id} selected")
         channel = ctx.channel.id
         print(channel)
@@ -181,128 +197,127 @@ class Updater(commands.Cog):
     @commands.command()
     async def update(self, ctx, level="",*, updated=""):
         print(ctx.author.id)
-        if ctx.author.id == 274213987514580993:    
-            await ctx.message.delete()
-            if level=="major":
-                conn = psycopg2.connect(
-                host="ec2-107-20-153-39.compute-1.amazonaws.com",
-                database="d54rrbkoagiuqg",
-                user="bcqrzmrdonxkml",
-                password="006986da51bca028a4af7404fde38e18c9f8a6208b495187b93d4744632b652d")
-                c = conn.cursor()
-                command = f"SELECT version FROM version WHERE id = 1"
-                print(command)
-                c.execute(command)
-                results = c.fetchall()
-                print(results)
-                results = str(results).replace("[('(1,", "")
-                results = str(results).replace(")',)]", "")
-                print(results)
-                conn.commit()
-                c.close()
-                conn.close()
-                results = math.ceil(float(results))
-                print(results)
-                conn = psycopg2.connect(
-                host="ec2-107-20-153-39.compute-1.amazonaws.com",
-                database="d54rrbkoagiuqg",
-                user="bcqrzmrdonxkml",
-                password="006986da51bca028a4af7404fde38e18c9f8a6208b495187b93d4744632b652d")
-                c = conn.cursor()
-                command = f"UPDATE version SET ver='{results}' WHERE id=1"
-                print(command)
-                c.execute(command)
-                conn.commit()
-                c.close()
-                conn.close()
-                print("executed")
-                #-------get updater channel---------
-                conn = psycopg2.connect(
-                host="ec2-107-20-153-39.compute-1.amazonaws.com",
-                database="d54rrbkoagiuqg",
-                user="bcqrzmrdonxkml",
-                password="006986da51bca028a4af7404fde38e18c9f8a6208b495187b93d4744632b652d")
-                c = conn.cursor()
-                command2 = f"select * from channels where type = 'logger'"
-                print(command2)
-                c.execute(command2)
-                results2 = c.fetchall()
-                print(results2)
-                conn.commit()
-                c.close()
-                conn.close()
-                #------------------------------------
-                updateEmbed = discord.Embed(title=f"Updated to v{results}", description=f"{ctx.author.name} updated QuoteBot", color=0xf5e642)
-                print("created embed")
-                updateEmbed.add_field(name="Changelog:", value=f"{updated}",inline=False)
-                print("added changelog")
-                updateEmbed.set_thumbnail(url="https://cdn1.iconfinder.com/data/icons/lightly-selected/30/loop-480.png")
-                print("added image")
-                print(f"length of results = {len(results2)}")
-                for total in range(len(results2)):
-                    sendchannel = self.bot.get_channel(results2[total][2])
-                    print(sendchannel)
-                    print(results2[total][2])
-                    await sendchannel.send(embed=updateEmbed)
-                
-            if level=="minor":
-                conn = psycopg2.connect(
-                host="ec2-107-20-153-39.compute-1.amazonaws.com",
-                database="d54rrbkoagiuqg",
-                user="bcqrzmrdonxkml",
-                password="006986da51bca028a4af7404fde38e18c9f8a6208b495187b93d4744632b652d")
-                c = conn.cursor()
-                command = f"SELECT version FROM version WHERE id = 1"
-                print(command)
-                c.execute(command)
-                results = c.fetchall()
-                results = str(results).replace("[('(1,", "")
-                results = str(results).replace(")',)]", "")
-                print(results)
-                conn.commit()
-                c.close()
-                conn.close()
-                results = float(results)+0.1
-                results = "{:.1f}".format(results)
-                print(f"Formated version value: {results}")
-                conn = psycopg2.connect(
-                host="ec2-107-20-153-39.compute-1.amazonaws.com",
-                database="d54rrbkoagiuqg",
-                user="bcqrzmrdonxkml",
-                password="006986da51bca028a4af7404fde38e18c9f8a6208b495187b93d4744632b652d")
-                c = conn.cursor()
-                command = f'UPDATE version SET ver={results} WHERE id=1;'
-                print(command)
-                c.execute(command)
-                conn.commit()
-                c.close()
-                conn.close()
-                #-------get updater channel---------
-                conn = psycopg2.connect(
-                host="ec2-107-20-153-39.compute-1.amazonaws.com",
-                database="d54rrbkoagiuqg",
-                user="bcqrzmrdonxkml",
-                password="006986da51bca028a4af7404fde38e18c9f8a6208b495187b93d4744632b652d")
-                c = conn.cursor()
-                command2 = f"select * from channels where type = 'logger'"
-                print(command2)
-                c.execute(command2)
-                results2 = c.fetchall()
-                print(results2)
-                conn.commit()
-                c.close()
-                conn.close()
-                #------------------------------------
-                updateEmbed = discordembed=discord.Embed(title=f"Updated to v{results}", description=f"{ctx.author.name} updated QuoteBot", color=0xf5e642)
-                updateEmbed.add_field(name="Changelog:", value=f"{updated}",inline=False)
-                updateEmbed.set_thumbnail(url="https://cdn1.iconfinder.com/data/icons/lightly-selected/30/loop-480.png")
-                for total in range(len(results2)):
-                    sendchannel = self.bot.get_channel(results2[total][2])
-                    print(sendchannel)
-                    print(results2[total][2])
-                    await sendchannel.send(embed=updateEmbed)
-        else:
-            await ctx.send("You are not authorised to use this command")
+        if ctx.author.id != 274213987514580993:    
+            return
+        await ctx.message.delete()
+        if level=="major":
+            conn = psycopg2.connect(
+            host="ec2-107-20-153-39.compute-1.amazonaws.com",
+            database="d54rrbkoagiuqg",
+            user="bcqrzmrdonxkml",
+            password="006986da51bca028a4af7404fde38e18c9f8a6208b495187b93d4744632b652d")
+            c = conn.cursor()
+            command = f"SELECT version FROM version WHERE id = 1"
+            print(command)
+            c.execute(command)
+            results = c.fetchall()
+            print(results)
+            results = str(results).replace("[('(1,", "")
+            results = str(results).replace(")',)]", "")
+            print(results)
+            conn.commit()
+            c.close()
+            conn.close()
+            results = math.ceil(float(results))
+            print(results)
+            conn = psycopg2.connect(
+            host="ec2-107-20-153-39.compute-1.amazonaws.com",
+            database="d54rrbkoagiuqg",
+            user="bcqrzmrdonxkml",
+            password="006986da51bca028a4af7404fde38e18c9f8a6208b495187b93d4744632b652d")
+            c = conn.cursor()
+            command = f"UPDATE version SET ver='{results}' WHERE id=1"
+            print(command)
+            c.execute(command)
+            conn.commit()
+            c.close()
+            conn.close()
+            print("executed")
+            #-------get updater channel---------
+            conn = psycopg2.connect(
+            host="ec2-107-20-153-39.compute-1.amazonaws.com",
+            database="d54rrbkoagiuqg",
+            user="bcqrzmrdonxkml",
+            password="006986da51bca028a4af7404fde38e18c9f8a6208b495187b93d4744632b652d")
+            c = conn.cursor()
+            command2 = f"select * from channels where type = 'logger'"
+            print(command2)
+            c.execute(command2)
+            results2 = c.fetchall()
+            print(results2)
+            conn.commit()
+            c.close()
+            conn.close()
+            #------------------------------------
+            updateEmbed = discord.Embed(title=f"Updated to v{results}", description=f"{ctx.author.name} updated QuoteBot", color=0xf5e642)
+            print("created embed")
+            updateEmbed.add_field(name="Changelog:", value=f"{updated}",inline=False)
+            print("added changelog")
+            updateEmbed.set_thumbnail(url="https://cdn1.iconfinder.com/data/icons/lightly-selected/30/loop-480.png")
+            print("added image")
+            print(f"length of results = {len(results2)}")
+            for total in range(len(results2)):
+                sendchannel = self.bot.get_channel(results2[total][2])
+                print(sendchannel)
+                print(results2[total][2])
+                await sendchannel.send(embed=updateEmbed)
+            
+        if level=="minor":
+            conn = psycopg2.connect(
+            host="ec2-107-20-153-39.compute-1.amazonaws.com",
+            database="d54rrbkoagiuqg",
+            user="bcqrzmrdonxkml",
+            password="006986da51bca028a4af7404fde38e18c9f8a6208b495187b93d4744632b652d")
+            c = conn.cursor()
+            command = f"SELECT version FROM version WHERE id = 1"
+            print(command)
+            c.execute(command)
+            results = c.fetchall()
+            results = str(results).replace("[('(1,", "")
+            results = str(results).replace(")',)]", "")
+            print(results)
+            conn.commit()
+            c.close()
+            conn.close()
+            results = float(results)+0.1
+            results = "{:.1f}".format(results)
+            print(f"Formated version value: {results}")
+            conn = psycopg2.connect(
+            host="ec2-107-20-153-39.compute-1.amazonaws.com",
+            database="d54rrbkoagiuqg",
+            user="bcqrzmrdonxkml",
+            password="006986da51bca028a4af7404fde38e18c9f8a6208b495187b93d4744632b652d")
+            c = conn.cursor()
+            command = f'UPDATE version SET ver={results} WHERE id=1;'
+            print(command)
+            c.execute(command)
+            conn.commit()
+            c.close()
+            conn.close()
+            #-------get updater channel---------
+            conn = psycopg2.connect(
+            host="ec2-107-20-153-39.compute-1.amazonaws.com",
+            database="d54rrbkoagiuqg",
+            user="bcqrzmrdonxkml",
+            password="006986da51bca028a4af7404fde38e18c9f8a6208b495187b93d4744632b652d")
+            c = conn.cursor()
+            command2 = f"select * from channels where type = 'logger'"
+            print(command2)
+            c.execute(command2)
+            results2 = c.fetchall()
+            print(results2)
+            conn.commit()
+            c.close()
+            conn.close()
+            #------------------------------------
+            updateEmbed = discordembed=discord.Embed(title=f"Updated to v{results}", description=f"{ctx.author.name} updated QuoteBot", color=0xf5e642)
+            updateEmbed.add_field(name="Changelog:", value=f"{updated}",inline=False)
+            updateEmbed.set_thumbnail(url="https://cdn1.iconfinder.com/data/icons/lightly-selected/30/loop-480.png")
+            for total in range(len(results2)):
+                sendchannel = self.bot.get_channel(results2[total][2])
+                print(sendchannel)
+                print(results2[total][2])
+                await sendchannel.send(embed=updateEmbed)
 
 
 def setup(bot):

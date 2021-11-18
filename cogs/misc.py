@@ -1,5 +1,5 @@
 import discord
-from discord.ext import commands
+from discord.ext import commands, tasks
 from  builtins import any
 from discord import Intents
 import requests
@@ -8,10 +8,149 @@ import random
 import asyncio
 import datetime
 import psycopg2
+import topgg
 
 class Misc(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+    
+    @tasks.loop(hours=12)
+    async def update_stats(self):
+        try:
+            await self.bot.topggpy.post_guild_count()
+            print(f"Posted server count ({self.bot.topggpy.guild_count})")
+        except Exception as e:
+            print(f"Failed to post server count\n{e.__class__.__name__}: {e}")
+
+
+    async def checkblist(self, ctx, user):
+        # print('going')
+        conn = self.connectdb()
+        # print("Connected to database")
+        c = conn.cursor()
+        command = f"select * from users where uid={user.id}"
+        # print(command)
+        c.execute(command)
+        # print("executed")
+        results = c.fetchall()
+        # print(results)
+        conn.commit()
+        c.close()
+        if results[0][3]==True:
+            blacklist = discord.Embed(title=f"<:no:907768020561190983> Blacklisted", description=f"The account **{user}** with ID **{user.id}** is globally blacklisted\n**Reason:** {results[0][7]}\n*Blacklists cannot be appealed*", color=0xff0000)
+            blacklist.timestamp = datetime.datetime.utcnow()
+            blacklist.set_footer(text=f"QuoteBot | ID: {user.id}", icon_url="https://cdn.discordapp.com/attachments/844600910562066444/871953767115919400/quotebotpfp.png")
+            return(blacklist, "global")
+        elif results[0][4]==True:
+            blacklist = discord.Embed(title=f"<:no:907768020561190983> Blacklisted", description=f"The account **{user}** with ID **{user.id}** is support blacklisted\n**Reason:** {results[0][7]}\n*Blacklists cannot be appealed*", color=0xff0000)
+            blacklist.timestamp = datetime.datetime.utcnow()
+            blacklist.set_footer(text=f"QuoteBot | ID: {user.id}", icon_url="https://cdn.discordapp.com/attachments/844600910562066444/871953767115919400/quotebotpfp.png")
+            return(blacklist, "support")
+        else:
+            return None
+
+    @commands.command()
+    async def blist(self, ctx, command, user: discord.User, type, *,reason="None"):
+        if ctx.author.id != 274213987514580993:
+            return
+        connect = self.bot.get_cog("Misc")
+        conn = connect.connectdb()
+        print("Connected to database")
+        c = conn.cursor()
+        sqlcommand = f"select * from users where uid={user.id}"
+        print(sqlcommand)
+        c.execute(sqlcommand)
+        print("executed")
+        results = c.fetchall()
+        print(results)
+        conn.commit()
+        c.close()
+        if command.lower()=="add":
+            if type.lower()=="global":
+                if results[0][3]==True:
+                    deny = discord.Embed(title=f"<:redTick:892436376673464340> User {user} is already globally blacklisted", color=0xff0000)
+                    await ctx.send(embed=deny)
+                else:
+                    connect = self.bot.get_cog("Misc")
+                    conn = connect.connectdb()
+                    print("Connected to database")
+                    c = conn.cursor()
+                    sqlcommand = f"update users set global_blist=True where uid={user.id}"
+                    print(sqlcommand)
+                    c.execute(sqlcommand)
+                    print("executed")
+                    sqlcommand = f"update users set blist_reason='{reason}' where uid={user.id}"
+                    print(sqlcommand)
+                    c.execute(sqlcommand)
+                    print("executed")
+                    conn.commit()
+                    c.close()
+                    accept = discord.Embed(title=f"<:rbcheck:892331857440559124> User {user} added to globally blacklist", color=0xff0000)
+                    await ctx.send(embed=accept)
+            elif type.lower()=="support":
+                if results[0][4]==True:
+                    deny=discord.Embed(title=f"<:redTick:892436376673464340> User {user} is already support blacklisted", color=0xff0000)
+                    await ctx.send(embed=deny)
+                else:
+                    connect = self.bot.get_cog("Misc")
+                    conn = connect.connectdb()
+                    print("Connected to database")
+                    c = conn.cursor()
+                    sqlcommand = f"update users set support_blist=True where uid={user.id}"
+                    print(sqlcommand)
+                    c.execute(sqlcommand)
+                    print("executed")
+                    sqlcommand = f"update users set blist_reason='{reason}' where uid={user.id}"
+                    print(sqlcommand)
+                    c.execute(sqlcommand)
+                    print("executed")
+                    conn.commit()
+                    c.close()
+                    accept = discord.Embed(title=f"<:rbcheck:892331857440559124> User {user} added to support blacklist", color=0xff0000)
+                    await ctx.send(embed=accept)
+            else:
+                pass
+        elif command.lower()=="remove":
+            if type.lower()=="global":
+                if results[0][3]==False:
+                    deny = discord.Embed(title=f"<:redTick:892436376673464340> User {user} is not globally blacklisted", color=0xff0000)
+                    await ctx.send(embed=deny)
+                else:
+                    connect = self.bot.get_cog("Misc")
+                    conn = connect.connectdb()
+                    print("Connected to database")
+                    c = conn.cursor()
+                    sqlcommand = f"update users set global_blist=False where uid={user.id}"
+                    print(sqlcommand)
+                    c.execute(sqlcommand)
+                    print("executed")
+                    conn.commit()
+                    c.close()
+                    accept = discord.Embed(title=f"<:rbcheck:892331857440559124> User {user} removed from global blacklist", color=0xff0000)
+                    await ctx.send(embed=accept)
+
+            elif type.lower()=="support":
+                if results[0][4]==False:
+                    deny=discord.Embed(title=f"<:redTick:892436376673464340> User {user} is not support blacklisted", color=0xff0000)
+                    await ctx.send(embed=deny)
+                else:
+                    connect = self.bot.get_cog("Misc")
+                    conn = connect.connectdb()
+                    print("Connected to database")
+                    c = conn.cursor()
+                    sqlcommand = f"update users set support_blist=False where uid={user.id}"
+                    print(sqlcommand)
+                    c.execute(sqlcommand)
+                    print("executed")
+                    conn.commit()
+                    c.close()
+                    accept = discord.Embed(title=f"<:rbcheck:892331857440559124> User {user} removed from support blacklist", color=0xff0000)
+                    await ctx.send(embed=accept)
+                    
+            else:
+                await ctx.send(f"Invalid Type '{type}'. Types: global/support")
+        else:
+            await ctx.send(f"Invalid Action '{command}'. Actions: add/remove")
 
     @commands.command()
     async def test(self, ctx):
@@ -27,11 +166,27 @@ class Misc(commands.Cog):
 
     @commands.command()
     async def invite(self,ctx):
-            await ctx.send("https://discord.com/api/oauth2/authorize?client_id=814379239930331157&permissions=8&scope=bot")
+            await ctx.send("https://discord.com/oauth2/authorize?client_id=814379239930331157&permissions=93264&scope=bot")
     
 
     @commands.command()
     async def info(self, ctx):
+        # connect = self.bot.get_cog("Misc")
+        # print('gotten connect')
+        try:
+            blist = await self.checkblist(ctx, ctx.author)
+        except:
+            trace.print_exc()
+        # print(f'connecting, {blist}')
+        if blist is not None:
+            if blist[1]=="global":
+                # print('is global blist')
+                await ctx.send(embed=blist[0])
+                return
+            else:
+                pass
+        else:
+            pass
         conn = self.connectdb()
         c = conn.cursor()
         command = f"SELECT version FROM version WHERE id = 1"

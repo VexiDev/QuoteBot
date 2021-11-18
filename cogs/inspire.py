@@ -22,6 +22,22 @@ class Inspire(commands.Cog):
 
     @commands.command()
     async def inspire(self, ctx):
+        connect = self.bot.get_cog("Misc")
+        # print('gotten connect')
+        try:
+            blist = await connect.checkblist(ctx, ctx.author)
+        except:
+            trace.print_exc()
+        # print(f'connecting, {blist}')
+        if blist is not None:
+            if blist[1]=="global":
+                # print('is global blist')
+                await ctx.send(embed=blist[0])
+                return
+            else:
+                pass
+        else:
+            pass
         print("inspired,,,")
         for channel in ctx.guild.channels:
             if "inspiration" in channel.name:
