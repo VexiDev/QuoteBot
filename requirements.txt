@@ -3,7 +3,6 @@ async-timeout==3.0.1
 attrs==21.2.0
 brotlipy==0.7.0
 certifi==2021.5.30
-conda==4.10.3
 discord==1.7.3
 discord-components==2.1.2
 discord.py==1.7.3
