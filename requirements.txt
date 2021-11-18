@@ -1,37 +1,33 @@
-aiohttp==3.7.4
+aiohttp==3.7.4.post0
 async-timeout==3.0.1
-asyncio==3.4.3
-attrs==20.3.0
-Automat==20.2.0
-certifi==2020.11.8
-cffi==1.14.5
-chardet==3.0.4
-constantly==15.1.0
-discord-components==0.5.3
-discord.py==1.7.1
-docopt==0.6.2
-ffmpeg==1.4
-hyperlink==21.0.0
-idna==2.10
-incremental==21.3.0
-multidict==5.1.0
-osascript==2020.12.3
-pipreqs==0.4.10
-psutil==5.8.0
-psycopg2==2.8.6
-pycparser==2.20
-PyNaCl==1.4.0
-python-dateutil==2.8.1
-requests==2.25.1
-runcmd==2020.12.3
-schedule==1.0.0
-six==1.15.0
-Twisted==21.2.0
-twitchAPI==2.3.2
-typing-extensions==3.7.4.3
-urllib3==1.26.5
-websockets==9.1
-yarg==0.1.9
-yarl==1.6.3
-youtube-dl==2021.4.26
-zope.interface==5.3.0
+attrs==21.2.0
+brotlipy==0.7.0
+certifi==2021.5.30
+cffi @ file:///opt/concourse/worker/volumes/live/976f8942-f51d-4f0e-7352-2a10f0820d0e/volume/cffi_1625814703974/work
+chardet @ file:///opt/concourse/worker/volumes/live/7e1102c4-8702-40f2-63d6-f260ce5f85e4/volume/chardet_1607706831384/work
+conda==4.10.3
+conda-package-handling @ file:///opt/concourse/worker/volumes/live/8fb3e065-760b-4a9d-4cd9-aca7fc8baf53/volume/conda-package-handling_1618262145611/work
+cryptography @ file:///opt/concourse/worker/volumes/live/d5dda287-c0b3-4861-7262-fab05baa64dc/volume/cryptography_1616769284011/work
+discord==1.7.3
+discord-components==2.1.2
+discord.py==1.7.3
+idna @ file:///home/linux1/recipes/ci/idna_1610986105248/work
+iso8601==0.1.16
+multidict==5.2.0
+psycopg2-binary==2.9.1
+pycosat==0.6.3
+pycparser @ file:///tmp/build/80754af9/pycparser_1594388511720/work
+pyOpenSSL @ file:///tmp/build/80754af9/pyopenssl_1608057966937/work
+PySocks @ file:///opt/concourse/worker/volumes/live/112288ac-9cb0-4e73-768b-13baf4ca6419/volume/pysocks_1605305820043/work
+python-dateutil==2.8.2
+requests @ file:///tmp/build/80754af9/requests_1608241421344/work
+ruamel-yaml-conda @ file:///opt/concourse/worker/volumes/live/e81cf0fe-611a-498e-6e69-a7320057c1ac/volume/ruamel_yaml_1616016689696/work
+six @ file:///tmp/build/80754af9/six_1623709665295/work
+topggpy==1.4.0
+tqdm @ file:///tmp/build/80754af9/tqdm_1625563689033/work
+twitchAPI==2.5.0
+twitchio==2.1.0
+typing-extensions==3.10.0.2
+urllib3 @ file:///tmp/build/80754af9/urllib3_1625084269274/work
+websockets==10.0
+yarl==1.7.0
