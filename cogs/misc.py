@@ -194,10 +194,10 @@ class Misc(commands.Cog):
                 # print(user.name)
                 # break
                 if user == None:
-                    # print("is none")
+                    print("is none")
                     pass
                 elif user.bot != True:
-                    # print("not a bot")
+                    print("not a bot")
                     pass
                 else:
                     print(f"Bot Removed: {user.name} | {user.id}")
