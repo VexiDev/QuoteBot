@@ -192,7 +192,7 @@ class Misc(commands.Cog):
                 # print(uid[0])
                 user = discord.utils.get(self.bot.get_all_members(), id=uid[0])
                 # print(user.name)
-                break
+                # break
                 if user == None:
                     # print("is none")
                     pass
