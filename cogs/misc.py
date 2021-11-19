@@ -166,6 +166,17 @@ class Misc(commands.Cog):
         return(conn)
 
     @commands.command()
+    async def topserver(self, ctx):
+        if ctx.author.id != 274213987514580993:
+            return
+        msg=""
+        for guilds in self.bot.guilds:
+            msg = msg+f"{guilds.name} - {len(guilds.members)}\n"
+        await ctx.send(msg)
+        
+            
+
+    @commands.command()
     async def invite(self,ctx):
             await ctx.send("https://discord.com/oauth2/authorize?client_id=814379239930331157&permissions=93264&scope=bot")
     
