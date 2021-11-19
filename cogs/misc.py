@@ -174,7 +174,43 @@ class Misc(commands.Cog):
             msg = msg+f"{guilds.name} - {len(guilds.members)}\n"
         await ctx.send(msg)
         
-            
+    @commands.command()
+    async def removebots(self, ctx):
+        if ctx.author.id != 274213987514580993:
+            return   
+        try:
+            msg = await ctx.send("Removing bots")
+            conn = self.connectdb()
+            c = conn.cursor()
+            command = f"SELECT uid FROM users"
+            c.execute(command)
+            userlist = c.fetchall()
+            totalbots=0
+            await msg.edit(f"Total users: {len(userlist)}\nRemoved: {totalbots}")
+            # print(userlist)
+            for uid in userlist:
+                # print(uid[0])
+                user = discord.utils.get(self.bot.get_all_members(), id=uid[0])
+                # print(user.name)
+                break
+                if user == None:
+                    # print("is none")
+                    pass
+                elif user.bot != True:
+                    # print("not a bot")
+                    pass
+                else:
+                    print(f"Bot Removed: {user.name} | {user.id}")
+                    command = f"delete from users where uid={uid[0]}"
+                    c.execute(command)
+                    conn.commit()
+                    totalbots=totalbots+1
+                    if (totalbots%5) == 0:
+                        await msg.edit(f"Total users: {len(userlist)}\nRemoved: {totalbots}")
+            c.close()
+            await msg.edit(f"Removed {totalbots} from user table")
+        except:
+            traceback.print_exc()
 
     @commands.command()
     async def invite(self,ctx):
