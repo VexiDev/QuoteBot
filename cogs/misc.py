@@ -161,8 +161,8 @@ class Misc(commands.Cog):
         conn = psycopg2.connect(        
         host="ec2-52-72-60-116.compute-1.amazonaws.com",
         database="datps9doutonos",
-        user="u892s7k90calmu",
-        password="p772707b18a9153e9df8335e17840905533f470e050aa31ef0d855b193e762080") 
+        user="u4k1sd87l5j3gd",
+        password="pfed15ef5520e45dccea4f5ff6e262cbbc88c25494784d3841b546770dd2e4b37") 
         return(conn)
 
     @commands.command()
@@ -174,44 +174,6 @@ class Misc(commands.Cog):
             msg = msg+f"{guilds.name} - {len(guilds.members)}\n"
         await ctx.send(msg)
         
-    @commands.command()
-    async def removebots(self, ctx):
-        if ctx.author.id != 274213987514580993:
-            return   
-        try:
-            msg = await ctx.send("Removing bots")
-            conn = self.connectdb()
-            c = conn.cursor()
-            command = f"SELECT uid FROM users"
-            c.execute(command)
-            userlist = c.fetchall()
-            totalbots=0
-            await msg.edit(f"Total users: {len(userlist)}\nRemoved: {totalbots}")
-            # print(userlist)
-            for uid in userlist:
-                # print(uid[0])
-                user = discord.utils.get(self.bot.get_all_members(), id=uid[0])
-                # print(user.name)
-                # break
-                if user == None:
-                    print("is none")
-                    pass
-                elif user.bot != True:
-                    print("not a bot")
-                    pass
-                else:
-                    print(f"Bot Removed: {user.name} | {user.id}")
-                    command = f"delete from users where uid={uid[0]}"
-                    c.execute(command)
-                    conn.commit()
-                    totalbots=totalbots+1
-                    if (totalbots%5) == 0:
-                        await msg.edit(f"Total users: {len(userlist)}\nRemoved: {totalbots}")
-            c.close()
-            await msg.edit(f"Removed {totalbots} from user table")
-        except:
-            traceback.print_exc()
-
     @commands.command()
     async def invite(self,ctx):
             await ctx.send("https://discord.com/oauth2/authorize?client_id=814379239930331157&permissions=93264&scope=bot")
