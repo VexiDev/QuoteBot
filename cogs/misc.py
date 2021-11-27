@@ -162,7 +162,8 @@ class Misc(commands.Cog):
         host="ec2-52-72-60-116.compute-1.amazonaws.com",
         database="datps9doutonos",
         user="u4k1sd87l5j3gd",
-        password="pfed15ef5520e45dccea4f5ff6e262cbbc88c25494784d3841b546770dd2e4b37") 
+        password="pfed15ef5520e45dccea4f5ff6e262cbbc88c25494784d3841b546770dd2e4b37", 
+        sslmode='require')
         return(conn)
 
     @commands.command()
