@@ -256,7 +256,7 @@ class Misc(commands.Cog):
         conn.close()
         guilds = len(self.bot.guilds)
         final_ver_results = str(ver_results[0]).replace("('(1,", "").replace(")',)", "")
-        infoEmbed = discord.Embed(title=f"QuoteBot Info", description=f"\nCurrent version: **{final_ver_results}**\nTotal quotes logged: **{str(results_total_quotes[0]).replace('(', '').replace(',)','')}**\nTotal unique users: **{str(results_total_users[0]).replace('(', '').replace(',)','')}**\nTotal servers: **{guilds}**", color=0xf5e642)
+        infoEmbed = discord.Embed(title=f"QuoteBot Info", description=f"Latency: **{round(self.bot.latency, 1)}ms**\nCurrent version: **{final_ver_results}**\nTotal quotes logged: **{str(results_total_quotes[0]).replace('(', '').replace(',)','')}**\nTotal unique users: **{str(results_total_users[0]).replace('(', '').replace(',)','')}**\nTotal servers: **{guilds}**", color=0xf5e642)
         await ctx.send(embed=infoEmbed)
 
 def setup(bot):
