@@ -59,6 +59,6 @@ async def on_ready():
     bot.topggpy = topgg.DBLClient(bot, dbl_token)
     misc.update_stats.start()
     DiscordComponents(bot)
-    await bot.change_presence(status=discord.Status.online, activity=discord.Activity(type=discord.ActivityType.playing, name="q!help"))
+    await bot.change_presence(status=discord.Status.online, activity=discord.Activity(type=discord.ActivityType.playing, name="4.0 OUT NOW! | q!help"))
 
 bot.run('ODE0Mzc5MjM5OTMwMzMxMTU3.YDc_xQ.Tud62bhKLaaWGGlpfWr-lJWZe5w')
