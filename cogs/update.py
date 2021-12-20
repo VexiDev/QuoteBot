@@ -300,6 +300,7 @@ class Updater(commands.Cog):
 
 
     async def v4_updater(self):
+        skiplist = [831369843353452584,711911329580974101,888091775347089479,911909706736484373,903122901039992893,908428900697272360,869428791041220618,760033559796121626,777189458860441610,869223276218560584,910116365870981140,692877530788528260,710974335006933014,761413354870800464,888397911665307668,844310426802978877,718119401878061138,881168352255541268,892871178182623263,879293540780343297,903917888572882954,836500033485930508,830218584424579102,903567189217538068,876961130495492146,826215830437363781,866083620539072512,900783388745662514,913109336694333502,802229707394252850,530284930119499776,904892027920076830,476157756190228521,882093368782491720,810318689584545863,817483064052547695,846454339551756318,921221588433661962]
         misc = self.bot.get_cog('Misc')
         conn = misc.connectdb()
         c = conn.cursor()
@@ -325,43 +326,47 @@ class Updater(commands.Cog):
             update_msg.timestamp = datetime.datetime.utcnow()
         
             for guild in self.bot.guilds:
-                update_msg.set_footer(text=f"QuoteBot | ID: {guild.id}", icon_url="https://cdn.discordapp.com/attachments/844600910562066444/871953767115919400/quotebotpfp.png")
-                command = f"SELECT * FROM channels WHERE guild_id={guild.id}"
-                print(command)
-                c.execute(command)
-                results = c.fetchall()
-                update= None
-                log = None
-                quotes = None
-                    
-                if len(results) != 0:
-                    for channel in results:
-                        if channel[3] == 'update':
-                            update = channel[2]
-                        elif channel[3] == 'logger':
-                            log = channel[2]
-                        elif channel[3] == 'quotes':
-                            quotes = channel[2]
-
-                    if update != None:
-                        channel = self.bot.get_channel(update)
-                    elif quotes != None:
-                        channel = self.bot.get_channel(quotes)
-                    elif log != None:
-                        channel = self.bot.get_channel(log)
-                    
-                    await channel.send(embed=update_msg)
-
+                if guild in skiplist:
+                    pass
                 else:
-                    for channel in guild.channels:
-                        try:
-                            await asyncio.sleep(0.5)
+                    update_msg.set_footer(text=f"QuoteBot | ID: {guild.id}", icon_url="https://cdn.discordapp.com/attachments/844600910562066444/871953767115919400/quotebotpfp.png")
+                    command = f"SELECT * FROM channels WHERE guild_id={guild.id}"
+                    print(command)
+                    c.execute(command)
+                    results = c.fetchall()
+                    update= None
+                    log = None
+                    quotes = None
+                        
+                    if len(results) != 0:
+                        for channel in results:
+                            if channel[3] == 'update':
+                                update = channel[2]
+                            elif channel[3] == 'logger':
+                                log = channel[2]
+                            elif channel[3] == 'quotes':
+                                quotes = channel[2]
 
+                        if update != None:
+                            channel = self.bot.get_channel(update)
+                        elif quotes != None:
+                            channel = self.bot.get_channel(quotes)
+                        elif log != None:
+                            channel = self.bot.get_channel(log)
+                        try:
                             await channel.send(embed=update_msg)
-                            break
                         except:
-                            # traceback.print_exc()
                             pass
+                    else:
+                        for channel in guild.channels:
+                            try:
+                                await asyncio.sleep(0.5)
+
+                                await channel.send(embed=update_msg)
+                                break
+                            except:
+                                # traceback.print_exc()
+                                pass
                 
 
             command = f"UPDATE version SET v4updated=True WHERE id=1"
