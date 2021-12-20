@@ -92,14 +92,14 @@ class Quotes(commands.Cog):
 
             if len(results) == 0:
                 no_exist = discord.Embed(title=f'<:no:907768020561190983> No quote like "{quote}" found', color=0xff0000)
-                await ctx.send(embed=no_exist)
+                msg = await ctx.send(embed=no_exist)
                 await asyncio.sleep(5)
                 await msg.delete()
                 await ctx.message.delete()
                 return
             elif len(results) > 1:
                 no_exist = discord.Embed(title=f'<:no:907768020561190983> Query "{quote}" is too common',description="please give us more of the quote", color=0xff0000)
-                await ctx.send(embed=no_exist)
+                msg = await ctx.send(embed=no_exist)
                 await asyncio.sleep(5)
                 await msg.delete()
                 await ctx.message.delete()
