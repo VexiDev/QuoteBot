@@ -52,6 +52,8 @@ class Misc(commands.Cog):
 
     @commands.command()
     async def blist(self, ctx, command, user: discord.User, type, *,reason="None"):
+        if ctx.author.bot == True:
+            return
         if ctx.author.id != 274213987514580993:
             return
         connect = self.bot.get_cog("Misc")
@@ -155,6 +157,8 @@ class Misc(commands.Cog):
 
     @commands.command()
     async def test(self, ctx):
+        if ctx.author.bot == True:
+            return
         await ctx.send("tested")
 
     def connectdb(self):
@@ -168,6 +172,8 @@ class Misc(commands.Cog):
 
     @commands.command()
     async def topserver(self, ctx):
+        if ctx.author.bot == True:
+            return
         if ctx.author.id != 274213987514580993:
             return
         msg=""
@@ -177,8 +183,11 @@ class Misc(commands.Cog):
         
     @commands.command()
     async def invite(self,ctx):
-            await ctx.send("https://discord.com/oauth2/authorize?client_id=814379239930331157&permissions=93264&scope=bot")
+        if ctx.author.bot == True:
+            return
+        await ctx.send("https://discord.com/oauth2/authorize?client_id=814379239930331157&permissions=93264&scope=bot")
     
+
 
     @commands.Cog.listener()
     async def on_guild_join(self, guild):
@@ -207,7 +216,7 @@ class Misc(commands.Cog):
                     # print("executed")
                     result = c.fetchall()
                     if len(result)==0 and user.bot==False:
-                        command = f"insert into users(uid, nsfw, global_blist, support_blist,support_cooldown, support_time) values({user.id}, False, False, False, False, '{date}')"
+                        command = f"insert into users(uid, nsfw, global_blist, support_blist,support_cooldown, support_time, blist_reason, bio) values({user.id}, True, False, False, False, '{date}', 'None', 'None')"
                         # print(command)
                         c.execute(command)
                         # print("executed")
@@ -223,6 +232,8 @@ class Misc(commands.Cog):
 
     @commands.command()
     async def info(self, ctx):
+        if ctx.author.bot == True:
+            return
         # connect = self.bot.get_cog("Misc")
         # print('gotten connect')
         try:
@@ -256,8 +267,59 @@ class Misc(commands.Cog):
         conn.close()
         guilds = len(self.bot.guilds)
         final_ver_results = str(ver_results[0]).replace("('(1,", "").replace(")',)", "")
-        infoEmbed = discord.Embed(title=f"QuoteBot Info", description=f"Latency: **{round(self.bot.latency, 1)}ms**\nCurrent version: **{final_ver_results}**\nTotal quotes logged: **{str(results_total_quotes[0]).replace('(', '').replace(',)','')}**\nTotal unique users: **{str(results_total_users[0]).replace('(', '').replace(',)','')}**\nTotal servers: **{guilds}**", color=0xf5e642)
+        infoEmbed = discord.Embed(title=f"QuoteBot Info", description=f"Current version: **{final_ver_results}**\nTotal quotes logged: **{str(results_total_quotes[0]).replace('(', '').replace(',)','')}**\nTotal unique users: **{str(results_total_users[0]).replace('(', '').replace(',)','')}**\nTotal servers: **{guilds}**", color=0xf5e642)
         await ctx.send(embed=infoEmbed)
+
+    #DEV ONLY
+    @commands.command(aliases=['latency','ping'])
+    async def lag(self, ctx):
+        if ctx.author.bot == True:
+            return
+        if ctx.author.id != 274213987514580993:
+            return
+
+        #check db speed
+        conn = self.connectdb()
+        c = conn.cursor()
+        command = f"SELECT * FROM quotes"
+        print(command)
+        db_start = datetime.datetime.now()
+        c.execute(command)
+        ver_results = c.fetchall()
+        db_end = datetime.datetime.now()
+        db_diff = db_end - db_start
+        db_ms = db_diff.total_seconds() * 1000
+
+        #check api speed
+        async def api(ctx, quote):
+
+            print(f"\nCURRENT API CALL: {quote}\n")
+            url = 'https://api.sightengine.com/1.0/text/check.json'
+
+            data =  {
+            'text':f'{quote}',
+            'lang':'en',
+            'list':'tli_aTs79afVyEDmo23PBJtBc',
+            'mode':'standard',
+            'api_user':f'1577683888',
+            'api_secret':'KwUgHawuH53aRMPntbQA'
+            }
+
+            response = requests.post(url, data=data)
+
+            response = response.json()
+            print(response)
+            return response
+
+        api_start = datetime.datetime.now()
+        api = await api(ctx, f"latency check | test: fuck, sh!t, f@g, rap3 | uid: {ctx.author.id} | gid: {ctx.guild.id}")
+        api_end = datetime.datetime.now()
+        api_diff = api_end - api_start
+        api_ms = api_diff.total_seconds() * 1000
+        
+        emb_ping = discord.Embed(title="Latency Info:", description=f"Bot Latency: **{round(self.bot.latency, 1)}ms**\nDB Exec. Speed: **{round(int(db_ms), 1)}ms**\nFilter Latency: **{round(int(api_ms), 1)}ms**", color=0xf5e642)
+        await ctx.send(embed=emb_ping)
+
 
 def setup(bot):
     bot.add_cog(Misc(bot))

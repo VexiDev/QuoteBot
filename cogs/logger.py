@@ -13,24 +13,27 @@ class Logger(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    async def logger(self, command, user, channel, color, guild):
-        # print("Started log")
+    async def logger(self, title, desc, user, color, guild, image=None):
+        print(f"log|N:{title.replace('**','')}| GID:{guild}")
         sixteenIntegerHex = int(color.replace("#", ""), 16)
         readableHex = int(hex(sixteenIntegerHex), 0)
         # print("converted to readable hex")
         time = datetime.datetime.now()  
         time = time.strftime(r"%x at %H:%M")
         # print("Set time")
-        logEmbed = discord.Embed(description=f"{command}", color=readableHex)
+        logEmbed = discord.Embed(title=f"{title}",description=desc, color=readableHex)
+        if image!=None:
+            logEmbed.set_thumbnail(url=image)
         # print("Set embed")
-        print(user.avatar_url)
         logEmbed.timestamp = datetime.datetime.utcnow()
         logEmbed.set_footer(text=f"QuoteBot | ID: {user.id}", icon_url="https://cdn.discordapp.com/attachments/844600910562066444/871953767115919400/quotebotpfp.png")
-        logEmbed.set_author(name=user, url=discord.Embed.Empty, icon_url=user.avatar_url)
-        # print("set embed author")
+        try:
+            logEmbed.set_author(name=user, url=discord.Embed.Empty, icon_url=user.avatar_url)
+        except:
+            pass
+        # print("set embed author/passed invalid user")
         connect = self.bot.get_cog("Misc")
         conn = connect.connectdb()
-        # print("Successfully connected to postgresql database")
         c = conn.cursor()
         # print("connected and cursored")
         command = f"select * from channels where type = 'logger' and guild_id = {guild}"
@@ -38,20 +41,27 @@ class Logger(commands.Cog):
         c.execute(command)
         # print("executed")
         results = c.fetchall()
-        print(results)
-        print(results[0][2])
+        # print(results)
+        # print(results[0][2])
         conn.commit()
         c.close()
         conn.close()
         # print("closed connection")
-        channelsend = self.bot.get_channel(results[0][2])
-        print(channelsend)
+        # print(len(results))
+        if len(results) != 0:
+            channelsend = self.bot.get_channel(results[0][2])
+        else:
+            print(f'no log channel for guild {guild}')
+            return
+        # print(channelsend)
         await channelsend.send(embed=logEmbed)
         print("sent")
 
     @commands.command()
     @commands.has_permissions(manage_guild=True)
     async def setlogger(self, ctx):
+        if ctx.author.bot == True:
+            return
         connect = self.bot.get_cog("Misc")
         # print('gotten connect')
         try:

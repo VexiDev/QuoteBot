@@ -5,6 +5,8 @@ brotlipy==0.7.0
 certifi==2021.5.30
 discord==1.7.3
 discord-components==2.1.2
+discord-py-interactions==3.0.2
+discord-py-slash-command==3.0.1
 discord.py==1.7.3
 iso8601==0.1.16
 multidict==5.2.0
@@ -15,6 +17,5 @@ topggpy==1.4.0
 twitchAPI==2.5.0
 twitchio==2.1.0
 typing-extensions==3.10.0.2
-topggpy
 websockets==10.0
 yarl==1.7.0

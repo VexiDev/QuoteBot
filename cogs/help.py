@@ -11,47 +11,84 @@ class Help(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
+    # @commands.command()
+    # async def rules(self, ctx):
+    #     connect = self.bot.get_cog("Misc")
+    #     # print('gotten connect')
+    #     try:
+    #         blist = await connect.checkblist(ctx, ctx.author)
+    #     except:
+    #         trace.print_exc()
+    #     # print(f'connecting, {blist}')
+    #     if blist is not None:
+    #         if blist[1]=="global":
+    #             # print('is global blist')
+    #             await ctx.send(embed=blist[0])
+    #             return
+    #         else:
+    #             pass
+    #     else:
+    #         pass
+    #     rules = discord.Embed(title="QuoteBot Rules", description="Simple rules for a simple bot")
+    #     rules.add_field(name=)
+
     @commands.command()
     async def help(self, ctx):
-        connect = self.bot.get_cog("Misc")
-        print('gotten connect')
+        if ctx.author.bot == True:
+            return
         try:
-            blist = await connect.checkblist(ctx, ctx.author)
-        except:
-            trace.print_exc()
-        print(f'connecting, {blist}')
-        if blist is not None:
-            if blist[1]=="global":
-                print('is global blist')
-                await ctx.send(embed=blist[0])
-                return
+            connect = self.bot.get_cog("Misc")
+            # print('gotten connect')
+            try:
+                blist = await connect.checkblist(ctx, ctx.author)
+            except:
+                trace.print_exc()
+            # print(f'connecting, {blist}')
+            if blist is not None:
+                if blist[1]=="global":
+                    # print('is global blist')
+                    await ctx.send(embed=blist[0])
+                    return
+                else:
+                    pass
             else:
                 pass
-        else:
-            pass
-        embedVar = discord.Embed(title="QuoteBot Help Menu", description="Store quotes quickly and easily", color=0x00ff00)
-        embedVar.add_field(name="q!help", value="displays this message", inline=False)
-        embedVar.add_field(name="q!invite", value="sends the invite link for Quotebot", inline=False)
-        embedVar.add_field(name="q!info", value="displays info on QuoteBot", inline=False)
-        embedVar.add_field(name="q!quote", value="usage: q!quote <@user/user#000> \nQuotes a random quote of a user\n",inline=False)
-        embedVar.add_field(name="q!addquote", value="usage: q!addquote <@user/user#000> <quote> \nAdds a quote to their stored quotes\n\n",inline=False)
-        embedVar.add_field(name="q!delquote", value="usage: q!delquote <@user/user#000> <part-of-quote> \nRemoves a quote from a users stored quotes\n\n",inline=False)
-        embedVar.add_field(name="q!qowote", value="usage: q!qowote <@user/user#000> \nQuotes a random user but adds an uwu twist\n",inline=False)        
-        embedVar.add_field(name="q!listquotes", value="usage: q!listquotes <@user>\n Prints all quotes stored for set user\n\n",inline=False)
-        embedVar.add_field(name="q!inspire", value="usage: q!inspire\n Puts an inspirational quote into a #inspiration channel\n\n", inline=False)
-        embedVar.add_field(name="q!setquotechannel", value="usage: q!setquotechannel (**Requires Manage Server**)\n Sets the current  channel as the quote channel\nCommands: **q!addquote** and **q!delquote** will be locked to this channel\n\n", inline=False)
-        embedVar.add_field(name="q!setlogger", value="usage: q!setlogger (**Requires Manage Server)**\n Sets the current channel as the log channel\n\n Developed by vexi#0420", inline=False)
-        embedVar.timestamp = datetime.datetime.utcnow()
-        embedVar.set_footer(text=f"QuoteBot | ID: {ctx.author.id}", icon_url="https://cdn.discordapp.com/attachments/844600910562066444/871953767115919400/quotebotpfp.png")
-        try:
-            await ctx.author.send(embed=embedVar)
-            message = await ctx.send("Help has been sent!\n*check your dms*")
-            await message.add_reaction("😇")
-        except Forbidden:
-            await ctx.send('***I cannot dm you!***\nPlease unblock quotebot or enable dms from server members\nYou can also use q!qhelp to have help sent to this channel')
+            embedVar = discord.Embed(title="QuoteBot Help Menu", description="Store quotes quickly and easily", color=0x00ff00)
+            embedVar.add_field(name="q!help", value="displays this message", inline=True)
+            embedVar.add_field(name="q!invite", value="sends the invite link for Quotebot", inline=True)
+            embedVar.add_field(name="q!info", value="displays general info on QuoteBot", inline=True)
+            embedVar.add_field(name="q!add", value="usage: q!add <@user/user#000> <quote> \nAdds a quote to their stored quotes\n\n",inline=True)
+            embedVar.add_field(name="q!delete", value="usage: q!delete <@user/user#000> <part-of-quote> \nRemoves a quote from a users stored quotes\n\n",inline=True)
+            embedVar.add_field(name="q!profile", value="usage: q!profile <@user>\n Prints all quotes stored for set user\n\n",inline=True)
+            embedVar.add_field(name="q!quote", value="usage: q!quote <@user/user#000> \nQuotes a random quote of a user\n",inline=True)
+            embedVar.add_field(name="q!qowote", value="usage: q!qowote <@user/user#000> \nQuotes a random user but adds an uwu twist\n",inline=True)        
+            embedVar.add_field(name="(**Requires Manage Server**)\nq!setquotechannel", value="usage: q!setquotechannel \n Sets the current  channel as the quote channel\nQuotebot commands will be locked to this channel\n\n", inline=True)
+            embedVar.add_field(name="(**Requires Manage Server**)\nq!setlogger", value="usage: q!setlogger (**Requires Manage Server)**\n Sets the current channel as the log channel", inline=True)
+            embedVar.add_field(name="q!request", value="usage: q!request <request>\nSends a message to me through Quotebot, this can be for support, to report abuse or to report bugs", inline=True)
+            embedVar.add_field(name="q!setbio", value="usage: q!setbio <bio>\nAllows you to change your bio in q!profile", inline=True)
+            embedVar.add_field(name="q!star", value="usage: q!star <part-of-quote>\nStars or UnStars a quote from your profile", inline=True)
+            # embedVar.add_field(name="q!togglensfw", value="usage: q!togglensfw (optional: <user>, <force (true/false)>)\nToggles the ability to see nsfw content for a user or yourself. (Setting **force** to True means a user will not be able to enable nsfw content for themselves.)")
+            embedVar.timestamp = datetime.datetime.utcnow()
+            embedVar.set_footer(text=f"Developed by vexi#0420 | ID: {ctx.author.id}", icon_url="https://cdn.discordapp.com/attachments/844600910562066444/871953767115919400/quotebotpfp.png")
+            try:
+                await ctx.author.send(embed=embedVar)
+                msg = await ctx.send("Help has been sent!\n*check your dms*")
+                await msg.add_reaction("😇")
+                await asyncio.sleep(10)
+                await msg.delete()
+                await ctx.message.delete()
+            except Forbidden:
+                msg = await ctx.send('***I cannot dm you!***\nPlease unblock quotebot or enable dms from server members\nYou can also use q!qhelp to have help sent to this channel')
+                await asyncio.sleep(10)
+                await msg.delete()
+                await ctx.message.delete()
+        except:
+            trace.print_exc()
 
     @commands.command()
     async def qhelp(self, ctx):
+        if ctx.author.bot == True:
+            return
         connect = self.bot.get_cog("Misc")
         # print('gotten connect')
         try:
@@ -69,23 +106,53 @@ class Help(commands.Cog):
         else:
             pass
         embedVar = discord.Embed(title="QuoteBot Help Menu", description="Store quotes quickly and easily", color=0x00ff00)
-        embedVar.add_field(name="q!help", value="displays this message", inline=False)
-        embedVar.add_field(name="q!invite", value="sends the invite link for Quotebot", inline=False)
-        embedVar.add_field(name="q!info", value="displays info on QuoteBot", inline=False)
-        embedVar.add_field(name="q!quote", value="usage: q!quote <@user/user#000> \nQuotes a random quote of a user\n",inline=False)
-        embedVar.add_field(name="q!addquote", value="usage: q!addquote <@user/user#000> <quote> \nAdds a quote to their stored quotes\n\n",inline=False)
-        embedVar.add_field(name="q!delquote", value="usage: q!delquote <@user/user#000> <part-of-quote> \nRemoves a quote from a users stored quotes\n\n",inline=False)
-        embedVar.add_field(name="q!qowote", value="usage: q!qowote <@user/user#000> \nQuotes a random user but adds an uwu twist\n",inline=False)        
-        embedVar.add_field(name="q!listquotes", value="usage: q!listquotes <@user>\n Prints all quotes stored for set user\n\n",inline=False)
-        embedVar.add_field(name="q!inspire", value="usage: q!inspire\n Puts an inspirational quote into a #inspiration channel\n\n", inline=False)
-        embedVar.add_field(name="q!setquotechannel", value="usage: q!setquotechannel (**Requires Manage Server**)\n Sets the current  channel as the quote channel\nCommands: **q!addquote** and **q!delquote** will be locked to this channel\n\n", inline=False)
-        embedVar.add_field(name="q!setlogger", value="usage: q!setlogger (**Requires Manage Server)**\n Sets the current channel as the log channel\n\n Developed by vexi#0420", inline=False)
+        embedVar.add_field(name="q!help", value="displays this message", inline=True)
+        embedVar.add_field(name="q!invite", value="sends the invite link for Quotebot", inline=True)
+        embedVar.add_field(name="q!info", value="displays general info on QuoteBot", inline=True)
+        embedVar.add_field(name="q!add", value="usage: q!add <@user/user#000> <quote> \nAdds a quote to their stored quotes\n\n",inline=True)
+        embedVar.add_field(name="q!delete", value="usage: q!delete <@user/user#000> <part-of-quote> \nRemoves a quote from a users stored quotes\n\n",inline=True)
+        embedVar.add_field(name="q!profile", value="usage: q!profile <@user>\n Prints all quotes stored for set user\n\n",inline=True)
+        embedVar.add_field(name="q!quote", value="usage: q!quote <@user/user#000> \nQuotes a random quote of a user\n",inline=True)
+        embedVar.add_field(name="q!qowote", value="usage: q!qowote <@user/user#000> \nQuotes a random user but adds an uwu twist\n",inline=True)        
+        embedVar.add_field(name="(**Requires Manage Server**)\nq!setquotechannel", value="usage: q!setquotechannel \n Sets the current  channel as the quote channel\nQuotebot commands will be locked to this channel\n\n", inline=True)
+        embedVar.add_field(name="(**Requires Manage Server**)\nq!setlogger", value="usage: q!setlogger (**Requires Manage Server)**\n Sets the current channel as the log channel", inline=True)
+        embedVar.add_field(name="q!request", value="usage: q!request <request>\nSends a message to me through Quotebot, this can be for support, to report abuse or to report bugs", inline=True)
+        embedVar.add_field(name="q!setbio", value="usage: q!setbio <bio>\nAllows you to change your bio in q!profile", inline=True)
+        embedVar.add_field(name="q!star", value="usage: q!star <part-of-quote>\nStars or UnStars a quote from your profile", inline=True)
+        # embedVar.add_field(name="q!togglensfw", value="usage: q!togglensfw (optional: <user>, <force (true/false)>)\nToggles the ability to see nsfw content for a user or yourself. (Setting **force** to True means a user will not be able to enable nsfw content for themselves.)")
         embedVar.timestamp = datetime.datetime.utcnow()
-        embedVar.set_footer(text=f"QuoteBot | ID: {ctx.author.id}", icon_url="https://cdn.discordapp.com/attachments/844600910562066444/871953767115919400/quotebotpfp.png")
-        await ctx.send(embed=embedVar)
+        embedVar.set_footer(text=f"Developed by vexi#0420 | ID: {ctx.author.id}", icon_url="https://cdn.discordapp.com/attachments/844600910562066444/871953767115919400/quotebotpfp.png")
+        msg = await ctx.send(embed=embedVar)
+        await asyncio.sleep(30)
+        await msg.delete()
+        await ctx.message.delete()
+
+    @commands.command()
+    async def review(self, ctx):
+        if ctx.author.bot == True:
+            return
+        embed = discord.Embed(title="Quote Review Info", description="If your quote has been flagged for review Quotebot has detected either discriminatory or deragatory terms in your quote. You may also have attempted to add personal information such as Phone Numbers, Emails, Addresses or IPs to Quotebot", color=0x00ff00)
+        msg = await ctx.send(embed=embed)
+        await asyncio.sleep(30)
+        await msg.delete()
+        await ctx.message.delete()
+
+
+    @commands.command()
+    async def nsfw(self, ctx):
+        if ctx.author.bot == True:
+            return
+        embed = discord.Embed(title="NSFW Quote Info", description="Quotebot does not have strict rules on what can and can't be added, however we do seperate NSFW Quotes from normal ones. Quotes that are detected to contain homophobia, racism, sexism, etc These quotes are stored in their own section of a users profile and cannot be added as a star quote", color=0x00ff00)
+        msg = await ctx.send(embed=embed)
+        await asyncio.sleep(30)
+        await msg.delete()
+        await ctx.message.delete()
+
 
     @commands.command()
     async def request(self, ctx, *, support=None):
+        if ctx.author.bot == True:
+            return
         try:
             connect = self.bot.get_cog("Misc")
             # print('gotten connect')
@@ -110,7 +177,7 @@ class Help(commands.Cog):
             user = ctx.author
             # print('getting user')
             support_server = self.bot.get_guild(id=838814770537824378)
-            dev = support_server.get_channel(910639551284903987)
+            dev = support_server.get_channel(918652907690287154)
             connect = self.bot.get_cog("Misc")
             conn = connect.connectdb()
             print("Connected to database")
@@ -166,18 +233,31 @@ class Help(commands.Cog):
             trace.print_exc()
 
     async def supportrun(self, ctx, guild, user, dev, support):
+        
         try:
             if support == None:
-                await ctx.send("You must provide a detailed explanation of your issue. (Minimum of 50 characters)")
+                msg = await ctx.send("You must provide a detailed explanation of your issue. (Minimum of 50 characters)")
+                await asyncio.sleep(4)
+                await ctx.message.delete()
+                await msg.delete()
             else:
                 print(f'{len(support)}')
                 if len(support) < 50:
-                    await ctx.send("You must provide a description that is longer then 50 characters")
-                elif len(support) > 500:
-                    await ctx.send("Your description is too long (500+ characters). To send this in please contact **vexi#0420** directly")
+                    msg = await ctx.send("You must provide a description that is longer then 50 characters")
+                    await asyncio.sleep(4)
+                    await ctx.message.delete()
+                    await msg.delete()
+                elif len(support) >= 2000:
+
+                    msg=await ctx.send("Your description is too long (1000+ characters). To send this in please contact **vexi#0420** directly")
+                    await asyncio.sleep(4)
+                    await ctx.message.delete()
+                    await msg.delete()
+                                    
                 else:
-                    embed=discord.Embed(title="Your Request:", description=f"---------\n{support}\n---------\n*You can only send* ***1*** *request per day*", color=0x00ff00)
-                    confmsg = await ctx.send("Please confirm your support request", embed=embed, components=[[Button(label="Send", style=3, custom_id=f"Confirm_Reply_{id}"),Button(label="Cancel", style=4, custom_id=f"Cancel_Reply_{id}")]])
+                    embed = discord.Embed(title="Your Request", description=f"-------\n{support}\n-------\n*You can only send* ***1*** *request per day*", color=0x00ff00)
+                    confmsg = await ctx.send(content=f"Please confirm your request", embed=embed, components=[[Button(label="Send", style=3, custom_id=f"Confirm_Reply_{id}"),Button(label="Cancel", style=4, custom_id=f"Cancel_Reply_{id}")]])
+                
                     print('confirming...')
                     # try:
                     def check(x):
@@ -223,6 +303,7 @@ class Help(commands.Cog):
                     c.execute(command)
                     result = c.fetchall()
                     if len(result)==0:
+                        support = support.replace("'","''")
                         command = f"insert into support(sid, uid,gid,cid,mid,date_added,status,comment,request) values('{support_id}',{user.id},{guild.id},{ctx.channel.id},{confmsg.id},'{datetime.datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')}','open', 'none', '{support}')"
                         print(command)
                         c.execute(command)
@@ -245,6 +326,8 @@ class Help(commands.Cog):
 
     @commands.command()
     async def reply(self, ctx, id, status,*, comment):
+        if ctx.author.bot == True:
+            return
         if ctx.author.id != 274213987514580993:
             return
         connect = self.bot.get_cog("Misc")
@@ -264,17 +347,21 @@ class Help(commands.Cog):
                 msg = await channel.fetch_message(result[0][5])
                 support = result[0][9]
             except:
+                print('\n')
                 trace.print_exc()
+                print('\n')
             if status.lower()=="complete":
                 status="Complete <:status_online:907767064926769242>"
                 newmsg = discord.Embed(title=f"<:complete:907780896722153573> Complete", description=f"Your request has been completed!\n-------\n{support}\n-------\n\n**Status:** {status}\n**DevNote:** {comment}\n\n*You can only send one request every day*", color=0x82ff47)
                 newmsg.timestamp = datetime.datetime.utcnow()
                 newmsg.set_footer(text=f"QuoteBot | ID: {id}", icon_url="https://cdn.discordapp.com/attachments/844600910562066444/871953767115919400/quotebotpfp.png")
+            
             elif status.lower()=="deny":
                 status="Denied <:dnd:907767435262828565>"
                 newmsg = discord.Embed(title=f"<:Warning:909946407673274398> Denied", description=f"Your request has been denied!\n-------\n{support}\n-------\n\n**Status:** {status}\n**DevNote:** {comment}\n\n*You can only send one request every day*", color=0xff4f4f)
                 newmsg.timestamp = datetime.datetime.utcnow()
                 newmsg.set_footer(text=f"QuoteBot | ID: {id}", icon_url="https://cdn.discordapp.com/attachments/844600910562066444/871953767115919400/quotebotpfp.png")
+            
             elif status.lower()=="wip":
                 status="In-Progress <:status_idle:907767529139740722>"
                 newmsg = discord.Embed(title=f"<:gears:907780900811583508> Updated", description=f"Your request has been updated!\n-------\n{support}\n-------\n\n**Status:** {status}\n**DevNote:** {comment}\n\n*You can only send one request every day*", color=0xffb521)
@@ -300,7 +387,7 @@ class Help(commands.Cog):
         print(response.custom_id)
         if response.custom_id == f"Confirm_Reply_{id}":
             print("Confirmed")
-            await msg.edit(content=f"<:member_join:908033530901192734> {msg.content}",embed=newmsg)
+            await msg.edit(content=f"<:member_join:908033530901192734> {msg.content}",embed=newmsg, components=[])
             await channel.send(f'<@{result[0][2]}>, Your request from **{result[0][6].strftime("%d/%m/%Y")}** has been updated!\n*the message has been pinned*')
             await msg.pin(reason=f"Request Updated - ID:{id}")
             print('updating databse')
@@ -327,6 +414,8 @@ class Help(commands.Cog):
         
     @commands.command()
     async def addusers(self, ctx):
+        if ctx.author.bot == True:
+            return
         if ctx.author.id != 274213987514580993:
             return
         connect = self.bot.get_cog("Misc")
