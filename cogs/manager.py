@@ -1322,7 +1322,7 @@ class Quotes(commands.Cog):
                     for quote in star_q:
                         profile_page.add_field(name=f'<:Star:907780904221552661> "{quote[2]}"', value=f"-{user.name}", inline=True)
                 else:
-                    profile_page.add_field(name=f" \n<:Star:907780904221552661> No star quotes yet", value=f"add up to 3 with **q!star add <part-of-quote>**")
+                    profile_page.add_field(name=f" \n<:Star:907780904221552661> No star quotes yet", value=f"add up to 3 with **q!star <part-of-quote>**")
                 conn.close()
 
                 base_pages = []
