@@ -964,6 +964,7 @@ class Quotes(commands.Cog):
                 if len(results)!=0:
 
                     no_quote = discord.Embed(title=f'Quote Already exists',description=f'This server already has that quote for that user',color=0x0fff23)
+                    no_quote.set_author(name=ctx.author, url=discord.Embed.Empty, icon_url=ctx.author.avatar_url)
                     msg = await ctx.send(embed=no_quote)
                     await asyncio.sleep(5)
                     await msg.delete()
@@ -1005,6 +1006,7 @@ class Quotes(commands.Cog):
                     if nsfw[2] == True:
                         if nsfw[1] == True:
                             quote_canceled = discord.Embed(title=f"<:redx:891428508868435998> Quote Blocked", description="Your quote has been blocked from being added and has been sent in for review\nLearn More:** q!review**", color=0xff0000)
+                            quote_canceled.set_author(name=ctx.author, url=discord.Embed.Empty, icon_url=ctx.author.avatar_url)
                             message = await ctx.send(embed=quote_canceled)
                             qid=None
                             await self.review_send(ctx, quote, qid, nsfw, user, True)
@@ -1014,6 +1016,7 @@ class Quotes(commands.Cog):
                             return
                         else:
                             quote_canceled = discord.Embed(title=f"<:redx:891428508868435998> Quote Blocked", description="Your quote has been blocked from being added\nLearn More:** q!nsfw**", color=0xff0000)
+                            quote_canceled.set_author(name=ctx.author, url=discord.Embed.Empty, icon_url=ctx.author.avatar_url)
                             message = await ctx.send(embed=quote_canceled)
                             await asyncio.sleep(20)
                             await message.delete()
@@ -1095,6 +1098,7 @@ class Quotes(commands.Cog):
 
             if user.bot == True:
                 no_bot = discord.Embed(title=f"Quotes cannot be added to Bots", color=0xff0000)
+                no_bot.set_author(name=ctx.author, url=discord.Embed.Empty, icon_url=ctx.author.avatar_url)
                 msg = await ctx.send(embed=no_bot)
                 await asyncio.sleep(5)
                 await msg.delete()
@@ -1103,7 +1107,8 @@ class Quotes(commands.Cog):
 
             if quote=="":
                 no_quote = discord.Embed(title=f'Please provide a quote to delete!',color=0x0fff23)
-                await ctx.send(embed=no_quote)
+                no_quote.set_author(name=ctx.author, url=discord.Embed.Empty, icon_url=ctx.author.avatar_url)
+                msg = await ctx.send(embed=no_quote)
                 await asyncio.sleep(5)
                 await msg.delete()
                 return
@@ -1136,6 +1141,7 @@ class Quotes(commands.Cog):
 
                 if len(results) > 3:
                     no_quote = discord.Embed(title=f'The term "{quote}" is too common!',description="Please provide more of the quote",color=0x0fff23)
+                    no_quote.set_author(name=ctx.author, url=discord.Embed.Empty, icon_url=ctx.author.avatar_url)
                     msg = await ctx.send(embed=no_quote)
                     await asyncio.sleep(5)
                     await ctx.message.delete()
@@ -1144,6 +1150,7 @@ class Quotes(commands.Cog):
 
                 elif len(results)==0: 
                     no_quote = discord.Embed(title=f'No quote like "{quote}" found!',color=0x0fff23)
+                    no_quote.set_author(name=ctx.author, url=discord.Embed.Empty, icon_url=ctx.author.avatar_url)
                     msg = await ctx.send(embed=no_quote)
                     await asyncio.sleep(5)
                     await ctx.message.delete()
@@ -1187,7 +1194,7 @@ class Quotes(commands.Cog):
                         c.execute(command)
                         conn.commit()
                         conn.close()
-                        complete_embed=discord.Embed(title="Succesfully Deleted Quote",description=f'"{results[quote-1][2]}"\n-{user.name}', color=0x00ff00)
+                        complete_embed=discord.Embed(title="<:yes:892537190347837450> Succesfully Deleted Quote",description=f'"{results[quote-1][2]}"\n-{user.name}', color=0x00ff00)
                         await msg.edit(embed=complete_embed, components=[])
                     log = self.bot.get_cog("Logger")
                     await log.logger(title=f"**Quote Deleted**", desc=f'**"{results[quote-1][2]}"**\n\n**From:** {user}\n**By:** {ctx.author}', user=ctx.guild, color="#DE6363", guild=ctx.guild.id, image=user.avatar_url)
