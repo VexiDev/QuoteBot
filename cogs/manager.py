@@ -1015,7 +1015,7 @@ class Quotes(commands.Cog):
                             await ctx.message.delete()
                             return
                         else:
-                            quote_canceled = discord.Embed(title=f"<:redx:891428508868435998> Quote Blocked", description="Your quote has been blocked from being added\nLearn More:** q!nsfw**", color=0xff0000)
+                            quote_canceled = discord.Embed(title=f"<:redx:891428508868435998> Quote Blocked", description="Your quote has been blocked from being added\nLearn More:** q!blocked**", color=0xff0000)
                             quote_canceled.set_author(name=ctx.author, url=discord.Embed.Empty, icon_url=ctx.author.avatar_url)
                             message = await ctx.send(embed=quote_canceled)
                             await asyncio.sleep(20)
