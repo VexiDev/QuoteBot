@@ -458,6 +458,7 @@ class Help(commands.Cog):
             trace.print_exc()
         conn.commit()
         c.close()
+        print('done')
 
 
 
