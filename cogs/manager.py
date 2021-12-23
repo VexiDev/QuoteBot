@@ -1045,7 +1045,7 @@ class Quotes(commands.Cog):
 
                     elif "add_quote" in response.custom_id:
                         # nsfw=False
-                        command = f"insert into quotes(uid, quote, date_added, guild_id, nsfw, star, added_by) values({user.id}, '{dbquote}','{datetime.datetime.now().strftime('%d/%m/%Y')}',{ctx.guild.id},{nsfw[0]},False, {ctx.author.id})"
+                        command = f"insert into quotes(uid, quote, date_added, guild_id, nsfw, star, added_by, message) values({user.id}, '{dbquote}','{datetime.datetime.now().strftime('%d/%m/%Y')}',{ctx.guild.id},{nsfw[0]},False, {ctx.author.id}, {message.id})"
                         c.execute(command)
                         conn.commit()
                         donemessage = discord.Embed(title=f"\"{quote}\"", color=0x00ff2f)
