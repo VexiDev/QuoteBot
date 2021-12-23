@@ -442,10 +442,12 @@ class Help(commands.Cog):
              # print("executed") 
             result = c.fetchall()
             print(f'checking/adding {len(result)}')
+            
             for guild in self.bot.guilds:
                 # print(f'Checking for guild: {guild.name}\n------------')
                 for user in guild.members:
                     if any(user.id not in users for users in result) and user.bot==False:
+                        date=datetime.datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')
                         command = f"insert into users(uid, nsfw, global_blist, support_blist,support_cooldown, support_time, blist_reason, bio) values({user.id}, True, False, False, False, '{date}', 'None', 'None')"
                         # print(command)
                         c.execute(command)
