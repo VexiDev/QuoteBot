@@ -230,6 +230,17 @@ class Misc(commands.Cog):
         c.close()
         await msg.edit("Your server is ready to use quotebot! Get a list of commands using **q!help**")
 
+    @commands.Cog.listener()
+    async def on_member_join(self, member):
+        connect = self.bot.get_cog("Misc")
+        conn = connect.connectdb()
+        c = conn.cursor()
+        command = f"insert into users(uid, nsfw, global_blist, support_blist,support_cooldown, support_time, blist_reason, bio) values({member.id}, True, False, False, False, '{date}', 'None', 'None')"
+        c.execute(command)
+        conn.commit()
+        c.close()
+        print(f'User: {member.id} | Guild: {member.guild.id} | Added User')
+
     @commands.command()
     async def info(self, ctx):
         if ctx.author.bot == True:

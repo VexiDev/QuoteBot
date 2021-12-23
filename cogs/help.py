@@ -131,7 +131,19 @@ class Help(commands.Cog):
     async def review(self, ctx):
         if ctx.author.bot == True:
             return
-        embed = discord.Embed(title="Quote Review Info", description="If your quote has been flagged for review Quotebot has detected either discriminatory or deragatory terms in your quote. You may also have attempted to add personal information such as Phone Numbers, Emails, Addresses or IPs to Quotebot", color=0x00ff00)
+        embed = discord.Embed(title="Quote Review Info", description="If your quote has been flagged for review Quotebot has detected either discriminatory or deragatory terms in your quote. You may also have attempted to add personal information such as Phone Numbers, Emails, Addresses or IPs to QuoteBot", color=0x00ff00)
+        msg = await ctx.send(embed=embed)
+        await asyncio.sleep(30)
+        await msg.delete()
+        await ctx.message.delete()
+
+    @commands.command()
+    async def blocked(self, ctx):
+        if ctx.author.bot == True:
+            return
+        embed = discord.Embed(title="Quote Blocking Info:", description="Reasons your quote has been blocked by QuoteBot:", color=0x00ff00)
+        embed.add_field(name="__Personal Information__:", value="If you quote contained any of the following it will be blocked from being added:\n- IPs\n- Phone Numbers\n- Email addresses\n- Addresses\n- SSN\n- Discord Token\nAttempting to add the information above will have your quote blocked and your attempt sent in for review by our team.")
+        embed.add_field(name="__Links:__:", value="If your quote contained a link it will also be blocked. However, soon QuoteBot will support the adding of links and files to quotes to add context, store a file/image, or any other reason you would need to have a link or file on QuoteBot.")
         msg = await ctx.send(embed=embed)
         await asyncio.sleep(30)
         await msg.delete()
@@ -142,7 +154,7 @@ class Help(commands.Cog):
     async def nsfw(self, ctx):
         if ctx.author.bot == True:
             return
-        embed = discord.Embed(title="NSFW Quote Info", description="Quotebot does not have strict rules on what can and can't be added, however we do seperate NSFW Quotes from normal ones. Quotes that are detected to contain homophobia, racism, sexism, etc These quotes are stored in their own section of a users profile and cannot be added as a star quote", color=0x00ff00)
+        embed = discord.Embed(title="NSFW Quote Info", description="Quotebot does __not__ have strict rules on what can and can't be added, however we do seperate NSFW Quotes from normal ones. Quotes that are detected to contain homophobia, racism, sexism, etc. These quotes are stored in their own section of a users profile and cannot be added as a star quote", color=0x00ff00)
         msg = await ctx.send(embed=embed)
         await asyncio.sleep(30)
         await msg.delete()
@@ -436,14 +448,13 @@ class Help(commands.Cog):
                     # print("executed")
                     result = c.fetchall()
                     if len(result)==0 and user.bot==False:
-                        command = f"insert into users(uid, nsfw, global_blist, support_blist,support_cooldown, support_time) values({user.id}, False, False, False, False, '{date}')"
+                        command = f"insert into users(uid, nsfw, global_blist, support_blist,support_cooldown, support_time, blist_reason, bio) values({user.id}, True, False, False, False, '{date}', 'None', 'None')"
                         # print(command)
                         c.execute(command)
                         # print("executed")
                         print('added user\n----------')
                     else:
                         print("duplicate user or bot\n----------")
-                    # await asyncio.sleep(0.5)
         except:
             trace.print_exc()
         conn.commit()

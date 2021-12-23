@@ -1005,7 +1005,7 @@ class Quotes(commands.Cog):
 
                     if nsfw[2] == True:
                         if nsfw[1] == True:
-                            quote_canceled = discord.Embed(title=f"<:redx:891428508868435998> Quote Blocked", description="Your quote has been blocked from being added and has been sent in for review\nLearn More:** q!review**", color=0xff0000)
+                            quote_canceled = discord.Embed(title=f"<:redx:891428508868435998> Quote Blocked", description="Your quote has been blocked from being added and has been sent in for review\nLearn More:** q!blocked**", color=0xff0000)
                             quote_canceled.set_author(name=ctx.author, url=discord.Embed.Empty, icon_url=ctx.author.avatar_url)
                             message = await ctx.send(embed=quote_canceled)
                             qid=None
@@ -1363,7 +1363,7 @@ class Quotes(commands.Cog):
                 #create nsfw pages
                 i = 1
                 if len(nsfw_split_quotes)==0:
-                    page_embed = discord.Embed(title=f"{user} has no nsfw quotes for this server", description=f"Manually mark quotes as nsfw with **q!nsfw <@user/user#0000> <part-of-quote>**", color=0xff4f42)
+                    page_embed = discord.Embed(title=f"{user} has no nsfw quotes for this server", description=f"If QuoteBot or our team detects any they will be placed here", color=0xff4f42)
                     page_embed.timestamp = datetime.datetime.utcnow()
                     page_embed.set_footer(text=f"QuoteBot | ID: {ctx.author.id}", icon_url="https://cdn.discordapp.com/attachments/844600910562066444/871953767115919400/quotebotpfp.png")                
                     nsfw_pages.append(page_embed)
