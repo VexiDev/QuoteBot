@@ -1214,7 +1214,7 @@ class Quotes(commands.Cog):
         except:
             trace.print_exc()
 
-    @commands.command(aliases=['who','listquotes','list','quotes','ls', 'show'])
+    @commands.command(aliases=['who','listquotes','list','quotes','ls', 'show', '?'])
     async def profile(self, ctx, user: discord.User, gquote=False):
 
         #check if user is blacklisted

@@ -436,25 +436,23 @@ class Help(commands.Cog):
         c = conn.cursor()
         # print("cursored")
         try:
+            command = f"select * from users"
+            # print(command)
+            c.execute(command)
+             # print("executed") 
+            result = c.fetchall()
             for guild in self.bot.guilds:
-                print(f'Checking for guild: {guild.name}\n------------')
+                # print(f'Checking for guild: {guild.name}\n------------')
                 for user in guild.members:
-                    date=datetime.datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')
-                    print(date)
-                    print(f'checking user: {user}')
-                    command = f"select * from users where uid={user.id}"
-                    # print(command)
-                    c.execute(command)
-                    # print("executed")
-                    result = c.fetchall()
-                    if len(result)==0 and user.bot==False:
+                    if user.id in result and user.bot==False:
                         command = f"insert into users(uid, nsfw, global_blist, support_blist,support_cooldown, support_time, blist_reason, bio) values({user.id}, True, False, False, False, '{date}', 'None', 'None')"
                         # print(command)
                         c.execute(command)
                         # print("executed")
-                        print('added user\n----------')
+                        # print('added user\n----------')
                     else:
-                        print("duplicate user or bot\n----------")
+                        pass
+                        # print("duplicate user or bot\n----------")
                     #e
         except:
             trace.print_exc()
