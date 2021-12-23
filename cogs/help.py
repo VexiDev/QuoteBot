@@ -432,7 +432,7 @@ class Help(commands.Cog):
             return
         connect = self.bot.get_cog("Misc")
         conn = connect.connectdb()
-        print("Connected to database")
+        print("Connected to database | Starting user add")
         c = conn.cursor()
         # print("cursored")
         try:
@@ -441,17 +441,19 @@ class Help(commands.Cog):
             c.execute(command)
              # print("executed") 
             result = c.fetchall()
+            print(f'checking/adding {len(result)}')
             for guild in self.bot.guilds:
                 # print(f'Checking for guild: {guild.name}\n------------')
                 for user in guild.members:
-                    if user.id in result and user.bot==False:
+                    if any(user.id not in users for users in result) and user.bot==False:
                         command = f"insert into users(uid, nsfw, global_blist, support_blist,support_cooldown, support_time, blist_reason, bio) values({user.id}, True, False, False, False, '{date}', 'None', 'None')"
                         # print(command)
                         c.execute(command)
                         # print("executed")
                         # print('added user\n----------')
+                        print(f'added user {user.name} | {user.id}')
                     else:
-                        pass
+                        print(f'passing user {user.name} | {user.id}')
                         # print("duplicate user or bot\n----------")
                     #e
         except:
