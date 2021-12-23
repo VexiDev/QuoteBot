@@ -441,22 +441,28 @@ class Help(commands.Cog):
             c.execute(command)
              # print("executed") 
             result = c.fetchall()
-            print(f'checking/adding {len(result)}')
+            # print(f'checking/adding {len(result)}')
             
             for guild in self.bot.guilds:
-                # print(f'Checking for guild: {guild.name}\n------------')
-                for user in guild.members:
-                    if any(user.id not in users for users in result) and user.bot==False:
-                        date=datetime.datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')
-                        command = f"insert into users(uid, nsfw, global_blist, support_blist,support_cooldown, support_time, blist_reason, bio) values({user.id}, True, False, False, False, '{date}', 'None', 'None')"
-                        # print(command)
-                        c.execute(command)
-                        # print("executed")
-                        # print('added user\n----------')
-                        print(f'added user {user.name} | {user.id}')
-                    else:
-                        print(f'passing user {user.name} | {user.id}')
-                        # print("duplicate user or bot\n----------")
+                print(f'\n\nchecking {guild.name} | {guild.id} | {len(guild.members)}\n\n')
+                if guild.id in [888091775347089479, 908428900697272360, 869428791041220618,903917888572882954, 836500033485930508,830218584424579102,913109336694333502,476157756190228521,810318689584545863]:
+                    print('removing bot guild')
+                else:
+                    for user in guild.members:
+                        if any(user.id in users for users in result):
+                            print(f'passing user {user.name} | {user.id}')
+                        else:
+                            if user.bot == False:
+                                date=datetime.datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')
+                                command = f"insert into users(uid, nsfw, global_blist, support_blist,support_cooldown, support_time, blist_reason, bio) values({user.id}, True, False, False, False, '{date}', 'None', 'None')"
+                                # print(command)
+                                c.execute(command)
+                                # print("executed")
+                                # print('added user\n----------')
+                                print(f'added user {user.name} | {user.id}')
+                            else:
+                                print(f'passing bot {user.name} | {user.id}')
+                            # print("duplicate user or bot\n----------")
                     #e
         except:
             trace.print_exc()
@@ -464,6 +470,38 @@ class Help(commands.Cog):
         c.close()
         print('done')
 
+
+    @commands.command()
+    async def removebots(self, ctx):
+        connect = self.bot.get_cog("Misc")
+        conn = connect.connectdb()
+        print("Connected to database | Purging ellmeems bots")
+        c = conn.cursor()
+        # print("cursored")
+        try:
+            command = f"select * from users"
+            # print(command)
+            c.execute(command)
+             # print("executed") 
+            result = c.fetchall()
+
+            for user in result:
+                name = self.bot.get_user(id=user[1])
+                if name is None:
+                    print('passed user')
+                else:
+                    print(f'name: {name.name} | uid: {name.id}')
+                    if "ellmeems" in name.name or 'Vibing Master' in name.name or 'Invalid_User' in name.name:
+                        print(f'removing bot | uid={user[1]}')
+                        command = f"delete from users where uid={user[1]}"
+                        c.execute(command)
+                    else:
+                        pass
+        except:
+            trace.print_exc()
+        conn.commit()
+        c.close()
+        print('done')
 
 
                 

@@ -232,14 +232,26 @@ class Misc(commands.Cog):
 
     @commands.Cog.listener()
     async def on_member_join(self, member):
+        if member.bot == True:
+            return
+        
         connect = self.bot.get_cog("Misc")
         conn = connect.connectdb()
         c = conn.cursor()
-        command = f"insert into users(uid, nsfw, global_blist, support_blist,support_cooldown, support_time, blist_reason, bio) values({member.id}, True, False, False, False, '{date}', 'None', 'None')"
+
+        command = f"select * from users where uid={member.id}" 
+        # print(command)
         c.execute(command)
-        conn.commit()
-        c.close()
-        print(f'User: {member.id} | Guild: {member.guild.id} | Added User')
+            # print("executed") 
+        result = c.fetchall()
+        if len(result) == 0:
+            command = f"insert into users(uid, nsfw, global_blist, support_blist,support_cooldown, support_time, blist_reason, bio) values({member.id}, True, False, False, False, '{date}', 'None', 'None')"
+            c.execute(command)
+            conn.commit()
+            c.close()
+            print(f'User: {member.id} | Guild: {member.guild.id} | Added User')
+        else:
+            print(f'User: {member.id} | Guild: {member.guild.id} | Duplicate User')
 
     @commands.command()
     async def info(self, ctx):
