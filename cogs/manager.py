@@ -837,7 +837,7 @@ class Quotes(commands.Cog):
                 c.execute(command)
                 command=f"update users set blist_reason='Blacklisted by Reviewer' where uid={new_id[1]}"
                 c.execute(command)
-                action = f"**Reviewed: User {new_id[2]} Blacklisted**"
+                action = f"**Reviewed: User {new_id[1]} Blacklisted**"
 
             else:
                 return
