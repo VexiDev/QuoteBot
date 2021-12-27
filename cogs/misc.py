@@ -245,6 +245,7 @@ class Misc(commands.Cog):
             # print("executed") 
         result = c.fetchall()
         if len(result) == 0:
+            date = datetime.datetime.now()
             command = f"insert into users(uid, nsfw, global_blist, support_blist,support_cooldown, support_time, blist_reason, bio) values({member.id}, True, False, False, False, '{date}', 'None', 'None')"
             c.execute(command)
             conn.commit()
