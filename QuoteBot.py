@@ -56,7 +56,7 @@ async def on_ready():
     # bot.topggpy = topgg.DBLClient(bot, dbl_token)
     # misc.update_stats.start()
     DiscordComponents(bot)
-    await bot.change_presence(status=discord.Status.online, activity=discord.Activity(type=discord.ActivityType.playing, name="Update in the works!"))
+    await bot.change_presence(status=discord.Status.online, activity=discord.Activity(type=discord.ActivityType.watching, name="what you say | q!help"))
 
 #LIVE TOKEN
 bot.run('ODE0Mzc5MjM5OTMwMzMxMTU3.YDc_xQ.Tud62bhKLaaWGGlpfWr-lJWZe5w')
