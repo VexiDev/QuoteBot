@@ -52,9 +52,9 @@ async def on_ready():
     misc = bot.get_cog("Misc")
     # update = bot.get_cog("Updater")
     # await update.v4_updater()
-    # dbl_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjgxNDM3OTIzOTkzMDMzMTE1NyIsImJvdCI6dHJ1ZSwiaWF0IjoxNjM3MTE2MTg5fQ.XHw1GJmlmspDotwYYWKBSpID2C4e0BTDIUvmb_Gmm4g"  # set this to your bot's Top.gg token
-    # bot.topggpy = topgg.DBLClient(bot, dbl_token)
-    # misc.update_stats.start()
+    dbl_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjgxNDM3OTIzOTkzMDMzMTE1NyIsImJvdCI6dHJ1ZSwiaWF0IjoxNjM3MTE2MTg5fQ.XHw1GJmlmspDotwYYWKBSpID2C4e0BTDIUvmb_Gmm4g"  # set this to your bot's Top.gg token
+    bot.topggpy = topgg.DBLClient(bot, dbl_token)
+    misc.update_stats.start()
     DiscordComponents(bot)
     await bot.change_presence(status=discord.Status.online, activity=discord.Activity(type=discord.ActivityType.listening, name="your quotes | q!help"))
 
