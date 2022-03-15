@@ -4,7 +4,6 @@ from discord.ext import commands
 import discord
 import asyncio
 import os
-import interactions
 from discord_components import *
 import topgg
 
