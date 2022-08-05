@@ -26,7 +26,6 @@ requests==2.25.1
 runcmd==2020.12.3
 schedule==1.0.0
 six==1.15.0
-Twisted==21.2.0
 twitchAPI==2.3.2
 typing-extensions==3.7.4.3
 urllib3==1.26.5
