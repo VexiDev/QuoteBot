@@ -1,4 +1,5 @@
 # QuoteBot
+> ! This repo will be updated along side implementation of discord slash commands !
 
 ## Info
 
@@ -19,7 +20,7 @@ This version will get updates sooner and more consistently then this github.
 > You can use this [link](https://discord.com/api/oauth2/authorize?client_id=814379239930331157&permissions=8&scope=bot)
 
 
-## Self Hosting
+## Self Hosting (OUTDATED)
 
 If you want to host the bot yourself the bot was designed to run on heroku follow the steps below to set it up;
 
