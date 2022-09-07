@@ -1,4 +1,4 @@
-aiohttp==3.8.1
+aiohttp
 aiosignal==1.2.0
 alabaster==0.7.12
 async-timeout==4.0.2
@@ -69,8 +69,6 @@ sphinxcontrib-serializinghtml==1.1.5
 toml==0.10.2
 tomli==1.2.3
 topggpy==1.4.0
-twitchAPI==2.5.0
-twitchio==2.1.0
 typing-extensions==3.10.0.2
 urllib3==1.26.10
 virtualenv==20.13.0
