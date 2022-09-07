@@ -13,7 +13,7 @@ class QuoteBot(commands.Bot):
 
     def __init__(self) -> None:
         # Change 123 to your application id
-        super().__init__(command_prefix="q!", intents=discord.Intents.all(), application_id=831626069789638656, status=discord.Status.online, activity=discord.Activity(type=discord.ActivityType.listening, name="your quotes"))
+        super().__init__(command_prefix=commands.when_mentioned, intents=discord.Intents.all(), application_id=831626069789638656, status=discord.Status.online, activity=discord.Activity(type=discord.ActivityType.listening, name="your quotes"))
 
     async def load_cogs(self):
         print("---\ Loading Quotebot")

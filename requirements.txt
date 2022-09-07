@@ -5,3 +5,4 @@ discord-py-interactions==4.0.1
 discord-py-slash-command==3.0.1
 discord.py==1.7.3
 psycopg2-binary==2.9.1
+topggpy==1.4.0
