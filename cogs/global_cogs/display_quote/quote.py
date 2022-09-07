@@ -24,7 +24,7 @@ class quote(commands.Cog):
         #------Pass System Checks-----
         #import system checks cog
         action_manager = self.bot.get_cog("action_manager")
-        profile_manager = self.bot.get_cog("profile_manager")
+        profile_manager = self.bot.get_cog("profile_creator")
         #check maintenance
         #check channel restrictions
         #check if profile exist for both user and target
