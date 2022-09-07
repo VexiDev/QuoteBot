@@ -28,8 +28,8 @@ class quote(commands.Cog):
         #check maintenance
         #check channel restrictions
         #check if profile exist for both user and target
-        await profile_manager.profile_creator(interaction.user)
-        await profile_manager.profile_creator(user)
+        await profile_manager.creator(interaction.user)
+        await profile_manager.creator(user)
         #check blacklist
         status = await action_manager.blacklist_actions(interaction, message, database)
         if status == "blacklisted":
