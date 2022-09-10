@@ -73,12 +73,12 @@ class edit_pin(commands.Cog):
         #if nothing in results, no matching quote was found
         if len(pinquote) == 0:
             #SEND NO QUOTE FOUND EMBED
-            no_quote_embed = discord.Embed(title="No quote was found", description="Make sure you've spelled everything correctly", color=0xe02f2f)
+            no_quote_embed = discord.Embed(title="No matching quote was found", description=f"I looked for quotes like:\n\"{quote}\"\n-\nMake sure you've spelled everything correctly", color=0xe02f2f)
             #Create fake quote author for confirm
             no_quote_embed.set_author(name=interaction.user, icon_url=interaction.user.display_avatar.url)
             #CREATE PAGE FOOTER
             #create footer with USERID
-            no_quote_embed.set_footer(text=f"QuoteBot | ID: {interaction.user.id}", icon_url="https://cdn.discordapp.com/attachments/844600910562066444/871953767115919400/quotebotpfp.png")
+            no_quote_embed.set_footer(text=f"QuoteBot | ID: {interaction.user.id}", icon_url="https://cdn.discordapp.com/attachments/916091272186454076/1017973024680579103/quote_botttt.png")
             #set timestamp to discord time
             no_quote_embed.timestamp = datetime.datetime.utcnow()
             await message.edit(embed=no_quote_embed)
@@ -93,24 +93,29 @@ class edit_pin(commands.Cog):
 
         #if there is more then 1 quote, the filter term was too common
         elif len(pinquote) > 1:
-            #SEND FILTER TOO COMMON EMBED
-            bad_filter_embed = discord.Embed(title="Filter term too common", description="Try adding more of the quote you wish to remove", color=0xe02f2f)
-            #Create fake quote author for confirm
-            bad_filter_embed.set_author(name=interaction.user, icon_url=interaction.user.display_avatar.url)
-            #CREATE PAGE FOOTER
-            #create footer with USERID
-            bad_filter_embed.set_footer(text=f"QuoteBot | ID: {interaction.user.id}", icon_url="https://cdn.discordapp.com/attachments/844600910562066444/871953767115919400/quotebotpfp.png")
-            #set timestamp to discord time
-            bad_filter_embed.timestamp = datetime.datetime.utcnow()
-            await message.edit(embed=bad_filter_embed)
+            #check if the quotes are duplicates
+            for q in range(len(pinquote)-1):
+                # if they arent send error message else just pick the first one
+                if pinquote[q][2] != pinquote[q+1][2]:
+                    #SEND FILTER TOO COMMON EMBED
+                    bad_filter_embed = discord.Embed(title="Your quote was too common", description=f"I found {len(pinquote)} quotes that include:\n**\"{quote}\"**\n-\nPlease add more of the quote you wish to pin", color=0xe02f2f)
+                    #Create fake quote author for confirm
+                    bad_filter_embed.set_author(name=interaction.user, icon_url=interaction.user.display_avatar.url)
+                    #CREATE PAGE FOOTER
+                    #create footer with USERID
+                    bad_filter_embed.set_footer(text=f"QuoteBot | ID: {interaction.user.id}", icon_url="https://cdn.discordapp.com/attachments/916091272186454076/1017973024680579103/quote_botttt.png")
+                    #set timestamp to discord time
+                    bad_filter_embed.timestamp = datetime.datetime.utcnow()
+                    await message.edit(embed=bad_filter_embed)
+                    break
 
-            try:
-                #after timeout delete the message
-                await message.delete(delay=5)
-                return
-            except:
-                #if it fails means it was hidden therefore we ignore
-                pass
+                    try:
+                        #after timeout delete the message
+                        await message.delete(delay=5)
+                        return
+                    except:
+                        #if it fails means it was hidden therefore we ignore
+                        pass
 
         #if there is only 1 quote  check if its the same one
         elif len(pinquote) == 1 and len(starquote) == 1:
@@ -122,7 +127,7 @@ class edit_pin(commands.Cog):
                 duplicate_embed.set_author(name=interaction.user, icon_url=interaction.user.display_avatar.url)
                 #CREATE PAGE FOOTER
                 #create footer with USERID
-                duplicate_embed.set_footer(text=f"QuoteBot | ID: {interaction.user.id}", icon_url="https://cdn.discordapp.com/attachments/844600910562066444/871953767115919400/quotebotpfp.png")
+                duplicate_embed.set_footer(text=f"QuoteBot | ID: {interaction.user.id}", icon_url="https://cdn.discordapp.com/attachments/916091272186454076/1017973024680579103/quote_botttt.png")
                 #set timestamp to discord time
                 duplicate_embed.timestamp = datetime.datetime.utcnow()
                 await message.edit(embed=duplicate_embed)
@@ -142,7 +147,7 @@ class edit_pin(commands.Cog):
             nsfw_embed.set_author(name=interaction.user, icon_url=interaction.user.display_avatar.url)
             #CREATE PAGE FOOTER
             #create footer with USERID
-            nsfw_embed.set_footer(text=f"QuoteBot | ID: {interaction.user.id}", icon_url="https://cdn.discordapp.com/attachments/844600910562066444/871953767115919400/quotebotpfp.png")
+            nsfw_embed.set_footer(text=f"QuoteBot | ID: {interaction.user.id}", icon_url="https://cdn.discordapp.com/attachments/916091272186454076/1017973024680579103/quote_botttt.png")
             #set timestamp to discord time
             nsfw_embed.timestamp = datetime.datetime.utcnow()
             await message.edit(embed=nsfw_embed)
@@ -161,7 +166,7 @@ class edit_pin(commands.Cog):
         verify_embed.set_author(name=interaction.user, icon_url=interaction.user.display_avatar.url)
         #CREATE PAGE FOOTER
         #create footer with USERID
-        verify_embed.set_footer(text=f"QuoteBot | ID: {interaction.user.id}", icon_url="https://cdn.discordapp.com/attachments/844600910562066444/871953767115919400/quotebotpfp.png")
+        verify_embed.set_footer(text=f"QuoteBot | ID: {interaction.user.id}", icon_url="https://cdn.discordapp.com/attachments/916091272186454076/1017973024680579103/quote_botttt.png")
         #set timestamp to discord time
         verify_embed.timestamp = datetime.datetime.utcnow()
         confirm_buttons = self.Confirm()
@@ -177,7 +182,7 @@ class edit_pin(commands.Cog):
             confirm_embed = discord.Embed(title="Please wait while we pin your quote", description="<a:loading:892534287415525386> Processing request", color=0x068acc)
             #CREATE PAGE FOOTER
             #create footer with USERID
-            confirm_embed.set_footer(text=f"QuoteBot | ID: {interaction.user.id}", icon_url="https://cdn.discordapp.com/attachments/844600910562066444/871953767115919400/quotebotpfp.png")
+            confirm_embed.set_footer(text=f"QuoteBot | ID: {interaction.user.id}", icon_url="https://cdn.discordapp.com/attachments/916091272186454076/1017973024680579103/quote_botttt.png")
             #set timestamp to discord time
             confirm_embed.timestamp = datetime.datetime.utcnow()
             await message.edit(embed=confirm_embed, view=None)
@@ -214,7 +219,7 @@ class edit_pin(commands.Cog):
             complete_embed.set_author(name=interaction.user, icon_url=interaction.user.display_avatar.url)
             #CREATE PAGE FOOTER
             #create footer with USERID
-            complete_embed.set_footer(text=f"QuoteBot | ID: {interaction.user.id}", icon_url="https://cdn.discordapp.com/attachments/844600910562066444/871953767115919400/quotebotpfp.png")
+            complete_embed.set_footer(text=f"QuoteBot | ID: {interaction.user.id}", icon_url="https://cdn.discordapp.com/attachments/916091272186454076/1017973024680579103/quote_botttt.png")
             #set timestamp to discord time
             complete_embed.timestamp = datetime.datetime.utcnow()
             await message.edit(embed=complete_embed, view=None)

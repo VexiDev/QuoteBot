@@ -13,7 +13,10 @@ class QuoteBot(commands.Bot):
 
     def __init__(self) -> None:
         # Change 123 to your application id
+        # main init
         super().__init__(command_prefix=commands.when_mentioned, intents=discord.Intents.default(), application_id=814379239930331157, status=discord.Status.online, activity=discord.Activity(type=discord.ActivityType.listening, name="your quotes"))
+        #dev init
+        # super().__init__(command_prefix=commands.when_mentioned, intents=discord.Intents.default(), application_id=831626069789638656, status=discord.Status.online, activity=discord.Activity(type=discord.ActivityType.listening, name="your quotes"))
 
     async def load_cogs(self):
         print("---\ Loading Quotebot")
@@ -30,18 +33,18 @@ class QuoteBot(commands.Bot):
 
                     if filepath.endswith('.py'): 
 
-                        extpath = str(filepath).replace("/",".")[2:][:-3] #convert path to load path
+                        load_path = str(filepath).replace("/",".")[2:][:-3] #convert path to load path
 
-                        await self.load_extension(f'{extpath}') #load the cog
+                        await self.load_extension(f'{load_path}') #load the cog
 
-                        console = extpath.split(".")
+                        console = load_path.split(".")
                         indent="   |    "
 
                         for item in console[2:]:
                             print(f'{indent}|---\ {item}.py')
                             indent+="|   "
 
-                        print(f"{indent} |---> loaded {extpath}")
+                        print(f"{indent} |---> loaded {load_path}")
 
     
 
@@ -127,12 +130,8 @@ async def reload(ctx, extension):
         await ctx.send(f"reloaded {extension}")
     except:
         trace.print_exc()
-@bot.event
-async def on_command_error(ctx, error):
-    if isinstance(error, CommandNotFound):
-        msg = await ctx.send("Unknown command! Use **q!help** for a list of available commands")
-        await asyncio.sleep(5)
-        await ctx.message.delete()
-        await msg.delete()
 
+#main token
 bot.run('ODE0Mzc5MjM5OTMwMzMxMTU3.G5Szyd.Bm7QwEI84R-PcLz0hRTkd1qQ8E4540N_HSvl_g')
+#dev token
+# bot.run('ODMxNjI2MDY5Nzg5NjM4NjU2.G3ZZO5.o55KqPwjt1z3NXt_xVjF0_Cgge7ZIJaA9qKssI')

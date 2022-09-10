@@ -7,7 +7,7 @@ class bio_commands(commands.Cog):
         self.bot = bot
 
 
-    @app_commands.command(name="bio", description="Change the bio on your public profile")
+    @app_commands.command(name="bio", description="Changes the bio on your public profile")
     @app_commands.describe(bio='What you want your new bio to say')
     @app_commands.describe(hidden='Hides the message from everyone but you')
     async def bio(self, interaction: discord.Interaction, bio: str, hidden: bool=False):

@@ -43,7 +43,7 @@ class profile(commands.Cog):
         if status == "blacklisted":
             return
         #check if user is a bot
-        if user.bot:
+        if user.bot or interaction.user.bot:
             #if is a bot cancel request
             is_bot_embed = discord.Embed(title="Bots cannot use QuoteBot", color=0xe02f2f)
             await message.edit(embed=is_bot_embed)
@@ -70,10 +70,10 @@ class profile(commands.Cog):
         #close database connection
         c.close()
         conn.close()
-        if len(results) != 0:
+        if results[0][0] != "None":
             bio = results[0][0]
         else:
-            bio = ""
+            bio = "\u200B"
 
         #get user pinned quote
         #connect to database
@@ -91,10 +91,10 @@ class profile(commands.Cog):
         conn.close()
         if len(results) != 0:
             pin = f"\"{results[0][0]}\""
-            pintag = f"-{user.name}"
+            pintag = f"ㅤㅤ-{user.name}"
         else:
             pin = "Pin a quote with **/pin**"
-            pintag = "\200B"
+            pintag = "\u200B"
 
         #-----GET NORMAL USER QUOTES-----
         #get database credentials from database cog
@@ -134,13 +134,21 @@ class profile(commands.Cog):
             #iterate through pages converting them to embeds
             for page in only_quote_pages:
                 embed_page = discord.Embed(title=f"{user}'s Quotes (Page {page_count}/{len(only_quote_pages)})", description=f"Server: {interaction.guild.name}", color=0x51ff3d)
+                #create footer with USERID
+                embed_page.set_footer(text=f"QuoteBot | ID: {user.id}", icon_url="https://cdn.discordapp.com/attachments/916091272186454076/1017973024680579103/quote_botttt.png")
+                #set timestamp to discord time
+                embed_page.timestamp = datetime.datetime.utcnow()
                 for quote in page:
-                    embed_page.add_field(name=f"\"{quote}\"", value=f"-{user.name}")
+                    embed_page.add_field(name=f"\"{quote}\"", value=f"ㅤㅤ-{user.name}")
                 normal_quote_pages.append(embed_page)
                 page_count += 1
         #if no quotes are found create a no quote page
         else:
             embed_page = discord.Embed(title=f"{user} has no quotes", description=f"Add some with **/add**!", color=0xed2828)
+            #create footer with USERID
+            embed_page.set_footer(text=f"QuoteBot | ID: {user.id}", icon_url="https://cdn.discordapp.com/attachments/916091272186454076/1017973024680579103/quote_botttt.png")
+            #set timestamp to discord time
+            embed_page.timestamp = datetime.datetime.utcnow()
             normal_quote_pages = [embed_page]
 
         #-----GET NSFW USER QUOTES-----
@@ -180,6 +188,10 @@ class profile(commands.Cog):
             #iterate through pages converting them to embeds
             for page in only_quote_pages:
                 embed_page = discord.Embed(title=f"{user}'s NSFW Quotes (Page {page_count}/{len(only_quote_pages)})", description=f"Server: {interaction.guild.name}", color=0x51ff3d)
+                #create footer with USERID
+                embed_page.set_footer(text=f"QuoteBot | ID: {user.id}", icon_url="https://cdn.discordapp.com/attachments/916091272186454076/1017973024680579103/quote_botttt.png")
+                #set timestamp to discord time
+                embed_page.timestamp = datetime.datetime.utcnow()
                 for quote in page:
                     embed_page.add_field(name=f"\"{quote}\"", value=f"-{user.name}")
                 nsfw_quote_pages.append(embed_page)
@@ -188,6 +200,10 @@ class profile(commands.Cog):
         #if no nsfw quotes found create no quote page
         else:
             embed_page = discord.Embed(title=f"{user} has no NSFW Quotes", description=f"If Quotebot or our team detect one it will be placed here", color=0xed2828)
+            #create footer with USERID
+            embed_page.set_footer(text=f"QuoteBot | ID: {user.id}", icon_url="https://cdn.discordapp.com/attachments/916091272186454076/1017973024680579103/quote_botttt.png")
+            #set timestamp to discord time
+            embed_page.timestamp = datetime.datetime.utcnow()
             nsfw_quote_pages = [embed_page]
             
 
@@ -203,7 +219,7 @@ class profile(commands.Cog):
         
         #CREATE PAGE FOOTER
         #create footer with USERID
-        profile_home_page.set_footer(text=f"QuoteBot | ID: {user.id}", icon_url="https://cdn.discordapp.com/attachments/916091272186454076/1016824630004158506/logol.png")
+        profile_home_page.set_footer(text=f"QuoteBot | ID: {user.id}", icon_url="https://cdn.discordapp.com/attachments/916091272186454076/1017973024680579103/quote_botttt.png")
         #set timestamp to discord time
         profile_home_page.timestamp = datetime.datetime.utcnow()
 
@@ -224,12 +240,15 @@ class profile(commands.Cog):
     async def profile_menu_pages(self, interaction, hidden, message, home_page_buttons, profile_home_page, normal_quote_pages, nsfw_quote_pages):
         #check if profile home buttons have timed out
         if home_page_buttons.page is None:
-            try:
+            if hidden==False:
                 #if timed out delete message
                 await message.delete()
-            except:
-                #if this fails message was probably hidden and therefore this exception should be ignored
-                pass
+            else:
+                home_page_buttons.QuotePage.disabled = True
+                home_page_buttons.NsfwPage.disabled = True
+                home_page_buttons.add_item(discord.ui.Button(label="ㅤㅤㅤㅤㅤThis message has timed outㅤㅤㅤㅤ", row=2 ,style=discord.ButtonStyle.grey ,disabled=True))
+                await message.edit(embed=profile_home_page, view=home_page_buttons)
+                
             #if timed out place warning in console
             print(f'WARNING: home_page_buttons() view in server {interaction.guild.id} has timed out')
         #check if selected button is for normal quotes
@@ -391,26 +410,27 @@ class profile(commands.Cog):
     #-----CREATE PROFILE MAIN PAGE BUTTONS-----
 
     class HomePageSelect(discord.ui.View):
-        def __init__(self):
-            super().__init__()
+        def __init__(self, timeout=300):
+            super().__init__(timeout=timeout)
             self.page = None
+            
 
         #Create button to see users normal quotes
-        @discord.ui.button(label='Quotes', style=discord.ButtonStyle.blurple, emoji="<:quotes:994765517304889384>")
+        @discord.ui.button(label='Quotes', style=discord.ButtonStyle.blurple, row=1, emoji="<:quotes:994765517304889384>")
         async def QuotePage(self, interaction: discord.Interaction, button: discord.ui.Button):
             await interaction.response.defer()
             self.page = 1
             self.stop()
 
         #Create button to see users NSFW quotes
-        @discord.ui.button(label='NSFW', style=discord.ButtonStyle.red, emoji="<:alert2:1016826438718066790>")
+        @discord.ui.button(label='NSFW', style=discord.ButtonStyle.red, row=1, emoji="<:alert2:1016826438718066790>")
         async def NsfwPage(self, interaction: discord.Interaction, button: discord.ui.Button):
             await interaction.response.defer()
             self.page = 2
             self.stop()
 
         #Create button to see users badges
-        @discord.ui.button(label='Badges', style=discord.ButtonStyle.grey, disabled=True, emoji="<:achievements:994764128172380241> ")
+        @discord.ui.button(label='Badges', style=discord.ButtonStyle.grey, disabled=True, row=1, emoji="<:achievements:994764128172380241> ")
         async def BadgesPage(self, interaction: discord.Interaction, button: discord.ui.Button):
             await interaction.response.defer()
             self.page = 3

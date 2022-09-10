@@ -37,7 +37,7 @@ class addquote(commands.Cog):
             return
 
         #check if user is a bot
-        if user.bot:
+        if user.bot or interaction.user.bot:
             #if is a bot cancel request
             is_bot_embed = discord.Embed(title="Bots cannot use QuoteBot", color=0xe02f2f)
             await message.edit(embed=is_bot_embed)
@@ -93,7 +93,7 @@ class addquote(commands.Cog):
         verify_embed.set_author(name=user, icon_url=user.display_avatar.url)
         #CREATE PAGE FOOTER
         #create footer with USERID
-        verify_embed.set_footer(text=f"QuoteBot | ID: {interaction.user.id}", icon_url="https://cdn.discordapp.com/attachments/916091272186454076/1016824630004158506/logol.png")
+        verify_embed.set_footer(text=f"QuoteBot | ID: {interaction.user.id}", icon_url="https://cdn.discordapp.com/attachments/916091272186454076/1017973024680579103/quote_botttt.png")
         #set timestamp to discord time
         verify_embed.timestamp = datetime.datetime.utcnow()
         confirm_buttons = self.Confirm()
@@ -109,7 +109,7 @@ class addquote(commands.Cog):
             confirm_embed = discord.Embed(title="Please wait while we add your quote", description="<a:loading:892534287415525386> Processing request", color=0x068acc)
             #CREATE PAGE FOOTER
             #create footer with USERID
-            confirm_embed.set_footer(text=f"QuoteBot | ID: {interaction.user.id}", icon_url="https://cdn.discordapp.com/attachments/916091272186454076/1016824630004158506/logol.png")
+            confirm_embed.set_footer(text=f"QuoteBot | ID: {interaction.user.id}", icon_url="https://cdn.discordapp.com/attachments/916091272186454076/1017973024680579103/quote_botttt.png")
             #set timestamp to discord time
             confirm_embed.timestamp = datetime.datetime.utcnow()
             await message.edit(embed=confirm_embed, view=None)
@@ -135,7 +135,7 @@ class addquote(commands.Cog):
             complete_embed.set_author(name=user, icon_url=user.display_avatar.url)
             #CREATE PAGE FOOTER
             #create footer with USERID
-            complete_embed.set_footer(text=f"QuoteBot | ID: {interaction.user.id}", icon_url="https://cdn.discordapp.com/attachments/916091272186454076/1016824630004158506/logol.png")
+            complete_embed.set_footer(text=f"QuoteBot | ID: {interaction.user.id}", icon_url="https://cdn.discordapp.com/attachments/916091272186454076/1017973024680579103/quote_botttt.png")
             #set timestamp to discord time
             complete_embed.timestamp = datetime.datetime.utcnow()
             await message.edit(embed=complete_embed, view=None)

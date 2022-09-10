@@ -35,7 +35,7 @@ class quote(commands.Cog):
         if status == "blacklisted":
             return
         #check if user is a bot
-        if user.bot:
+        if user.bot or interaction.user.bot:
             #if is a bot cancel request
             is_bot_embed = discord.Embed(title="Bots cannot use QuoteBot", color=0xe02f2f)
             await message.edit(embed=is_bot_embed)
@@ -70,7 +70,7 @@ class quote(commands.Cog):
         random_quote_embed.set_author(name=user, icon_url=user.display_avatar.url)
         #CREATE PAGE FOOTER
         #create footer with USERID
-        random_quote_embed.set_footer(text=f"QuoteBot | ID: {interaction.user.id}", icon_url="https://cdn.discordapp.com/attachments/916091272186454076/1016824630004158506/logol.png")
+        random_quote_embed.set_footer(text=f"QuoteBot | ID: {interaction.user.id}", icon_url="https://cdn.discordapp.com/attachments/916091272186454076/1017973024680579103/quote_botttt.png")
         #set timestamp to discord time
         random_quote_embed.timestamp = datetime.datetime.utcnow()
         await message.edit(embed=random_quote_embed)

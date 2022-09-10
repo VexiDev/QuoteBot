@@ -7,10 +7,10 @@ class delete_commands(commands.Cog):
         self.bot = bot
 
 
-    @app_commands.command(name="delete", description="Removes a quote from a user")
+    @app_commands.command(name="delete", description="Deletes a quote from a user")
     @app_commands.describe(user='The member you want to add a quote too (Cannot be a bot)')
-    @app_commands.describe(quote='A part of the quote you wish to delete(Max 250 Characters)')
-    async def delete(self, interaction: discord.Interaction, user: discord.User, quote: str):
+    @app_commands.describe(quote='A part of the quote you want to delete')
+    async def delete(self, interaction: discord.Interaction, user: discord.User, quote: app_commands.Range[str, 1, 250]):
         
         command = self.bot.get_cog('delquote')
 

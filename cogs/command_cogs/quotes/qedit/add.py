@@ -9,7 +9,7 @@ class add_commands(commands.Cog):
 
     @app_commands.command(name="add", description="Adds a quote to a user")
     @app_commands.describe(user='The member you want to add a quote too (Cannot be a bot)')
-    @app_commands.describe(quote='The quote you wish to add (Max 250 Characters)')
+    @app_commands.describe(quote='The quote you want to add')
     async def add(self, interaction: discord.Interaction, user: discord.User, quote: app_commands.Range[str, 1, 250]):
         
         command = self.bot.get_cog('addquote')

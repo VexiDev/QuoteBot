@@ -35,7 +35,7 @@ class delquote(commands.Cog):
         if status == "blacklisted":
             return
         #check if user is a bot
-        if user.bot:
+        if user.bot or interaction.user.bot:
             #if is a bot cancel request
             is_bot_embed = discord.Embed(title="Bots cannot use QuoteBot", color=0xe02f2f)
             await message.edit(embed=is_bot_embed)
@@ -74,7 +74,7 @@ class delquote(commands.Cog):
             no_quote_embed.set_author(name=user, icon_url=user.display_avatar.url)
             #CREATE PAGE FOOTER
             #create footer with USERID
-            no_quote_embed.set_footer(text=f"QuoteBot | ID: {interaction.user.id}", icon_url="https://cdn.discordapp.com/attachments/916091272186454076/1016824630004158506/logol.png")
+            no_quote_embed.set_footer(text=f"QuoteBot | ID: {interaction.user.id}", icon_url="https://cdn.discordapp.com/attachments/916091272186454076/1017973024680579103/quote_botttt.png")
             #set timestamp to discord time
             no_quote_embed.timestamp = datetime.datetime.utcnow()
             await message.edit(embed=no_quote_embed)
@@ -90,12 +90,12 @@ class delquote(commands.Cog):
         #if there is more then 1 quote, the filter term was too common
         elif len(results) > 1:
             #SEND FILTER TOO COMMON EMBED
-            bad_filter_embed = discord.Embed(title="Filter term too common", description="Try adding more of the quote you wish to remove", color=0xe02f2f)
+            bad_filter_embed = discord.Embed(title="Filter term too common", description=f"I found {len(results)} quotes that include:\n**\"{quote}\"**\n-\nPlease add more of the quote you wish to remove", color=0xe02f2f)
             #Create fake quote author for confirm
             bad_filter_embed.set_author(name=user, icon_url=user.display_avatar.url)
             #CREATE PAGE FOOTER
             #create footer with USERID
-            bad_filter_embed.set_footer(text=f"QuoteBot | ID: {interaction.user.id}", icon_url="https://cdn.discordapp.com/attachments/916091272186454076/1016824630004158506/logol.png")
+            bad_filter_embed.set_footer(text=f"QuoteBot | ID: {interaction.user.id}", icon_url="https://cdn.discordapp.com/attachments/916091272186454076/1017973024680579103/quote_botttt.png")
             #set timestamp to discord time
             bad_filter_embed.timestamp = datetime.datetime.utcnow()
             await message.edit(embed=bad_filter_embed)
