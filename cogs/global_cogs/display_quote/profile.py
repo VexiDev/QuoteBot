@@ -139,7 +139,7 @@ class profile(commands.Cog):
                 #set timestamp to discord time
                 embed_page.timestamp = datetime.datetime.utcnow()
                 for quote in page:
-                    embed_page.add_field(name=f"\"{quote}\"", value=f"ㅤㅤ-{user.name}")
+                    embed_page.add_field(name=f"\"{quote}\"", value=f"-{user.name}")
                 normal_quote_pages.append(embed_page)
                 page_count += 1
         #if no quotes are found create a no quote page
