@@ -133,7 +133,7 @@ class profile(commands.Cog):
             page_count = 1
             #iterate through pages converting them to embeds
             for page in only_quote_pages:
-                embed_page = discord.Embed(title=f"{user}'s Quotes (Page {page_count}/{len(only_quote_pages)})", description=f"Server: {interaction.guild.name}", color=0x51ff3d)
+                embed_page = discord.Embed(title=f"{user}'s Quotes (Page {page_count}/{len(only_quote_pages)})", description=f"Server: {interaction.guild.name}", color=0x8AEA92)
                 #create footer with USERID
                 embed_page.set_footer(text=f"QuoteBot | ID: {user.id}", icon_url="https://cdn.discordapp.com/attachments/916091272186454076/1017973024680579103/quote_botttt.png")
                 #set timestamp to discord time
@@ -144,7 +144,7 @@ class profile(commands.Cog):
                 page_count += 1
         #if no quotes are found create a no quote page
         else:
-            embed_page = discord.Embed(title=f"{user} has no quotes", description=f"Add some with **/add**!", color=0xed2828)
+            embed_page = discord.Embed(title=f"{user} has no quotes", description=f"-\nAdd some with **/add**!\n\u200B", color=0xDF3B57)
             #create footer with USERID
             embed_page.set_footer(text=f"QuoteBot | ID: {user.id}", icon_url="https://cdn.discordapp.com/attachments/916091272186454076/1017973024680579103/quote_botttt.png")
             #set timestamp to discord time
@@ -187,7 +187,7 @@ class profile(commands.Cog):
             page_count = 1
             #iterate through pages converting them to embeds
             for page in only_quote_pages:
-                embed_page = discord.Embed(title=f"{user}'s NSFW Quotes (Page {page_count}/{len(only_quote_pages)})", description=f"Server: {interaction.guild.name}", color=0x51ff3d)
+                embed_page = discord.Embed(title=f"{user}'s NSFW Quotes (Page {page_count}/{len(only_quote_pages)})", description=f"Server: {interaction.guild.name}", color=0xDF3B57)
                 #create footer with USERID
                 embed_page.set_footer(text=f"QuoteBot | ID: {user.id}", icon_url="https://cdn.discordapp.com/attachments/916091272186454076/1017973024680579103/quote_botttt.png")
                 #set timestamp to discord time
@@ -199,7 +199,7 @@ class profile(commands.Cog):
         
         #if no nsfw quotes found create no quote page
         else:
-            embed_page = discord.Embed(title=f"{user} has no NSFW Quotes", description=f"If Quotebot or our team detect one it will be placed here", color=0xed2828)
+            embed_page = discord.Embed(title=f"{user} has no NSFW Quotes", description=f"-\nIf Quotebot or our team detect one it will be placed here\n\u200B", color=0xDF3B57)
             #create footer with USERID
             embed_page.set_footer(text=f"QuoteBot | ID: {user.id}", icon_url="https://cdn.discordapp.com/attachments/916091272186454076/1017973024680579103/quote_botttt.png")
             #set timestamp to discord time
@@ -211,7 +211,11 @@ class profile(commands.Cog):
 
         #CREATE MAIN PAGE
         #Create embed home page embed, if user bio is not None set description to the bio
-        profile_home_page = discord.Embed(title=f"{user}'s Profile", description=f"\n{bio}\n-", color=0x54de99)
+        if bio != "\u200B":
+            profile_home_page = discord.Embed(title=f"{user}'s Profile", description=f"\n{bio}\n-", color=0x54de99)
+        else:
+            profile_home_page = discord.Embed(title=f"{user}'s Profile", description=f"-", color=0x54de99)
+
         #set page thumbnail to user's SERVER profile
         profile_home_page.set_thumbnail(url=user.display_avatar.url)
         #add a field for pinned quote
@@ -339,6 +343,16 @@ class profile(commands.Cog):
             elif navigator.action == 3:
                 await self.profile_page(interaction, hidden, message, profile_home_page, normal_quote_pages, nsfw_quote_pages)
 
+            elif navigator.action == None:
+                if hidden==False:
+                    #if timed out delete message
+                    await message.delete()
+                else:
+                    navigator.Next.disabled = True
+                    navigator.Back.disabled = True
+                    navigator.Profile.disabled = True
+                    navigator.add_item(discord.ui.Button(label="ㅤㅤㅤㅤㅤThis message has timed outㅤㅤㅤㅤ", row=2 ,style=discord.ButtonStyle.grey ,disabled=True))
+                    await message.edit(view=navigator)
 
     #-------BUILD NSFW QUOTE MENU-------
     async def nsfw_quote_menu(self, interaction, hidden, message, navigator, nsfw_quote_pages, current_page, profile_home_page, normal_quote_pages):
@@ -406,6 +420,17 @@ class profile(commands.Cog):
             elif navigator.action == 3:
                 await self.profile_page(interaction, hidden, message, profile_home_page, normal_quote_pages, nsfw_quote_pages)
 
+            elif navigator.action == None:
+                if hidden==False:
+                    #if timed out delete message
+                    await message.delete()
+                else:
+                    navigator.Next.disabled = True
+                    navigator.Back.disabled = True
+                    navigator.Profile.disabled = True
+                    navigator.add_item(discord.ui.Button(label="ㅤㅤㅤㅤㅤㅤThis message has timed outㅤㅤㅤㅤㅤ", row=2 ,style=discord.ButtonStyle.grey ,disabled=True))
+                    await message.edit(view=navigator)
+
 
     #-----CREATE PROFILE MAIN PAGE BUTTONS-----
 
@@ -439,8 +464,8 @@ class profile(commands.Cog):
     #-----CREATE QUOTE PAGE NAVIGATION BUTTONS-----
 
     class PageNavigator(discord.ui.View):
-        def __init__(self, current_page, end_page):
-            super().__init__()
+        def __init__(self, current_page, end_page, timeout=120):
+            super().__init__(timeout=timeout)
             self.action = None
             self.current_page = current_page
             self.end_page = end_page
@@ -461,7 +486,7 @@ class profile(commands.Cog):
             self.stop()
 
         #Create button to see users badges
-        @discord.ui.button(label='Profile', row=2, style=discord.ButtonStyle.blurple, emoji="<:user:994779801212690454>")
+        @discord.ui.button(label='Profile', row=2, style=discord.ButtonStyle.blurple, emoji="<:profile:1030032830891311174>")
         async def Profile(self, interaction: discord.Interaction, button: discord.ui.Button):
             await interaction.response.defer()
             self.action = 3
