@@ -63,6 +63,8 @@ class addquote(commands.Cog):
             return
 
         #----Replace single quotes-----
+        #save original quote for final message
+        msg_quote = quote
         quote = quote.replace("'", "''")
 
         #-----CHECK FOR DUPLICATE-----
@@ -85,7 +87,7 @@ class addquote(commands.Cog):
             #SEND DUPLICATE EMBED WITH ONLY CANCEL BUTTON
             pass #TO BE IMPLEMENTED
         if nsfw:
-            verify_embed = discord.Embed(title=f"\n\"{quote}\"\n", description=f"-\n<:alert2:1016826438718066790> **This quote has been marked as NSFW and will be placed in the NSFW category**\n-\n*Please confirm that the quote above is correct*", color=0x42f56f)
+            verify_embed = discord.Embed(title=f"\n\"{quote}\"\n", description=f"-\n<:alert2:1016826438718066790> **This quote has been flagged and will be placed in the NSFW category**\n-\n*Please confirm that the quote above is correct*", color=0x42f56f)
         else:
             verify_embed = discord.Embed(title=f"\n\"{quote}\"\n", description=f"-\n*Please confirm that the quote above is correct*", color=0x42f56f)
 
@@ -114,7 +116,7 @@ class addquote(commands.Cog):
             confirm_embed.timestamp = datetime.datetime.utcnow()
             await message.edit(embed=confirm_embed, view=None)
             
-             #connect to database
+            #connect to database
             conn = database.connect()
             #set database cursor
             c = conn.cursor()
@@ -130,7 +132,7 @@ class addquote(commands.Cog):
             c.close()
             conn.close()
 
-            complete_embed = discord.Embed(title=f"\"{quote}\"", color=0x00ff2f)
+            complete_embed = discord.Embed(title=f"\"{msg_quote}\"", color=0x00ff2f)
             #Add user as author
             complete_embed.set_author(name=user, icon_url=user.display_avatar.url)
             #CREATE PAGE FOOTER
