@@ -88,7 +88,7 @@ class addquote(commands.Cog):
         #set database cursor
         c = conn.cursor()
         #create query for all non nsfw quotes
-        command = f"select * from quotes where uid={user.id} and guild_id={interaction.guild.id} and lower(quote) like lower('{quote}')"
+        command = f"select * from quotes where uid={user.id} and guild_id={interaction.guild.id} and lower(quote) like lower('{quote}') and hidden=False"
         #execute command
         c.execute(command)
         #get results of query
