@@ -139,22 +139,6 @@ class addquote(commands.Cog):
             #set timestamp to discord time
             confirm_embed.timestamp = datetime.datetime.utcnow()
             await message.edit(embed=confirm_embed, view=None)
-            
-            #connect to database
-            conn = database.connect()
-            #set database cursor
-            c = conn.cursor()
-            #get message id of original interaction
-            msg = await message.fetch()
-            #create query to add quote to user database
-            command = f"insert into quotes(uid, quote, date_added, guild_id, nsfw, star, added_by, message) values({user.id}, '{quote}','{datetime.datetime.now().strftime('%d/%m/%Y %H:%M:%S')}',{interaction.guild.id},{nsfw},False, {interaction.user.id}, {msg.id})"
-            #execute command
-            c.execute(command)
-            #commit changes
-            conn.commit()
-            #close database connection
-            c.close()
-            conn.close()
 
             if len(channel) == 1:
 
@@ -167,7 +151,8 @@ class addquote(commands.Cog):
                 complete_embed.set_footer(text=f"QuoteBot | ID: {interaction.user.id}", icon_url="https://cdn.discordapp.com/attachments/916091272186454076/1017973024680579103/quote_botttt.png")
                 #set timestamp to discord time
                 complete_embed.timestamp = datetime.datetime.utcnow()
-                await msg_channel.send(embed=complete_embed)
+                quote_channel_msg = await msg_channel.send(embed=complete_embed)
+
                 msg_complete_embed = discord.Embed(title=f"Your quote has been successfully added",description=f"It has been sent in <#{msg_channel.id}>", color=0x00ff2f)
                 #Add user as author
                 msg_complete_embed.set_author(name=user, icon_url=user.display_avatar.url)
@@ -177,6 +162,20 @@ class addquote(commands.Cog):
                 #set timestamp to discord time
                 msg_complete_embed.timestamp = datetime.datetime.utcnow()
                 await message.edit(embed=msg_complete_embed, view=None)
+
+                 #connect to database
+                conn = database.connect()
+                #set database cursor
+                c = conn.cursor()
+                #create query to add quote to user database
+                command = f"insert into quotes(uid, quote, date_added, guild_id, nsfw, star, added_by, message) values({user.id}, '{quote}','{datetime.datetime.now().strftime('%d/%m/%Y %H:%M:%S')}',{interaction.guild.id},{nsfw},False, {interaction.user.id}, {quote_channel_msg.id})"
+                #execute command
+                c.execute(command)
+                #commit changes
+                conn.commit()
+                #close database connection
+                c.close()
+                conn.close()
 
             elif len(channel) > 1:
                 channel_error_embed = discord.Embed(title=f"A channel error has occured",description=f"Please set your quotes channel again using **/setchannel** then try again\n*We apologize for the inconvenience*", color=0xDF3B57)
@@ -200,6 +199,22 @@ class addquote(commands.Cog):
                 #set timestamp to discord time
                 complete_embed.timestamp = datetime.datetime.utcnow()
                 await message.edit(embed=complete_embed, view=None)
+
+                                 #connect to database
+                conn = database.connect()
+                #set database cursor
+                c = conn.cursor()
+                #get message id of original interaction
+                msg = await message.fetch()
+                #create query to add quote to user database
+                command = f"insert into quotes(uid, quote, date_added, guild_id, nsfw, star, added_by, message) values({user.id}, '{quote}','{datetime.datetime.now().strftime('%d/%m/%Y %H:%M:%S')}',{interaction.guild.id},{nsfw},False, {interaction.user.id}, {msg.id})"
+                #execute command
+                c.execute(command)
+                #commit changes
+                conn.commit()
+                #close database connection
+                c.close()
+                conn.close()
             
         else:
             #create canceled embed
