@@ -1,5 +1,6 @@
 import discord
 import datetime
+import traceback
 import asyncio
 from discord import app_commands
 from discord.ext import commands
@@ -57,7 +58,7 @@ class delquote(commands.Cog):
         #set database cursor
         c = conn.cursor()
         #create query for all non nsfw quotes
-        command = f"select * from quotes where uid={user.id} and guild_id={interaction.guild.id} and lower(quote) like lower('%{quote}%')"
+        command = f"select * from quotes where uid={user.id} and guild_id={interaction.guild.id} and lower(quote) like lower('%{quote}%') and hidden=False"
         #execute command
         c.execute(command)
         #get results of query
@@ -116,7 +117,7 @@ class delquote(commands.Cog):
         verify_embed.set_author(name=user, icon_url=user.display_avatar.url)
         #CREATE PAGE FOOTER
         #create footer with USERID
-        verify_embed.set_footer(text=f"QuoteBot | ID: {interaction.user.id}", icon_url="https://cdn.discordapp.com/attachments/916091272186454076/1016824630004158506/logol.png")
+        verify_embed.set_footer(text=f"QuoteBot | ID: {interaction.user.id}", icon_url="https://cdn.discordapp.com/attachments/916091272186454076/1017973024680579103/quote_botttt.png")
         #set timestamp to discord time
         verify_embed.timestamp = datetime.datetime.utcnow()
         confirm_buttons = self.Confirm()
@@ -132,7 +133,7 @@ class delquote(commands.Cog):
             confirm_embed = discord.Embed(title="Please wait while we delete the quote", description="<a:loading:892534287415525386> Processing request", color=0x068acc)
             #CREATE PAGE FOOTER
             #create footer with USERID
-            confirm_embed.set_footer(text=f"QuoteBot | ID: {interaction.user.id}", icon_url="https://cdn.discordapp.com/attachments/916091272186454076/1016824630004158506/logol.png")
+            confirm_embed.set_footer(text=f"QuoteBot | ID: {interaction.user.id}", icon_url="https://cdn.discordapp.com/attachments/916091272186454076/1017973024680579103/quote_botttt.png")
             #set timestamp to discord time
             confirm_embed.timestamp = datetime.datetime.utcnow()
             await message.edit(embed=confirm_embed, view=None)
@@ -142,7 +143,7 @@ class delquote(commands.Cog):
             #set database cursor
             c = conn.cursor()
             #create query to add quote to user database
-            command = f"delete from quotes where qid={delete_quote[0]}"
+            command = f"update quotes set hidden=true where qid={delete_quote[0]}"
             #execute command
             c.execute(command)
             #commit changes
@@ -151,12 +152,48 @@ class delquote(commands.Cog):
             c.close()
             conn.close()
 
+            # #check if any quote channel is set
+            #  #connect to database
+            # conn = database.connect()
+            # #set database cursor
+            # c = conn.cursor()
+            # #create query to add quote to user database
+            # command = f"select * from channels where guild_id={interaction.guild.id} and type='quotes'"
+            # #execute command
+            # c.execute(command)
+            # #get results
+            # channels = c.fetchall()
+            # #close database connection
+            # c.close()
+            # conn.close()
+            
+
+            # try:
+            #     if len(channels) != 0:
+            #         quote_channel = await interaction.guild.fetch_channel(int(channels[0][2]))
+            #         print(quote_channel)
+            #         original_quote_msg = quote_channel.get_partial_message(int(results[0][8]))
+            #         await original_quote_msg.reply()
+
+
+            #     elif len(channels) == 0:
+            #         for text_channel in interaction.guild.text_channels:
+            #             #get original quote message
+            #             try:
+            #                 original_quote_msg = text_channel.get_partial_message(int(results[0][8]))
+            #             except:
+            #                 pass
+            #             await original_quote_msg.delete()
+                
+            # except:
+            #     traceback.print_exc()
+
             complete_embed = discord.Embed(title=f"Quote Deleted",description=f"\"{delete_quote[2]}\"", color=0xff6161)
             #Add user as author
             complete_embed.set_author(name=user, icon_url=user.display_avatar.url)
             #CREATE PAGE FOOTER
             #create footer with USERID
-            complete_embed.set_footer(text=f"QuoteBot | ID: {interaction.user.id}", icon_url="https://cdn.discordapp.com/attachments/916091272186454076/1016824630004158506/logol.png")
+            complete_embed.set_footer(text=f"QuoteBot | ID: {interaction.user.id}", icon_url="https://cdn.discordapp.com/attachments/916091272186454076/1017973024680579103/quote_botttt.png")
             #set timestamp to discord time
             complete_embed.timestamp = datetime.datetime.utcnow()
             await message.edit(embed=complete_embed, view=None)
@@ -166,13 +203,13 @@ class delquote(commands.Cog):
             canceled_embed = discord.Embed(description="<:no:907768020561190983> **Canceled**",  color=0xff0000)
             await message.edit(embed=canceled_embed, view=None)
 
-            try:
-                #after timeout delete the message
-                await message.delete(delay=5)
-                return
-            except:
-                #if it fails means it was hidden therefore we ignore
-                pass
+        try:
+            #after timeout delete the message
+            await message.delete(delay=5)
+            return
+        except:
+            #if it fails means it was hidden therefore we ignore
+            pass
 
     class Confirm(discord.ui.View):
         def __init__(self):

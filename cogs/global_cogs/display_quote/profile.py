@@ -81,7 +81,7 @@ class profile(commands.Cog):
         #set database cursor
         c = conn.cursor()
         #create query for all non nsfw quotes
-        command = f"select quote from quotes where uid={user.id} and star=True"
+        command = f"select quote from quotes where uid={user.id} and star=True and hidden=false"
         #execute command
         c.execute(command)
         #get results of query
@@ -103,7 +103,7 @@ class profile(commands.Cog):
         #set database cursor
         c = conn.cursor()
         #create query for all non nsfw quotes
-        command = f"select * from quotes where guild_id={interaction.guild.id} and uid={user.id} and nsfw=False"
+        command = f"select * from quotes where guild_id={interaction.guild.id} and uid={user.id} and nsfw=False and hidden=false"
         #execute command
         c.execute(command)
         #get results of query
@@ -157,7 +157,7 @@ class profile(commands.Cog):
         #set database cursor
         c = conn.cursor()
         #create query for all  nsfw quotes
-        command = f"select * from quotes where guild_id={interaction.guild.id} and uid={user.id} and nsfw=True"
+        command = f"select * from quotes where guild_id={interaction.guild.id} and uid={user.id} and nsfw=True and hidden=false"
         #execute command
         c.execute(command)
         #get results of query

@@ -7,10 +7,16 @@ class setchannel_commands(commands.Cog):
         self.bot = bot
 
 
-    # @app_commands.command(name="setlogger", description="sets the log channel")
-    async def setlogger(self, interaction: discord.Interaction, user: discord.User, quote: str):
-        await interaction.response.send_message(f"Successfully added {quote} to {user}({user.id})")
+    @app_commands.command(name="setchannel", description="Set specific channels for QuoteBot messages")
+    @app_commands.choices(type=[app_commands.Choice(name="Added Quotes", value="quotes")])
+    @app_commands.describe(type='Select what messages will be dispalyed in that channel')
+    @app_commands.describe(channel='Select a channel')
+    async def setchannel(self, interaction: discord.Interaction, type: str, channel: discord.TextChannel):
+        
+        command = self.bot.get_cog('setchannel')
+
+        await command.channel_set(interaction, type, channel)
 
 
 async def setup(bot: commands.Bot) -> None:
-    await bot.add_cog(setchannel_commands(bot), guilds = [discord.Object(id=838814770537824378)])
+    await bot.add_cog(setchannel_commands(bot), guilds = commands.Greedy[discord.Object])
