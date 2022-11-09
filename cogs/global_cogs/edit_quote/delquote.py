@@ -186,7 +186,16 @@ class delquote(commands.Cog):
                         await original_quote_msg.delete()
                 
             except:
-                traceback.print_exc()
+                try:
+                    for text_channel in interaction.guild.text_channels:
+                            #get original quote message
+                            try:
+                                original_quote_msg = text_channel.get_partial_message(int(results[0][8]))
+                            except:
+                                pass
+                            await original_quote_msg.delete()
+                except:
+                    traceback.print_exc()
 
             complete_embed = discord.Embed(title=f"Quote Deleted",description=f"\"{delete_quote[2]}\"", color=0xff6161)
             #Add user as author
