@@ -52,7 +52,7 @@ class setchannel(commands.Cog):
         #set database cursor
         c = conn.cursor()
         #create query for all non nsfw quotes
-        command = f"select * from channels where channel_id={channel.id} and guild_id={interaction.guild.id} and type='{type}'"
+        command = f"select * from channels where guild_id={interaction.guild.id} and type='{type}'"
         #execute command
         c.execute(command)
         #get results of query
@@ -62,11 +62,47 @@ class setchannel(commands.Cog):
         conn.close()
                 
         if len(results) == 1:
-            duplicate_embed = discord.Embed(description=f"<:no:907768020561190983> That channel is already set as the **{type}** channel", color=0xDF3B57)
-            duplicate_embed.set_author(name=interaction.user, icon_url=interaction.user.display_avatar.url)
-            duplicate_embed.set_footer(text=f"QuoteBot | ID: {interaction.user.id}", icon_url="https://cdn.discordapp.com/attachments/916091272186454076/1017973024680579103/quote_botttt.png")
-            duplicate_embed.timestamp = datetime.datetime.utcnow()
-            await message.edit(embed=duplicate_embed)
+            #connect to database
+            conn = database.connect()
+            #set database cursor
+            c = conn.cursor()
+            #update new channel
+            command = f"update channels set channel_id={channel.id} where guild_id={interaction.guild.id} and type='{type}'"
+            #execute command
+            c.execute(command)
+            #close database connection
+            conn.commit()
+            c.close()
+            conn.close()
+            update_embed = discord.Embed(description=f"<:yes:892537190347837450> **Channel Successfully Updated**\n\nChannel <#{channel.id}> is now the **{type}** channel", color=0x8AEA92)
+            update_embed.set_footer(text=f"QuoteBot | ID: {interaction.user.id}", icon_url="https://cdn.discordapp.com/attachments/916091272186454076/1017973024680579103/quote_botttt.png")
+            update_embed.timestamp = datetime.datetime.utcnow()
+            await message.edit(embed=update_embed)
+
+            try:
+                #after timeout delete the message
+                await message.delete(delay=5)
+                return
+            except:
+                #if it fails means it was hidden therefore we ignore
+                pass
+        elif len(results) == 0:
+             #connect to database
+            conn = database.connect()
+            #set database cursor
+            c = conn.cursor()
+            #insert new channel
+            command = f"insert into channels(guild_id, channel_id, type) values({interaction.guild.id}, {channel.id}, '{type}')"
+            #execute command
+            c.execute(command)
+            #close database connection
+            conn.commit()
+            c.close()
+            conn.close()
+            force_update_embed = discord.Embed(description=f"<:yes:892537190347837450> **Channel Successfully Updated**\n\nChannel <#{channel.id}> is now the **{type}** channel", color=0x8AEA92)
+            force_update_embed.set_footer(text=f"QuoteBot | ID: {interaction.user.id}", icon_url="https://cdn.discordapp.com/attachments/916091272186454076/1017973024680579103/quote_botttt.png")
+            force_update_embed.timestamp = datetime.datetime.utcnow()
+            await message.edit(embed=force_update_embed)
             try:
                 #after timeout delete the message
                 await message.delete(delay=5)
@@ -103,24 +139,6 @@ class setchannel(commands.Cog):
             except:
                 #if it fails means it was hidden therefore we ignore
                 pass
-
-        else:
-            #connect to database
-            conn = database.connect()
-            #set database cursor
-            c = conn.cursor()
-            #update new channel
-            command = f"update channels set channel_id={channel.id} where guild_id={interaction.guild.id} and type='{type}'"
-            #execute command
-            c.execute(command)
-            #close database connection
-            conn.commit()
-            c.close()
-            conn.close()
-            update_embed = discord.Embed(description=f"<:yes:892537190347837450> **Channel Successfully Updated**\n\nChannel <#{channel.id}> is now the **{type}** channel", color=0x8AEA92)
-            update_embed.set_footer(text=f"QuoteBot | ID: {interaction.user.id}", icon_url="https://cdn.discordapp.com/attachments/916091272186454076/1017973024680579103/quote_botttt.png")
-            update_embed.timestamp = datetime.datetime.utcnow()
-            await message.edit(embed=update_embed)
 
 
 async def setup(bot: commands.Bot) -> None:
