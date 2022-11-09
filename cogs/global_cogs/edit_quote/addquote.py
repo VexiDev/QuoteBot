@@ -153,7 +153,7 @@ class addquote(commands.Cog):
                 complete_embed.timestamp = datetime.datetime.utcnow()
                 quote_channel_msg = await msg_channel.send(embed=complete_embed)
 
-                msg_complete_embed = discord.Embed(title=f"Your quote has been successfully added",description=f"It has been sent in <#{msg_channel.id}>", color=0x00ff2f)
+                msg_complete_embed = discord.Embed(title=f"Your quote has been successfully added",description=f"\"{msg_quote}\"\n\n*It has been sent in* <#{msg_channel.id}>", color=0x00ff2f)
                 #Add user as author
                 msg_complete_embed.set_author(name=user, icon_url=user.display_avatar.url)
                 #CREATE PAGE FOOTER
@@ -176,6 +176,14 @@ class addquote(commands.Cog):
                 #close database connection
                 c.close()
                 conn.close()
+
+                try:
+                    #after timeout delete the message
+                    await message.delete(delay=10)
+                    return
+                except:
+                    #if it fails means it was hidden therefore we ignore
+                    pass
 
             elif len(channel) > 1:
                 channel_error_embed = discord.Embed(title=f"A channel error has occured",description=f"Please set your quotes channel again using **/setchannel** then try again\n*We apologize for the inconvenience*", color=0xDF3B57)

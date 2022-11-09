@@ -168,34 +168,37 @@ class delquote(commands.Cog):
             conn.close()
             
 
-            try:
-                if len(channels) != 0:
-                    quote_channel = await interaction.guild.fetch_channel(int(channels[0][2]))
-                    print(quote_channel)
-                    original_quote_msg = quote_channel.get_partial_message(int(results[0][8]))
+            if len(channels) != 0:
+                quote_channel = await interaction.guild.fetch_channel(int(channels[0][2]))
+                original_quote_msg = quote_channel.get_partial_message(int(results[0][8]))
+                try:
                     await original_quote_msg.delete()
-
-
-                elif len(channels) == 0:
+                except:
                     for text_channel in interaction.guild.text_channels:
-                        #get original quote message
+                    #get original quote message
                         try:
-                            original_quote_msg = text_channel.get_partial_message(int(results[0][8]))
+                            quote_channel = await interaction.guild.fetch_channel(text_channel.id)
+                            new_found_quote = quote_channel.get_partial_message(int(results[0][8]))
+                            final_quote = await new_found_quote.fetch()
+                            if final_quote.id == results[0][8]:
+                                print(" vv |DELQUOTE TEMP DEBUG| vv")
+                                print("original: ", results[0][8],"\nfound: ",final_quote.id)
+                                break
+                            else:
+                                pass
                         except:
                             pass
-                        await original_quote_msg.delete()
-                
-            except:
-                try:
-                    for text_channel in interaction.guild.text_channels:
-                            #get original quote message
-                            try:
-                                original_quote_msg = text_channel.get_partial_message(int(results[0][8]))
-                            except:
-                                pass
-                            await original_quote_msg.delete()
-                except:
-                    traceback.print_exc()
+                    await new_found_quote.delete()
+
+            elif len(channels) == 0:
+                for text_channel in interaction.guild.text_channels:
+                    #get original quote message
+                    try:
+                        original_quote_msg = text_channel.get_partial_message(int(results[0][8]))
+                        break
+                    except:
+                        pass
+                    await original_quote_msg.delete()
 
             complete_embed = discord.Embed(title=f"Quote Deleted",description=f"\"{delete_quote[2]}\"", color=0xff6161)
             #Add user as author
