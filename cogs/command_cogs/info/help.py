@@ -6,11 +6,16 @@ class help_commands(commands.Cog):
     def __init__(self, bot: commands.Bot) -> None:
         self.bot = bot
 
+    @app_commands.command(name="help", description="A help menu for QuoteBot's commands and features")
+    async def help(self, interaction: discord.Interaction):
+        
+        #this menu is always hidden
+        hidden=True
+        
+        command = self.bot.get_cog('help_me')
 
-    # @app_commands.command(name="help", description="Sends help menu")
-    async def help(self, interaction: discord.Interaction, user: discord.User, quote: str):
-        await interaction.response.send_message(f"Successfully added {quote} to {user}({user.id})")
+        await command.help_menu(interaction, hidden)
 
 
 async def setup(bot: commands.Bot) -> None:
-    await bot.add_cog(help_commands(bot), guilds = [discord.Object(id=838814770537824378)])
+    await bot.add_cog(help_commands(bot), guilds = commands.Greedy[discord.Object])

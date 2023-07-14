@@ -1,0 +1,83 @@
+{
+    "language": "en",
+    "system_messages": {
+        "processing_request": "<a:loading:892534287415525386> **Processing Request**",
+        "no_bots": "Bots cannot use QuoteBot",
+        "timed_out": "This message has timed out",
+        "error_title": "An error has occurred, please try again later",
+        "error_desc": "If this error persists, please contact @v3xi"
+    },
+    "embed_footer": {
+        "footer": "QuoteBot | ID: {interaction.user.id}"
+    },
+    "main_menu": {
+        "help_main_menu_title": "help_main_menu_title",
+        "help_main_menu_desc": "help_main_menu_desc",
+        "command_category": "command_category",
+        "settings_category": "settings_category",
+        "alerts_category": "alerts_category"
+    },
+    "default_dropdown_page": {
+        "commands_default": {
+            "title": "commands_default",
+            "desc": "commands_default_desc"
+        },
+        "settings_default": {
+            "title": "settings_default",
+            "desc": "settings_default_desc"
+        },
+        "alerts_default": {
+            "title": "alerts_default",
+            "desc": "alerts_default_desc"
+        }
+    },
+    "commands_dropdown": {
+        "dropdown_placeholder": "dropdown_placeholder",
+        "add_command": {
+            "title": "add_command_title",
+            "desc": "add_command_desc"
+        },
+        "delete_command": {
+            "title": "delete_command_title",
+            "desc": "delete_command_desc"
+        },
+        "edit_command": {
+            "title": "edit_command_title",
+            "desc": "edit_command_desc"
+        },
+        "profile_command": {
+            "title": "profile_command_title",
+            "desc": "profile_command_desc"
+        },
+        "quote_command": {
+            "title": "quote_command_title",
+            "desc": "quote_command_desc"
+        }
+    },
+    "commands_help_menus": {
+        "add_command_title": "add_command_title",
+        "add_command_desc": "add_command_desc",
+        "delete_command_title": "delete_command_title",
+        "delete_command_desc": "delete_command_desc",
+        "edit_command_title": "edit_command_title",
+        "edit_command_desc": "edit_command_desc",
+        "profile_command_title": "profile_command_title",
+        "profile_command_desc": "profile_command_desc",
+        "quote_command_title": "quote_command_title",
+        "quote_command_desc": "quote_command_desc"
+    },
+    "settings_help": {
+        "help_settings_title": "help_settings_title",
+        "help_settings_desc": "help_settings_desc"
+    },
+    "alerts_help": {
+        "help_alerts_title": "help_alerts_title",
+        "help_alerts_desc": "help_alerts_desc"
+    },
+    "menu_buttons": {
+        "back_button": "back_button",
+        "commands_category_button": "commands_category_button",
+        "settings_category_button": "settings_category_button",
+        "alerts_category_button": "alerts_category_button"
+    }
+}

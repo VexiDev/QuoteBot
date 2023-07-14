@@ -9,12 +9,13 @@ class quote_commands(commands.Cog):
 
     @app_commands.command(name="quote", description="Displays a random quote from a user")
     @app_commands.describe(user='Who you want to quote (Cannot be a bot)')
+    @app_commands.describe(quote='Specify the quote you want to see (leave blank for a random quote)')
     @app_commands.describe(temporary='Automatically deletes message after 2 minutes')
-    async def quote(self, interaction: discord.Interaction, user: discord.User, temporary: bool=False):
+    async def quote(self, interaction: discord.Interaction, user: discord.User, quote: str="None",temporary: bool=False):
         
         command = self.bot.get_cog('quote')
 
-        await command.quote(interaction, user, temporary)
+        await command.quote(interaction, user, quote, temporary)
 
 
 async def setup(bot: commands.Bot) -> None:

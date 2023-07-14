@@ -9,14 +9,14 @@ class delquote(commands.Cog):
     def __init__(self, bot: commands.Bot) -> None:
         self.bot = bot
 
-    async def delete(self, interaction: discord.Interaction, user: discord.User, quote=""):
+    async def delete(self, interaction: discord.Interaction, user: discord.User):
         #--------LOADING MENU---------
         #Create loading embed for profile
         loading_embed = discord.Embed(description="<a:loading:892534287415525386> **Processing Request**", color=0x068acc)
         #Send loading message
-        await interaction.response.send_message(embed=loading_embed)
+        await interaction.response.defer()
         #assign message for future edits
-        message = await interaction.original_response()
+        message = await interaction.followup.send(embed=loading_embed)
 
         #set database variable
         database = self.bot.get_cog("database")
@@ -31,9 +31,13 @@ class delquote(commands.Cog):
         await profile_manager.creator(interaction.user)
         await profile_manager.creator(user)
 
-        #check blacklist
-        status = await action_manager.blacklist_actions(interaction, message, database)
-        if status == "blacklisted":
+        #check user blacklist
+        status = await action_manager.user_blacklist_actions(interaction, message, database)
+        if status == "user_blacklisted":
+            return
+        #check target blacklist
+        status = await action_manager.target_blacklist_actions(interaction, user, message, database)
+        if status == "target_blacklisted":
             return
         #check if user is a bot
         if user.bot or interaction.user.bot:
@@ -48,17 +52,14 @@ class delquote(commands.Cog):
             except:
                 #if it fails means it was hidden therefore we ignore
                 pass
-        
-        #----Replace single quotes-----
-        quote = quote.replace("'", "''")
 
         #-----CHECK FOR EXIST-----
         #connect to database
         conn = database.connect()
         #set database cursor
         c = conn.cursor()
-        #create query for all non nsfw quotes
-        command = f"select * from quotes where uid={user.id} and guild_id={interaction.guild.id} and lower(quote) like lower('%{quote}%') and hidden=False"
+        #create query for all non hidden quotes that contain the input
+        command = f"select * from quotes where uid={user.id} and guild_id={interaction.guild.id} and hidden=False"
         #execute command
         c.execute(command)
         #get results of query
@@ -66,55 +67,66 @@ class delquote(commands.Cog):
         #close database connection
         c.close()
         conn.close()
+        
 
         #if nothing in results, no matching quote was found
         if len(results) == 0:
             #SEND NO QUOTE FOUND EMBED
-            no_quote_embed = discord.Embed(title="No quote was found", description="Make sure you've spelled everything correctly", color=0xe02f2f)
+            no_quote_embed = discord.Embed(title=f"{user.display_name} has no quotes", description="-\nAdd some with **/add**", color=0xe02f2f)
             #Create fake quote author for confirm
-            no_quote_embed.set_author(name=user, icon_url=user.display_avatar.url)
+            no_quote_embed.set_author(name=user.display_name, icon_url=user.display_avatar.url)
             #CREATE PAGE FOOTER
             #create footer with USERID
             no_quote_embed.set_footer(text=f"QuoteBot | ID: {interaction.user.id}", icon_url="https://cdn.discordapp.com/attachments/916091272186454076/1017973024680579103/quote_botttt.png")
             #set timestamp to discord time
             no_quote_embed.timestamp = datetime.datetime.utcnow()
-            await message.edit(embed=no_quote_embed)
 
-            try:
-                #after timeout delete the message
-                await message.delete(delay=5)
-                return
-            except:
-                #if it fails means it was hidden therefore we ignore
-                pass
+            await interaction.followup.send(embed=no_quote_embed, ephemeral=True)
+            await message.delete()
+            return
 
         #if there is more then 1 quote, the filter term was too common
-        elif len(results) > 1:
+        else:
+            select_options = []
+                
             #SEND FILTER TOO COMMON EMBED
-            bad_filter_embed = discord.Embed(title="Filter term too common", description=f"I found {len(results)} quotes that include:\n**\"{quote}\"**\n-\nPlease add more of the quote you wish to remove", color=0xe02f2f)
+            select_quote_embed = discord.Embed(title="Select a quote", description=f"Please select the quote you want to delete from QuoteBot", color=0xe02f2f)
             #Create fake quote author for confirm
-            bad_filter_embed.set_author(name=user, icon_url=user.display_avatar.url)
+            select_quote_embed.set_author(name=user.display_name, icon_url=user.display_avatar.url)
             #CREATE PAGE FOOTER
             #create footer with USERID
-            bad_filter_embed.set_footer(text=f"QuoteBot | ID: {interaction.user.id}", icon_url="https://cdn.discordapp.com/attachments/916091272186454076/1017973024680579103/quote_botttt.png")
+            select_quote_embed.set_footer(text=f"QuoteBot | ID: {interaction.user.id}", icon_url="https://cdn.discordapp.com/attachments/916091272186454076/1017973024680579103/quote_botttt.png")
             #set timestamp to discord time
-            bad_filter_embed.timestamp = datetime.datetime.utcnow()
-            await message.edit(embed=bad_filter_embed)
+            select_quote_embed.timestamp = datetime.datetime.utcnow()
 
-            #wait 5 seconds for message reading
-            await asyncio.sleep(5)
+            for quote in results:
+                if len(quote[3]) == 10:
+                    quote_date = datetime.datetime.strptime(quote[3], "%d/%m/%Y").strftime("%d/%m/%Y")
+                elif len(quote[3]) == 19:
+                    quote_date = datetime.datetime.strptime(quote[3], "%d/%m/%Y %H:%M:%S").strftime("%d/%m/%Y")
+                else:
+                    quote_ddate = ""
+                select_options.append(discord.SelectOption(label=f"{quote[2][:97]}{'...' if len(quote[2]) > 97 else ''}", description=f"Added on {quote_date}", value=f"{quote[0]}"))
+
+            # Split select_options into sublists of 25 or less
+            select_options = [select_options[i:i+25] for i in range(0, len(select_options), 25)]
+
+            selected_quote = await self.update_delete_dropdown(interaction, select_quote_embed, select_options, 0, message)
+
+        if selected_quote == None or selected_quote == "qb-cancel-command-c2vzOQ":
             try:
-                #after timeout delete the message
                 await message.delete()
-                return
             except:
-                #if it fails means it was hidden therefore we ignore
+                #if it failed prob got canceled so we ignore
                 pass
 
-        delete_quote = results[0]
+            return
+
+        delete_quote = [result for result in results if str(result[0]) == str(selected_quote)][0]
+
         verify_embed = discord.Embed(title=f"\n\"{delete_quote[2]}\"\n", description=f"-\n*Please confirm that the quote above is correct*", color=0xff6161)
         #Create fake quote author for confirm
-        verify_embed.set_author(name=user, icon_url=user.display_avatar.url)
+        verify_embed.set_author(name=interaction.user.display_name, icon_url=interaction.user.display_avatar.url)
         #CREATE PAGE FOOTER
         #create footer with USERID
         verify_embed.set_footer(text=f"QuoteBot | ID: {interaction.user.id}", icon_url="https://cdn.discordapp.com/attachments/916091272186454076/1017973024680579103/quote_botttt.png")
@@ -148,16 +160,8 @@ class delquote(commands.Cog):
             c.execute(command)
             #commit changes
             conn.commit()
-            #close database connection
-            c.close()
-            conn.close()
 
             #check if any quote channel is set
-             #connect to database
-            conn = database.connect()
-            #set database cursor
-            c = conn.cursor()
-            #create query to add quote to user database
             command = f"select * from channels where guild_id={interaction.guild.id} and type='quotes'"
             #execute command
             c.execute(command)
@@ -183,26 +187,26 @@ class delquote(commands.Cog):
                             if final_quote.id == results[0][8]:
                                 print(" vv |DELQUOTE TEMP DEBUG| vv")
                                 print("original: ", results[0][8],"\nfound: ",final_quote.id)
+                                await new_found_quote.delete()
                                 break
                             else:
                                 pass
                         except:
                             pass
-                    await new_found_quote.delete()
 
             elif len(channels) == 0:
                 for text_channel in interaction.guild.text_channels:
                     #get original quote message
                     try:
                         original_quote_msg = text_channel.get_partial_message(int(results[0][8]))
+                        await original_quote_msg.delete()
                         break
                     except:
                         pass
-                    await original_quote_msg.delete()
 
             complete_embed = discord.Embed(title=f"Quote Deleted",description=f"\"{delete_quote[2]}\"", color=0xff6161)
             #Add user as author
-            complete_embed.set_author(name=user, icon_url=user.display_avatar.url)
+            complete_embed.set_author(name=user.display_name, icon_url=user.display_avatar.url)
             #CREATE PAGE FOOTER
             #create footer with USERID
             complete_embed.set_footer(text=f"QuoteBot | ID: {interaction.user.id}", icon_url="https://cdn.discordapp.com/attachments/916091272186454076/1017973024680579103/quote_botttt.png")
@@ -213,15 +217,33 @@ class delquote(commands.Cog):
         else:
             #create canceled embed
             canceled_embed = discord.Embed(description="<:no:907768020561190983> **Canceled**",  color=0xff0000)
-            await message.edit(embed=canceled_embed, view=None)
-
-        try:
-            #after timeout delete the message
-            await message.delete(delay=5)
+                        
+            await interaction.followup.send(embed=canceled_embed, ephemeral=True)
+            await message.delete()
             return
-        except:
-            #if it fails means it was hidden therefore we ignore
-            pass
+
+    async def update_delete_dropdown(self, interaction, select_quote_embed, select_options, page, message):
+        dropdown = self.quote_delete_dropdown(select_options, page)
+        await message.edit(embed=select_quote_embed, view=dropdown)
+        await dropdown.wait()
+        if dropdown.done == False:
+            if dropdown.cancel is True:
+                #create canceled embed
+                canceled_embed = discord.Embed(description="<:no:907768020561190983> **Canceled**",  color=0xff0000)
+                await interaction.followup.send(embed=canceled_embed, ephemeral=True)
+                await message.delete()
+                return 'qb-cancel-command-c2vzOQ'
+            
+            elif dropdown.selection == 'next':
+                page += 1
+                await self.update_delete_dropdown(interaction, select_quote_embed, select_options, page, message)
+            
+            elif dropdown.selection == 'back':
+                page -= 1
+                await self.update_delete_dropdown(interaction, select_quote_embed, select_options, page, message)
+        
+        else:
+            return dropdown.selection 
 
     class Confirm(discord.ui.View):
         def __init__(self):
@@ -241,6 +263,69 @@ class delquote(commands.Cog):
             self.value = False
             self.stop()
 
+    class timed_out(discord.ui.View):
+        def __init__(self):
+            super().__init__()
+            self.value = None
+
+        @discord.ui.button(label='This message has timed out', style=discord.ButtonStyle.grey, disabled=True)
+        async def timeout(self, interaction: discord.Interaction, button: discord.ui.Button):
+            await interaction.response.defer()
+            self.value = False
+            self.stop()
+
+    class quote_delete_dropdown(discord.ui.View):
+        def __init__(self, select_options, page, timeout=120):
+            super().__init__(timeout=timeout)
+            self.selection = None
+            self.cancel = False
+            self.page = page
+            self.done = False
+            self.select_options = select_options
+
+            self.select = discord.ui.Select(placeholder="Select the quote you wish to delete", options=select_options[self.page], min_values=1, max_values=1, row=1)
+            self.select.callback = self.quote_dropdown
+            self.add_item(self.select)
+
+            self.back_button = discord.ui.Button(label='Back', style=discord.ButtonStyle.blurple, emoji="<:previous:1014353821968896080>", row=2)
+            self.back_button.callback = self.back_page
+            if self.page == 0:
+                self.back_button.disabled = True
+            self.add_item(self.back_button)
+
+            self.next_button = discord.ui.Button(label='Next', style=discord.ButtonStyle.blurple, emoji="<:next:1014353798203985930> ", row=2)
+            self.next_button.callback = self.next_page
+            if self.page == len(select_options)-1:
+                self.next_button.disabled = True
+            self.add_item(self.next_button)
+
+
+            self.cancel_button = discord.ui.Button(label='Cancel', style=discord.ButtonStyle.red, row=2)
+            self.cancel_button.callback = self.cancel_delete
+            self.add_item(self.cancel_button)
+
+        async def quote_dropdown(self, interaction: discord.Interaction):
+            await interaction.response.defer()
+            self.selection = interaction.data['values'][0] if interaction.data['values'][0] else None
+            self.done = True
+            self.stop()
+
+        async def next_page(self, interaction: discord.Interaction):
+            await interaction.response.defer()
+            self.selection = 'next'
+            self.stop()
+
+        async def back_page(self, interaction: discord.Interaction):
+            await interaction.response.defer()
+            self.selection = 'back'
+            self.stop()
+
+        async def cancel_delete(self, interaction: discord.Interaction):
+            await interaction.response.defer()
+            self.cancel = True
+            self.stop()
+                
+                
 
 
 async def setup(bot: commands.Bot) -> None:

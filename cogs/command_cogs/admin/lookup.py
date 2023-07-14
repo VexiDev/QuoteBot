@@ -6,10 +6,17 @@ class lookup_commands(commands.Cog):
     def __init__(self, bot: commands.Bot) -> None:
         self.bot = bot
 
+    
+    @app_commands.command(name="lookup", description="looks up global info on a user/server")
+    @app_commands.describe(type='Select if you want to get the info of a user or server')
+    @app_commands.describe(id='The ID of the user or server')
+    @app_commands.describe(hidden='Hides this interaction from everyone but you')
+    @app_commands.choices(type=[app_commands.Choice(name="User", value="1"),app_commands.Choice(name="Server", value="2"),])
+    async def lookup(self, interaction: discord.Interaction, type: str, id: str, hidden: bool=False):
+        
+        command = self.bot.get_cog('lookup')
 
-    # @app_commands.command(name="lookup", description="looks up info on user/server")
-    async def lookup(self, interaction: discord.Interaction, user: discord.User, quote: str):
-        await interaction.response.send_message(f"Successfully added {quote} to {user}({user.id})")
+        await command.lookup(interaction, type, id)
 
 
 async def setup(bot: commands.Bot) -> None:

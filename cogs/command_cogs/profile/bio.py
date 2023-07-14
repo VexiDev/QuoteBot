@@ -8,9 +8,9 @@ class bio_commands(commands.Cog):
 
 
     @app_commands.command(name="bio", description="Changes the bio on your public profile")
-    @app_commands.describe(bio='What you want your new bio to say')
-    @app_commands.describe(hidden='Hides the message from everyone but you')
-    async def bio(self, interaction: discord.Interaction, bio: str, hidden: bool=False):
+    @app_commands.describe(bio='What you want your new bio to be')
+    @app_commands.describe(hidden='Hides this interaction from everyone but you')
+    async def bio(self, interaction: discord.Interaction, bio: app_commands.Range[str, 1, 250], hidden: bool=False):
         
         command = self.bot.get_cog('edit_bio')
 

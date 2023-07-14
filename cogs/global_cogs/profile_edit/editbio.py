@@ -13,15 +13,16 @@ class edit_bio(commands.Cog):
         #Create loading embed for profile
         loading_embed = discord.Embed(description="<a:loading:892534287415525386> **Processing Request**", color=0x068acc)
         #Send loading message
-        await interaction.response.send_message(embed=loading_embed, ephemeral=hidden)
+        await interaction.response.defer(ephemeral=hidden)
         #assign message for future edits
-        message = await interaction.original_response()
+        message = await interaction.followup.send(embed=loading_embed)
 
         #set database variable
         database = self.bot.get_cog("database")
 
         #------Pass System Checks-----
         #import system checks cog
+        content_filter = self.bot.get_cog("content_filter")
         action_manager = self.bot.get_cog("action_manager")
         profile_manager = self.bot.get_cog("profile_creator")
         #check maintenance
@@ -29,10 +30,6 @@ class edit_bio(commands.Cog):
         #check if profile exist for user 
         await profile_manager.creator(interaction.user)
 
-        #check blacklist
-        status = await action_manager.blacklist_actions(interaction, message, database)
-        if status == "blacklisted":
-            return
         #check if user is a bot
         if interaction.user.bot:
             #if is a bot cancel request
@@ -46,6 +43,22 @@ class edit_bio(commands.Cog):
             except:
                 #if it fails means it was hidden therefore we ignore
                 pass
+
+        #check user blacklist
+        user_status = await action_manager.user_blacklist_actions(interaction, message, database)
+        if user_status == "user_blacklisted":
+            return
+
+        #default nsfw to false
+        nsfw = False
+        #send bio to filter api
+        filter_result = await content_filter.check_nsfw(bio, type="bio")
+        #take action based on results
+        nsfw = await action_manager.nsfw_actions(interaction, message, interaction.user, nsfw, bio, filter_result, type="bio")
+        #if action manager blocks the quote end add function
+        if nsfw == "blocked":
+            return
+
 
         #-----CHECK FOR EXIST-----
         #connect to database
@@ -71,25 +84,21 @@ class edit_bio(commands.Cog):
                 duplicate_embed.set_author(name=interaction.user, icon_url=interaction.user.display_avatar.url)
                 #CREATE PAGE FOOTER
                 #create footer with USERID
-                duplicate_embed.set_footer(text=f"QuoteBot | ID: {interaction.user.id}", icon_url="https://cdn.discordapp.com/attachments/844600910562066444/871953767115919400/quotebotpfp.png")
+                duplicate_embed.set_footer(text=f"QuoteBot | ID: {interaction.user.id}", icon_url="https://cdn.discordapp.com/attachments/916091272186454076/1017973024680579103/quote_botttt.png")
                 #set timestamp to discord time
                 duplicate_embed.timestamp = datetime.datetime.utcnow()
-                await message.edit(embed=duplicate_embed)
+                            
+                await interaction.followup.send(embed=duplicate_embed, ephemeral=True)
+                await message.delete()
+                return
 
-                try:
-                    #after timeout delete the message
-                    await message.delete(delay=5)
-                    return
-                except:
-                    #if it fails means it was hidden therefore we ignore
-                    pass
 
         verify_embed = discord.Embed(title=f"\n{bio}\n", description=f"-\n*Please confirm that the text above is correct*", color=0xffb300)
         #Create fake quote author for confirm
         verify_embed.set_author(name=interaction.user, icon_url=interaction.user.display_avatar.url)
         #CREATE PAGE FOOTER
         #create footer with USERID
-        verify_embed.set_footer(text=f"QuoteBot | ID: {interaction.user.id}", icon_url="https://cdn.discordapp.com/attachments/844600910562066444/871953767115919400/quotebotpfp.png")
+        verify_embed.set_footer(text=f"QuoteBot | ID: {interaction.user.id}", icon_url="https://cdn.discordapp.com/attachments/916091272186454076/1017973024680579103/quote_botttt.png")
         #set timestamp to discord time
         verify_embed.timestamp = datetime.datetime.utcnow()
         confirm_buttons = self.Confirm()
@@ -105,7 +114,7 @@ class edit_bio(commands.Cog):
             confirm_embed = discord.Embed(title="Please wait while we update your bio", description="<a:loading:892534287415525386> Processing request", color=0x068acc)
             #CREATE PAGE FOOTER
             #create footer with USERID
-            confirm_embed.set_footer(text=f"QuoteBot | ID: {interaction.user.id}", icon_url="https://cdn.discordapp.com/attachments/844600910562066444/871953767115919400/quotebotpfp.png")
+            confirm_embed.set_footer(text=f"QuoteBot | ID: {interaction.user.id}", icon_url="https://cdn.discordapp.com/attachments/916091272186454076/1017973024680579103/quote_botttt.png")
             #set timestamp to discord time
             confirm_embed.timestamp = datetime.datetime.utcnow()
             await message.edit(embed=confirm_embed, view=None)
@@ -128,7 +137,7 @@ class edit_bio(commands.Cog):
             complete_embed.set_author(name=interaction.user, icon_url=interaction.user.display_avatar.url)
             #CREATE PAGE FOOTER
             #create footer with USERID
-            complete_embed.set_footer(text=f"QuoteBot | ID: {interaction.user.id}", icon_url="https://cdn.discordapp.com/attachments/844600910562066444/871953767115919400/quotebotpfp.png")
+            complete_embed.set_footer(text=f"QuoteBot | ID: {interaction.user.id}", icon_url="https://cdn.discordapp.com/attachments/916091272186454076/1017973024680579103/quote_botttt.png")
             #set timestamp to discord time
             complete_embed.timestamp = datetime.datetime.utcnow()
             await message.edit(embed=complete_embed, view=None)
@@ -144,15 +153,10 @@ class edit_bio(commands.Cog):
         else:
             #create canceled embed
             canceled_embed = discord.Embed(description="<:no:907768020561190983> **Canceled**",  color=0xff0000)
-            await message.edit(embed=canceled_embed, view=None)
-
-            try:
-                #after timeout delete the message
-                await message.delete(delay=5)
-                return
-            except:
-                #if it fails means it was hidden therefore we ignore
-                pass
+            
+            await interaction.followup.send(embed=canceled_embed, ephemeral=True)
+            await message.delete()
+            return
 
 
     class Confirm(discord.ui.View):

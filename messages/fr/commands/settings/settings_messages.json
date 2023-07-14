@@ -1,0 +1,36 @@
+{
+    "language": "fr",
+    "system_messages": {
+        "processing_request": "<a:loading:892534287415525386> **Traitement de la demande**",
+        "no_bots": "Les bots ne peuvent pas utiliser QuoteBot",
+        "timed_out": "Ce message a expir\u00e9",
+        "error_title": "Une erreur est survenue, veuillez r\u00e9essayer plus tard",
+        "error_desc": "Si cette erreur persiste, veuillez contacter @v3xi",
+        "embed_footer": "QuoteBot | ID: {interaction.user.id}"
+    },
+    "settings_main_menu": {
+        "title": "Param\u00e8tres du serveur",
+        "description": "-\nVeuillez s\u00e9lectionner les param\u00e8tres que vous souhaitez modifier",
+        "dropdown": {
+            "dropdown_placeholder": "S\u00e9lectionnez une cat\u00e9gorie de param\u00e8tres",
+            "language": ["Langue", "D\u00e9finir la langue de QuoteBot"],
+            "channel": ["Canaux", "S\u00e9lectionnez les canaux pour les messages sp\u00e9cifiques aux canaux"],
+            "commands": ["Ajouter/Modifier/Supprimer", "Modifier les param\u00e8tres d'utilisation pour les commandes Ajouter/Modifier/Supprimer"],
+            "detection": ["Filtrage", "Modifiez les param\u00e8tres de filtre pour les citations ajout\u00e9es \u00e0 QuoteBot"],
+            "automod": ["AutoMod", "Modifiez les actions AutoMod pour QuoteBot"]
+        }
+    },
+    "language_settings": {
+        "title": "Param\u00e8tres de langue",
+        "description": "-\nVeuillez s\u00e9lectionner la langue pour les messages de QuoteBot",
+        "language_change_success": ["Changement de langue", "La langue de QuoteBot a \u00e9t\u00e9 chang\u00e9e avec succ\u00e8s en fran\u00e7ais"],
+        "dropdown": {
+            "dropdown_placeholder": "S\u00e9lectionnez une langue",
+            "english": "English",
+            "french": "Fran\u00e7ais",
+            "spanish": "Espa\u00f1ol",
+            "german": "Deutsch"
+        },
+        "back_button": "Retour"
+    }
+}

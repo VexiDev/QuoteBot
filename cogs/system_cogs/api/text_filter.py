@@ -8,7 +8,7 @@ class content_filter(commands.Cog):
     def __init__(self, bot: commands.Bot) -> None:
         self.bot = bot
 
-    async def check_nsfw(self, quote):
+    async def check_nsfw(self, quote, type="quote"):
 
         async def nsfwapi(quote):
 
@@ -30,16 +30,25 @@ class content_filter(commands.Cog):
             return response
             
 
-        async def blacklist_check(blacklist, i):
+        async def blacklist_check(blacklist, i, type):
             try:
                 if blacklist[i]['match'] == "rape" or blacklist[i]['match'] == "raped":
-                    return True, False, False, f"Sexual Harassment ('{blacklist[i]['match']}')"
+                    if type!="bio":
+                        return True, False, False, f"Sexual Harassment ('{blacklist[i]['match']}')"
+                    else:
+                        return True, False, True, f"Sexual Harassment ('{blacklist[i]['match']}')"
 
                 elif blacklist[i]['match'] == "retarded":
-                    return True, False, False, f"Derogatory ('{blacklist[i]['match']}')"
+                    if type!="bio":
+                        return True, False, False, f"Derogatory ('{blacklist[i]['match']}')"
+                    else:
+                        return True, False, True, f"Derogatory ('{blacklist[i]['match']}')"
 
                 elif blacklist[i]['match'] == "nazi":
-                    return True, False, False, f"Sensitive Topic ('{blacklist[i]['match']}')"
+                    if type!="bio":
+                        return True, False, False, f"Sensitive Topic ('{blacklist[i]['match']}')"
+                    else:
+                        return True, False, True, f"Sensitive Topic ('{blacklist[i]['match']}')"
                     
                 else:
                     return None
@@ -64,14 +73,20 @@ class content_filter(commands.Cog):
         if len(profanity) != 0:
             for i in range(len(profanity)):
                 if profanity[i]['type'] == 'discriminatory':
-                    return True, True, False, f"Discrimination ('{profanity[i]['match']}')"
+                    if type!="bio":
+                        return True, True, False, f"Discrimination ('{profanity[i]['match']}')"
+                    else:
+                        return True, True, True, f"Discrimination ('{profanity[i]['match']}')"
 
                 elif profanity[i]['type'] == 'derogatory':
-                    return True, True, False, f"Derogatory ('{profanity[i]['match']}')"
+                    if type!="bio":
+                        return True, True, False, f"Derogatory ('{profanity[i]['match']}')"
+                    else:
+                        return True, True, True, f"Derogatory ('{profanity[i]['match']}')"
 
             if len(blacklist) != 0:
                 for i in range(len(blacklist)):
-                    blist_check = await blacklist_check(blacklist, i)
+                    blist_check = await blacklist_check(blacklist, i, type)
                     if blist_check != None:
                         return blist_check
                     else:
@@ -83,7 +98,7 @@ class content_filter(commands.Cog):
         else:
             if len(blacklist) != 0:
                 for i in range(len(blacklist)):
-                    blist_check = await blacklist_check(blacklist, i)
+                    blist_check = await blacklist_check(blacklist, i, type)
                     if blist_check != None:
                         return blist_check
                     else:

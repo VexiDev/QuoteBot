@@ -13,9 +13,9 @@ class edit_pin(commands.Cog):
         #Create loading embed for profile
         loading_embed = discord.Embed(description="<a:loading:892534287415525386> **Processing Request**", color=0x068acc)
         #Send loading message
-        await interaction.response.send_message(embed=loading_embed, ephemeral=hidden)
+        await interaction.response.defer(ephemeral=hidden)
         #assign message for future edits
-        message = await interaction.original_response()
+        message = await interaction.followup.send(embed=loading_embed)
 
         #set database variable
         database = self.bot.get_cog("database")
@@ -28,9 +28,9 @@ class edit_pin(commands.Cog):
         #check channel restrictions
         #check if profile exist for user 
         await profile_manager.creator(interaction.user)
-        #check blacklist
-        status = await action_manager.blacklist_actions(interaction, message, database)
-        if status == "blacklisted":
+        #check user blacklist
+        user_status = await action_manager.user_blacklist_actions(interaction, message, database)
+        if user_status == "user_blacklisted":
             return
         #check if user is a bot
         if interaction.user.bot:
@@ -55,13 +55,13 @@ class edit_pin(commands.Cog):
         #set database cursor
         c = conn.cursor()
         #create query to find the quote in user base
-        command = f"select distinct * from quotes where uid={interaction.user.id} and lower(quote) like lower('%{quote}%')"
+        command = f"select distinct * from quotes where uid={interaction.user.id} and lower(quote) like lower('%{quote}%') and hidden=false"
         #execute command
         c.execute(command)
         #get results of query
         pinquote=c.fetchall()
         #create query to get all star quotes
-        command = f"select * from quotes where uid={interaction.user.id} and star=True"
+        command = f"select * from quotes where uid={interaction.user.id} and star=True and hidden=false"
         #execute command
         c.execute(command)
         #get results of query
@@ -81,15 +81,11 @@ class edit_pin(commands.Cog):
             no_quote_embed.set_footer(text=f"QuoteBot | ID: {interaction.user.id}", icon_url="https://cdn.discordapp.com/attachments/916091272186454076/1017973024680579103/quote_botttt.png")
             #set timestamp to discord time
             no_quote_embed.timestamp = datetime.datetime.utcnow()
-            await message.edit(embed=no_quote_embed)
 
-            try:
-                #after timeout delete the message
-                await message.delete(delay=5)
-                return
-            except:
-                #if it fails means it was hidden therefore we ignore
-                pass
+            await interaction.followup.send(embed=no_quote_embed, ephemeral=True)
+            await message.delete()
+            return
+
 
         #if there is more then 1 quote, the filter term was too common
         elif len(pinquote) > 1:
@@ -106,20 +102,16 @@ class edit_pin(commands.Cog):
                     bad_filter_embed.set_footer(text=f"QuoteBot | ID: {interaction.user.id}", icon_url="https://cdn.discordapp.com/attachments/916091272186454076/1017973024680579103/quote_botttt.png")
                     #set timestamp to discord time
                     bad_filter_embed.timestamp = datetime.datetime.utcnow()
-                    await message.edit(embed=bad_filter_embed)
-                    break
 
-                    try:
-                        #after timeout delete the message
-                        await message.delete(delay=5)
-                        return
-                    except:
-                        #if it fails means it was hidden therefore we ignore
-                        pass
+                    await interaction.followup.send(embed=bad_filter_embed, ephemeral=True)
+                    await message.delete()
+                    return
+
+                    break
 
         #if there is only 1 quote  check if its the same one
         elif len(pinquote) == 1 and len(starquote) == 1:
-            
+
             if pinquote[0][0] == starquote[0][0]:
                 #SEND FILTER TOO COMMON EMBED
                 duplicate_embed = discord.Embed(title="This is already your pinned quote", color=0xffb300)
@@ -130,35 +122,27 @@ class edit_pin(commands.Cog):
                 duplicate_embed.set_footer(text=f"QuoteBot | ID: {interaction.user.id}", icon_url="https://cdn.discordapp.com/attachments/916091272186454076/1017973024680579103/quote_botttt.png")
                 #set timestamp to discord time
                 duplicate_embed.timestamp = datetime.datetime.utcnow()
-                await message.edit(embed=duplicate_embed)
 
-                try:
-                    #after timeout delete the message
-                    await message.delete(delay=5)
-                    return
-                except:
-                    #if it fails means it was hidden therefore we ignore
-                    pass
-
-        elif pinquote[0][5] == True:
-            #SEND NO NSFW EMBED
-            nsfw_embed = discord.Embed(title="NSFW quotes cannot be pinned",description="Look in your profile for a non nsfw quote", color=0xe02f2f)
-            #Create fake quote author for confirm
-            nsfw_embed.set_author(name=interaction.user, icon_url=interaction.user.display_avatar.url)
-            #CREATE PAGE FOOTER
-            #create footer with USERID
-            nsfw_embed.set_footer(text=f"QuoteBot | ID: {interaction.user.id}", icon_url="https://cdn.discordapp.com/attachments/916091272186454076/1017973024680579103/quote_botttt.png")
-            #set timestamp to discord time
-            nsfw_embed.timestamp = datetime.datetime.utcnow()
-            await message.edit(embed=nsfw_embed)
-
-            try:
-                #after timeout delete the message
-                await message.delete(delay=5)
+                await interaction.followup.send(embed=duplicate_embed, ephemeral=True)
+                await message.delete()
                 return
-            except:
-                #if it fails means it was hidden therefore we ignore
-                pass
+
+
+            elif pinquote[0][5] == True:
+                #SEND NO NSFW EMBED
+                nsfw_embed = discord.Embed(title="NSFW quotes cannot be pinned",description="-\nLook in your profile for a non nsfw quote", color=0xe02f2f)
+                #Create fake quote author for confirm
+                nsfw_embed.set_author(name=interaction.user, icon_url=interaction.user.display_avatar.url)
+                #CREATE PAGE FOOTER
+                #create footer with USERID
+                nsfw_embed.set_footer(text=f"QuoteBot | ID: {interaction.user.id}", icon_url="https://cdn.discordapp.com/attachments/916091272186454076/1017973024680579103/quote_botttt.png")
+                #set timestamp to discord time
+                nsfw_embed.timestamp = datetime.datetime.utcnow()
+
+                await interaction.followup.send(embed=nsfw_embed, ephemeral=True)
+                await message.delete()
+                return
+
 
         pinned_quote = pinquote[0]
         verify_embed = discord.Embed(title=f"\n\"{pinned_quote[2]}\"\n", description=f"-\n*Please confirm that the quote above is correct*", color=0xffb300)
@@ -226,7 +210,7 @@ class edit_pin(commands.Cog):
 
             try:
                 #after timeout delete the message
-                await message.delete(delay=5)
+                await message.delete(delay=8)
                 return
             except:
                 #if it fails means it was hidden therefore we ignore
@@ -235,15 +219,11 @@ class edit_pin(commands.Cog):
         else:
             #create canceled embed
             canceled_embed = discord.Embed(description="<:no:907768020561190983> **Canceled**",  color=0xff0000)
-            await message.edit(embed=canceled_embed, view=None)
 
-            try:
-                #after timeout delete the message
-                await message.delete(delay=5)
-                return
-            except:
-                #if it fails means it was hidden therefore we ignore
-                pass
+            await interaction.followup.send(embed=canceled_embed, ephemeral=True)
+            await message.delete()
+            return
+
 
 
     class Confirm(discord.ui.View):

@@ -9,7 +9,7 @@ class profile_commands(commands.Cog):
 
     @app_commands.command(name="profile", description="Displays a user's QuoteBot Profile")
     @app_commands.describe(user='Who\'s profile you want to view (Cannot be a bot)')
-    @app_commands.describe(hidden='Hides the message from everyone but you')
+    @app_commands.describe(hidden='Hides this interaction from everyone but you')
     async def profile(self, interaction: discord.Interaction, user: discord.User, hidden: bool=False):
         
         command = self.bot.get_cog('profile')

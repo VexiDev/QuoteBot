@@ -9,6 +9,7 @@ class test_commands(commands.Cog):
 
 
     # @app_commands.command(name="logtest", description="Runs a fake log request")
+    @commands.command()
     async def lag(self, interaction: discord.Interaction):
         await interaction.response.send_message(f"Running fake log request")
         log = self.bot.get_cog("logger")

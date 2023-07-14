@@ -10,8 +10,8 @@ class setchannel_commands(commands.Cog):
     @app_commands.command(name="setchannel", description="Set specific channels for QuoteBot messages")
     @app_commands.choices(type=[app_commands.Choice(name="Added Quotes", value="quotes")])
     @app_commands.describe(type='Select what messages will be dispalyed in that channel')
-    @app_commands.describe(channel='Select a channel')
-    async def setchannel(self, interaction: discord.Interaction, type: str, channel: discord.TextChannel):
+    @app_commands.describe(channel='Select a channel (leave blank to remove the channel)')
+    async def setchannel(self, interaction: discord.Interaction, type: str, channel: discord.TextChannel = None):
         
         command = self.bot.get_cog('setchannel')
 

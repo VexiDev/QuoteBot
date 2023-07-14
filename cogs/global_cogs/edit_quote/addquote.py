@@ -13,9 +13,9 @@ class addquote(commands.Cog):
         #Create loading embed for profile
         loading_embed = discord.Embed(description="<a:loading:892534287415525386> **Processing Request**", color=0x068acc)
         #Send loading message
-        await interaction.response.send_message(embed=loading_embed)
+        await interaction.response.defer()
         #assign message for future edits
-        message = await interaction.original_response()
+        message = await interaction.followup.send(embed=loading_embed)
 
         #set database variable
         database = self.bot.get_cog("database")
@@ -46,9 +46,13 @@ class addquote(commands.Cog):
         await profile_manager.creator(interaction.user)
         await profile_manager.creator(user)
 
-        #check blacklist
-        status = await action_manager.blacklist_actions(interaction, message, database)
-        if status == "blacklisted":
+        #check user blacklist
+        status = await action_manager.user_blacklist_actions(interaction, message, database)
+        if status == "user_blacklisted":
+            return
+        #check target blacklist
+        status = await action_manager.target_blacklist_actions(interaction, user, message, database)
+        if status == "target_blacklisted":
             return
 
         #check if user is a bot
@@ -98,18 +102,23 @@ class addquote(commands.Cog):
         conn.close()
 
         #if anything in results, a duplicate was found
-        if len(results) != 0:
-            duplicate_embed = discord.Embed(title=f"Quote Already Exists", description=f"The following quote is already in your server profile:\n\"{msg_quote}\"", color=0xDF3B57)
+        if len(results) == 1:
+            date = results[0][3]
+            if len(date) == 10:
+                quote_date = datetime.datetime.strptime(date, "%d/%m/%Y").strftime("%d/%m/%Y")
+            elif len(date) == 19:
+                quote_date = datetime.datetime.strptime(date, "%d/%m/%Y %H:%M:%S").strftime("%d/%m/%Y")
+            else:
+                quote_date = date
+            duplicate_embed = discord.Embed(title=f"Quote Already Exists", description=f"{user.display_name} *{quote_date}*\n**\"{results[0][2]}\"**\n\u200B", color=0xDF3B57)
             duplicate_embed.set_footer(text=f"QuoteBot | ID: {interaction.user.id}", icon_url="https://cdn.discordapp.com/attachments/916091272186454076/1017973024680579103/quote_botttt.png")
             duplicate_embed.timestamp = datetime.datetime.utcnow()
-            await message.edit(embed=duplicate_embed)
-            try:
-                #after timeout delete the message
-                await message.delete(delay=5)
-                return
-            except:
-                #if it fails means it was hidden therefore we ignore
-                pass
+            
+            await interaction.followup.send(embed=duplicate_embed, ephemeral=True)
+            await message.delete()
+
+            return
+
         if nsfw:
             verify_embed = discord.Embed(title=f"\n\"{msg_quote}\"\n", description=f"-\n<:alert2:1016826438718066790> **This quote has been flagged and will be placed in the NSFW category**\n-\n*Please confirm that the quote above is correct*", color=0x42f56f)
         else:
@@ -132,6 +141,7 @@ class addquote(commands.Cog):
             #if timed out place warning in console
             print(f'WARNING: confirm_buttons() view in server {interaction.guild.id} has timed out')
         elif confirm_buttons.value:
+            
             confirm_embed = discord.Embed(title="Please wait while we add your quote", description="<a:loading:892534287415525386> Processing request", color=0x068acc)
             #CREATE PAGE FOOTER
             #create footer with USERID
@@ -139,13 +149,14 @@ class addquote(commands.Cog):
             #set timestamp to discord time
             confirm_embed.timestamp = datetime.datetime.utcnow()
             await message.edit(embed=confirm_embed, view=None)
+            quotetime = datetime.datetime.now()
 
             if len(channel) == 1:
 
                 msg_channel = await self.bot.fetch_channel(channel[0][2])
                 complete_embed = discord.Embed(title=f"\"{msg_quote}\"", color=0x00ff2f)
                 #Add user as author
-                complete_embed.set_author(name=user, icon_url=user.display_avatar.url)
+                complete_embed.set_author(name=f"{user.display_name} - {quotetime.strftime('%d/%m/%Y')}", icon_url=user.display_avatar.url)
                 #CREATE PAGE FOOTER
                 #create footer with USERID
                 complete_embed.set_footer(text=f"QuoteBot | ID: {interaction.user.id}", icon_url="https://cdn.discordapp.com/attachments/916091272186454076/1017973024680579103/quote_botttt.png")
@@ -155,13 +166,14 @@ class addquote(commands.Cog):
 
                 msg_complete_embed = discord.Embed(title=f"Your quote has been successfully added",description=f"\"{msg_quote}\"\n\n*It has been sent in* <#{msg_channel.id}>", color=0x00ff2f)
                 #Add user as author
-                msg_complete_embed.set_author(name=user, icon_url=user.display_avatar.url)
+                msg_complete_embed.set_author(name=f"{user.display_name}", icon_url=user.display_avatar.url)
                 #CREATE PAGE FOOTER
                 #create footer with USERID
                 msg_complete_embed.set_footer(text=f"QuoteBot | ID: {interaction.user.id}", icon_url="https://cdn.discordapp.com/attachments/916091272186454076/1017973024680579103/quote_botttt.png")
                 #set timestamp to discord time
                 msg_complete_embed.timestamp = datetime.datetime.utcnow()
-                await message.edit(embed=msg_complete_embed, view=None)
+                await interaction.followup.send(embed=msg_complete_embed, ephemeral=True)
+                await message.delete()
 
                  #connect to database
                 conn = database.connect()
@@ -189,33 +201,30 @@ class addquote(commands.Cog):
                 channel_error_embed = discord.Embed(title=f"A channel error has occured",description=f"Please set your quotes channel again using **/setchannel** then try again\n*We apologize for the inconvenience*", color=0xDF3B57)
                 channel_error_embed.set_footer(text=f"QuoteBot | ID: {interaction.user.id}", icon_url="https://cdn.discordapp.com/attachments/916091272186454076/1017973024680579103/quote_botttt.png")
                 channel_error_embed.timestamp = datetime.datetime.utcnow()
-                await message.edit(embed=channel_error_embed)
-                try:
-                    #after timeout delete the message
-                    await message.delete(delay=5)
-                    return
-                except:
-                    #if it fails means it was hidden therefore we ignore
-                    pass
+                await interaction.followup.send(embed=channel_error_embed, ephemeral=True)
+                await message.delete()
+                return
+                
             else:
                 complete_embed = discord.Embed(title=f"\"{msg_quote}\"", color=0x00ff2f)
                 #Add user as author
-                complete_embed.set_author(name=user, icon_url=user.display_avatar.url)
+                complete_embed.set_author(name=f"{user.display_name} - {quotetime.strftime('%d/%m/%Y')}", icon_url=user.display_avatar.url)
                 #CREATE PAGE FOOTER
                 #create footer with USERID
                 complete_embed.set_footer(text=f"QuoteBot | ID: {interaction.user.id}", icon_url="https://cdn.discordapp.com/attachments/916091272186454076/1017973024680579103/quote_botttt.png")
                 #set timestamp to discord time
                 complete_embed.timestamp = datetime.datetime.utcnow()
+
                 await message.edit(embed=complete_embed, view=None)
 
-                                 #connect to database
+                #connect to database
                 conn = database.connect()
                 #set database cursor
                 c = conn.cursor()
                 #get message id of original interaction
                 msg = await message.fetch()
                 #create query to add quote to user database
-                command = f"insert into quotes(uid, quote, date_added, guild_id, nsfw, star, added_by, message) values({user.id}, '{quote}','{datetime.datetime.now().strftime('%d/%m/%Y %H:%M:%S')}',{interaction.guild.id},{nsfw},False, {interaction.user.id}, {msg.id})"
+                command = f"insert into quotes(uid, quote, date_added, guild_id, nsfw, star, added_by, message) values({user.id}, '{quote}','{quotetime.strftime('%d/%m/%Y %H:%M:%S')}',{interaction.guild.id},{nsfw},False, {interaction.user.id}, {msg.id})"
                 #execute command
                 c.execute(command)
                 #commit changes
@@ -227,15 +236,9 @@ class addquote(commands.Cog):
         else:
             #create canceled embed
             canceled_embed = discord.Embed(description="<:no:907768020561190983> **Canceled**",  color=0xff0000)
-            await message.edit(embed=canceled_embed, view=None)
+            await interaction.followup.send(embed=canceled_embed, ephemeral=True)
+            await message.delete()
 
-            try:
-                #after timeout delete the message
-                await message.delete(delay=5)
-                return
-            except:
-                #if it fails means it was hidden therefore we ignore
-                pass
 
 
     class Confirm(discord.ui.View):

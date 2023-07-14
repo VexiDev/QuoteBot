@@ -22,10 +22,11 @@ class profile(commands.Cog):
         #Create loading embed for profile
         loading_embed = discord.Embed(description="<a:loading:892534287415525386> **Processing Request**", color=0x068acc)
         #Send loading message
-        await interaction.response.send_message(embed=loading_embed, ephemeral=hidden)
+        await interaction.response.defer(ephemeral=hidden)
         #assign message for future edits
-        message = await interaction.original_response()
-        
+        message = await interaction.followup.send(embed=loading_embed)
+
+
         #set database variable
         database = self.bot.get_cog("database")
         
@@ -38,9 +39,13 @@ class profile(commands.Cog):
         #check if profile exist for both user and target
         await profile_manager.creator(interaction.user)
         await profile_manager.creator(user)
-        #check blacklist
-        status = await action_manager.blacklist_actions(interaction, message, database)
-        if status == "blacklisted":
+        #check user blacklist
+        user_status = await action_manager.user_blacklist_actions(interaction, message, database)
+        if user_status == "user_blacklisted":
+            return
+        target_status = await action_manager.target_blacklist_actions(interaction, user, message, database)
+        #check target blacklist
+        if target_status == "target_blacklisted":
             return
         #check if user is a bot
         if user.bot or interaction.user.bot:
@@ -81,7 +86,7 @@ class profile(commands.Cog):
         #set database cursor
         c = conn.cursor()
         #create query for all non nsfw quotes
-        command = f"select quote from quotes where uid={user.id} and star=True and hidden=false"
+        command = f"select quote,date_added from quotes where uid={user.id} and star=True and hidden=false"
         #execute command
         c.execute(command)
         #get results of query
@@ -89,16 +94,25 @@ class profile(commands.Cog):
         #close database connection
         c.close()
         conn.close()
+        
         if len(results) != 0:
+            quote_date = results[0][1]
+            if len(quote_date) == 10:
+                quote_date = datetime.datetime.strptime(quote_date, "%d/%m/%Y").strftime("%d/%m/%Y")
+            elif len(quote_date) == 19:
+                quote_date = datetime.datetime.strptime(quote_date, "%d/%m/%Y %H:%M:%S").strftime("%d/%m/%Y")
+            else:
+                quote_date = "legacy quote"
+
             pin = f"\"{results[0][0]}\""
-            pintag = f"ㅤㅤ-{user.name}"
+            pintag = f"\- *{quote_date}*"
         else:
             pin = "Pin a quote with **/pin**"
             pintag = "\u200B"
 
         #-----GET NORMAL USER QUOTES-----
         #get database credentials from database cog
-        #connect to database
+        #connect to database    
         conn = database.connect()
         #set database cursor
         c = conn.cursor()
@@ -117,7 +131,7 @@ class profile(commands.Cog):
             only_quotes = []
             #iterate through results storing only quote strings
             for quotes in results:
-                only_quotes.append(quotes[2])
+                only_quotes.append((quotes[2],quotes[3]))
             #seperate quotes into lists of 10 (or a single list if <=10)
             if len(only_quotes) > 9:
                 only_quote_pages = [only_quotes[i:i + 9] for i in range(0, len(only_quotes), 9)]
@@ -133,18 +147,24 @@ class profile(commands.Cog):
             page_count = 1
             #iterate through pages converting them to embeds
             for page in only_quote_pages:
-                embed_page = discord.Embed(title=f"{user}'s Quotes (Page {page_count}/{len(only_quote_pages)})", description=f"Server: {interaction.guild.name}", color=0x8AEA92)
+                embed_page = discord.Embed(title=f"{user.display_name}'s Quotes (Page {page_count}/{len(only_quote_pages)})", description=f"Server: {interaction.guild.name}", color=0x8AEA92)
                 #create footer with USERID
                 embed_page.set_footer(text=f"QuoteBot | ID: {user.id}", icon_url="https://cdn.discordapp.com/attachments/916091272186454076/1017973024680579103/quote_botttt.png")
                 #set timestamp to discord time
                 embed_page.timestamp = datetime.datetime.utcnow()
                 for quote in page:
-                    embed_page.add_field(name=f"\"{quote}\"", value=f"-{user.name}")
+                    if len(quote[1]) == 10:
+                        quote_date = datetime.datetime.strptime(quote[1], "%d/%m/%Y").strftime("%d/%m/%Y")
+                    elif len(quote[1]) == 19:
+                        quote_date = datetime.datetime.strptime(quote[1], "%d/%m/%Y %H:%M:%S").strftime("%d/%m/%Y")
+                    else:
+                        quote_date = "legacy quote"
+                    embed_page.add_field(name=f"\"{quote[0]}\"", value=f"\- *{quote_date}*")
                 normal_quote_pages.append(embed_page)
                 page_count += 1
         #if no quotes are found create a no quote page
         else:
-            embed_page = discord.Embed(title=f"{user} has no quotes", description=f"-\nAdd some with **/add**!\n\u200B", color=0xDF3B57)
+            embed_page = discord.Embed(title=f"{user.display_name} has no quotes", description=f"-\nAdd some with **/add**!\n\u200B", color=0xDF3B57)
             #create footer with USERID
             embed_page.set_footer(text=f"QuoteBot | ID: {user.id}", icon_url="https://cdn.discordapp.com/attachments/916091272186454076/1017973024680579103/quote_botttt.png")
             #set timestamp to discord time
@@ -171,7 +191,7 @@ class profile(commands.Cog):
             only_quotes = []
             #iterate through results storing only quote strings
             for quotes in results:
-                only_quotes.append(quotes[2])
+                only_quotes.append((quotes[2],quotes[3]))
             #seperate quotes into lists of 10 (or a single list if <=10)
             if len(only_quotes) > 9:
                 only_quote_pages = [only_quotes[i:i + 9] for i in range(0, len(only_quotes), 9)]
@@ -187,13 +207,19 @@ class profile(commands.Cog):
             page_count = 1
             #iterate through pages converting them to embeds
             for page in only_quote_pages:
-                embed_page = discord.Embed(title=f"{user}'s NSFW Quotes (Page {page_count}/{len(only_quote_pages)})", description=f"Server: {interaction.guild.name}", color=0xDF3B57)
+                embed_page = discord.Embed(title=f"{user.display_name}'s NSFW Quotes (Page {page_count}/{len(only_quote_pages)})", description=f"Server: {interaction.guild.name}", color=0xDF3B57)
                 #create footer with USERID
                 embed_page.set_footer(text=f"QuoteBot | ID: {user.id}", icon_url="https://cdn.discordapp.com/attachments/916091272186454076/1017973024680579103/quote_botttt.png")
                 #set timestamp to discord time
                 embed_page.timestamp = datetime.datetime.utcnow()
                 for quote in page:
-                    embed_page.add_field(name=f"\"{quote}\"", value=f"-{user.name}")
+                    if len(quote[1]) == 10:
+                        quote_date = datetime.datetime.strptime(quote[1], "%d/%m/%Y").strftime("%d/%m/%Y")
+                    elif len(quote[1]) == 19:
+                        quote_date = datetime.datetime.strptime(quote[1], "%d/%m/%Y %H:%M:%S").strftime("%d/%m/%Y")
+                    else:
+                        pass
+                    embed_page.add_field(name=f"\"{quote[0]}\"", value=f"\- *{quote_date}*")
                 nsfw_quote_pages.append(embed_page)
                 page_count += 1
         
@@ -212,14 +238,14 @@ class profile(commands.Cog):
         #CREATE MAIN PAGE
         #Create embed home page embed, if user bio is not None set description to the bio
         if bio != "\u200B":
-            profile_home_page = discord.Embed(title=f"{user}'s Profile", description=f"\n{bio}\n-", color=0x54de99)
+            profile_home_page = discord.Embed(title=f"{user}'s Profile", description=f"\n{bio}\n—", color=0x54de99)
         else:
-            profile_home_page = discord.Embed(title=f"{user}'s Profile", description=f"-", color=0x54de99)
+            profile_home_page = discord.Embed(title=f"{user}'s Profile", description=f"—", color=0x54de99)
 
         #set page thumbnail to user's SERVER profile
         profile_home_page.set_thumbnail(url=user.display_avatar.url)
         #add a field for pinned quote
-        profile_home_page.add_field(name=f"<:pinned:1014361955995230288> {pin}", value=f"{pintag}")
+        profile_home_page.add_field(name=f"<:pinned:1014361955995230288> {pin}", value=f"{pintag}\n\u200B")
         
         #CREATE PAGE FOOTER
         #create footer with USERID
