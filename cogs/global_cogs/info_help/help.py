@@ -16,7 +16,7 @@ class help_me(commands.Cog):
         #get server language
         server_language = await language.get_server_language(interaction.guild_id)
         #get language file
-        language_file = await language.select_language(server_language, "commands\help\help_messages.json")
+        language_file = await language.select_language(server_language, "help_messages.json")
 
          #--------LOADING MENU---------
         #Create loading embed for profile

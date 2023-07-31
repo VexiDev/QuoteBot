@@ -23,7 +23,7 @@
     "language_settings": {
         "title": "Param\u00e8tres de langue",
         "description": "-\nVeuillez s\u00e9lectionner la langue pour les messages de QuoteBot",
-        "language_change_success": ["Changement de langue", "La langue de QuoteBot a \u00e9t\u00e9 chang\u00e9e avec succ\u00e8s en fran\u00e7ais"],
+        "language_change_success": ["<:yes:892537190347837450> Changement de langue", "La langue de QuoteBot a \u00e9t\u00e9 chang\u00e9e avec succ\u00e8s en fran\u00e7ais"],
         "dropdown": {
             "dropdown_placeholder": "S\u00e9lectionnez une langue",
             "english": "English",

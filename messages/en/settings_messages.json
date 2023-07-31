@@ -1,0 +1,74 @@
+{
+    "language": "en",
+    "system_messages": {
+        "processing_request": "<a:loading:892534287415525386> **Processing Request**",
+        "no_bots": "Bots cannot use QuoteBot",
+        "timed_out": "This message has timed out",
+        "error_title": "An error has occurred, please try again later",
+        "error_desc": "If this error persists, please contact @v3xi",
+        "embed_footer": "QuoteBot • ID: {0}"
+    },
+    "settings_main_menu": {
+        "title": "Server Settings",
+        "description": "-\nPlease select the settings you would like to edit",
+        "dropdown": {
+            "dropdown_placeholder": "Select a settings category",
+            "language": ["Language", "Set QuoteBot's language"],
+            "channel": ["Channels", "Select the channels for channel specific messages"],
+            "commands": ["Add/Edit/Delete", "Modify usage settings for Add/Edit/Delete commands"],
+            "detection": ["Filtering", "Modify the filter settings for quotes added to QuoteBot"],
+            "automod": ["AutoMod", "Modify the AutoMod actions for QuoteBot"]
+        }
+    },
+    "language_settings": {
+        "title": "Language Settings",
+        "description": "-\nPlease select the language for QuoteBot messages",
+        "language_change_success": ["<:yes:892537190347837450> Language Changed", "QuoteBot's language has been sucessfully changed to English"],
+        "dropdown": {
+            "dropdown_placeholder": "Select a language",
+            "english": "English",
+            "french": "Fran\u00e7ais",
+            "spanish": "Espa\u00f1ol",
+            "german": "Deutsch"
+        },
+        "back_button": "Back"
+
+    },
+    "command_settings": {
+        "title": "Command Settings",
+        "description": "-\nPlease select the command you would like to edit",
+        "mm_buttons": {
+            "add": "/add",
+            "edit": "/edit",
+            "delete": "/delete"
+        },
+        "add_settings": {
+            "title": "Add Command Settings",
+            "description": "Use the dropdown menus below to edit the add command settings.\n-",
+            "field_cooldown": "Cooldown: ",
+            "field_channel": "Channels: ",
+            "field_role": "Roles: ",
+            "cooldown": {
+                "label": "Cooldown",
+                "placeholder": "Set a cooldown for the add command",
+                "dropdown": {
+                    "None": "None",
+                    "5sec": "5 seconds",
+                    "10sec": "10 seconds",
+                    "30sec": "30 seconds",
+                    "1min": "1 minute",
+                    "5min": "5 minutes",
+                    "10min": "10 minutes",
+                    "30min": "30 minutes",
+                    "1hr": "1 hour",
+                    "6hr": "6 hours",
+                    "12hr": "12 hours",
+                    "1day": "1 day"
+                }
+            }
+        },
+        "back_button": "Back",
+        "apply_button": "Apply"
+
+    }
+}

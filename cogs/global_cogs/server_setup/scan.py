@@ -1,9 +1,5 @@
 import discord
-import psycopg2
-import humanize
 import asyncio
-import openai
-import time
 import aiohttp
 import json
 import traceback

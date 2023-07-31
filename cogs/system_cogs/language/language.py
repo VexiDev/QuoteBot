@@ -40,24 +40,26 @@ class language(commands.Cog):
         return server_settings
 
     async def select_language(self, language, message_file):
-        #iterate through ../messages/{language}/{message_file} and load the json as a dict
-
         # Get the root directory of the project
-        root_dir = os.path.dirname(os.path.abspath(__file__))
-
-        # Remove everything after the /quote-bot-420/ from the path
-        relative_path = str(root_dir).split("\quote-bot-420\\")[0]
+        root_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '../../../'))
 
         # Construct the path to the language file
-        path = os.path.join((relative_path+"\quote-bot-420\\"), f"messages\{language}\{message_file}")
-        print(f"loaded language path: ", path)
+        path = os.path.join(root_dir, f"messages/{language}/{message_file}")
+        print(f"Loaded language path: ", path)
 
-        # Open the language file using the desired path
-        with open(path, "r") as f:
-            # Load the JSON as a dict
-            language_file = json.load(f)
+        try:
+            # Open the language file using the desired path
+            with open(path, "r") as f:
+                # Load the JSON as a dict
+                language_file = json.load(f)
+        except FileNotFoundError:
+            print(f"The file {path} does not exist.")
+            return None
+        except json.JSONDecodeError:
+            print(f"There was an error decoding the JSON from the file {path}.")
+            return None
 
-        #return the language file
+        # Return the language file
         return language_file
 
 

@@ -8,7 +8,7 @@
         "error_desc": "If this error persists, please contact @v3xi"
     },
     "embed_footer": {
-        "footer": "QuoteBot | ID: {interaction.user.id}"
+        "footer": "QuoteBot • ID: {0}"
     },
     "main_menu": {
         "help_main_menu_title": "help_main_menu_title",
