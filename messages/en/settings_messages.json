@@ -4,6 +4,7 @@
         "processing_request": "<a:loading:892534287415525386> **Processing Request**",
         "no_bots": "Bots cannot use QuoteBot",
         "timed_out": "This message has timed out",
+        "back_button": "Back",
         "error_title": "An error has occurred, please try again later",
         "error_desc": "If this error persists, please contact @v3xi",
         "embed_footer": "QuoteBot • ID: {0}"
@@ -15,7 +16,7 @@
             "dropdown_placeholder": "Select a settings category",
             "language": ["Language", "Set QuoteBot's language"],
             "channel": ["Channels", "Select the channels for channel specific messages"],
-            "commands": ["Add/Edit/Delete", "Modify usage settings for Add/Edit/Delete commands"],
+            "commands": ["Commands", "Modify usage settings for certain quotebot commands"],
             "detection": ["Filtering", "Modify the filter settings for quotes added to QuoteBot"],
             "automod": ["AutoMod", "Modify the AutoMod actions for QuoteBot"]
         }
@@ -23,16 +24,31 @@
     "language_settings": {
         "title": "Language Settings",
         "description": "-\nPlease select the language for QuoteBot messages",
-        "language_change_success": ["<:yes:892537190347837450> Language Changed", "QuoteBot's language has been sucessfully changed to English"],
+        "language_change_success": "<:yes:892537190347837450> Language Changed Successfully",
         "dropdown": {
             "dropdown_placeholder": "Select a language",
             "english": "English",
             "french": "Fran\u00e7ais",
             "spanish": "Espa\u00f1ol",
             "german": "Deutsch"
-        },
-        "back_button": "Back"
-
+        }
+    },
+    "channel_settings": {
+        "title": "Channel Settings",
+        "description": {
+            "header": "*Current channel settings:*\n",
+            "quotes_channel": "Added Quotes Channel:  ",
+            "logs_channel": "Action Log Channel:  ",
+            "alerts_channel": "Mod Alerts Channel:  ",
+            "end":"\n-\nPlease choose what channels you would like certain QuoteBot messages to be sent too."
+    },
+        "alert_message": "If you want to lock QuoteBot commands to certain channels/roles please use the Discord server settings at:\n **Your Server > Server Settings > Integrations > QuoteBot**",
+        "channel_change_success": ["<:yes:892537190347837450>","Changed Successfully"],
+        "placeholders": {
+            "added_quotes": "Select the channel for added quote messages",
+            "logs": "Select the channel for log messages",
+            "alerts": "Select the channel for alert messages"
+        }
     },
     "command_settings": {
         "title": "Command Settings",
@@ -66,9 +82,6 @@
                     "1day": "1 day"
                 }
             }
-        },
-        "back_button": "Back",
-        "apply_button": "Apply"
-
+        }
     }
 }

@@ -3,6 +3,7 @@ import datetime
 import json
 from discord import app_commands
 from discord.ext import commands
+import psycopg2.extras
 
 class server_settings(commands.Cog):
     def __init__(self, bot: commands.Bot) -> None:
@@ -17,9 +18,9 @@ class server_settings(commands.Cog):
         #connect to database
         conn = database.connect()
         #set database cursor
-        c = conn.cursor()
+        c = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
         #create query to get user informtion
-        command = f"select * from guilds where guild_id={guild_id}"
+        command = f"select * from guild_settings where guild_id={guild_id}"
         #execute command
         c.execute(command)
         #get results of query
@@ -27,35 +28,35 @@ class server_settings(commands.Cog):
         #close database connection
         c.close()
         conn.close()
-       # sid, language, add_settings, delete_settings, edit_settings, safety_settings, detection_settings, automod_settings, channel_settings
-        server_settings = {
-            "sid": results[0][0],
-            "guild_id": results[0][1],
-            "language": results[0][2],
-            "add_settings": results[0][3],
-            "delete_settings": results[0][4],
-            "edit_settings": results[0][5],
-            "safety_settings": results[0][6],
-            "detection_settings": results[0][7],
-            "automod_settings": results[0][8],
-            "channel_settings": results[0][9]
-        }
+
+        if results:
+
+            server_settings = results[0]
+        else:
+            #######################################################################################################
+            ## create and load default server settings for that server then send a follow up message to the user ##
+            ##    to let them know that the server settings have been created and that they can now edit them    ##
+            #######################################################################################################
+            pass
 
         #return the server language setting
         return server_settings
 
     async def update_server_settings(self, guild_id, setting, new_value):
         #check db for server settings
+        if new_value == None and (setting == "added_quotes_channel" or setting == "action_log_channel" or setting == "alerts_channel"):
+            new_value = -1
+        elif new_value == None:
+            new_value = "None"
         #set database variable
         database = self.bot.get_cog("database")
-
         #get server language setting
         #connect to database
         conn = database.connect()
         #set database cursor
         c = conn.cursor()
         #create query to get user informtion
-        command = f"update guilds set {setting}={new_value} where guild_id={guild_id}"
+        command = f"update guild_settings set {setting}={new_value} where guild_id={guild_id}"
         #execute command
         c.execute(command)
         #get results of query
@@ -79,6 +80,7 @@ class server_settings(commands.Cog):
         await interaction.response.send_message(embed=loading_embed, ephemeral=True)
         #assign message for future edits
         message = await interaction.original_response()
+
         #------Pass System Checks-----
         #check maintenance
         #check if user is a bot
@@ -90,9 +92,9 @@ class server_settings(commands.Cog):
         #check if user has permission to edit server settings
         # TO BE IMPLEMENTED
 
-        server_settings = await self.get_server_settings(interaction.guild_id)
+        settings = await self.get_server_settings(interaction.guild_id)
 
-        await self.settings_main_menu(language_file, interaction, message, server_settings)
+        await self.settings_main_menu(language_file, interaction, message, settings)
 
     
     async def settings_main_menu(self, language_file, interaction, message, settings):
@@ -122,33 +124,32 @@ class server_settings(commands.Cog):
             await self.display_settings_page(language_file, interaction, message, settings, mm_dropdown.selection)
 
 
-    async def channel_settings(self, language_file, interaction, message, settings):
-        pass  # replace with your actual code
-
-    async def detection_settings(self, language_file, interaction, message, settings):
-        pass  # replace with your actual code
-
-    async def automod_settings(self, language_file, interaction, message, settings):
-        pass  # replace with your actual code
-
     async def display_settings_page(self, language_file, interaction, message, settings, selection):
 
         if selection == "language_settings":
             server_language_settings = self.bot.get_cog('server_language_settings')
             await server_language_settings.language_settings(language_file, interaction, message, settings)
+
         elif selection == "channel_settings":
-            await self.channel_settings(language_file, interaction, message, settings)
+            server_channel_settings = self.bot.get_cog('channel_settings')
+            await server_channel_settings.channel_settings_menu(language_file, interaction, message, settings)
+
         elif selection == "command_settings":
             server_command_settings = self.bot.get_cog('server_command_settings')
             await server_command_settings.command_settings(language_file, interaction, message, settings)
+
         elif selection == "detection_settings":
             await self.detection_settings(language_file, interaction, message, settings)
+
         elif selection == "automod_settings":
             await self.automod_settings(language_file, interaction, message, settings)
+
         elif selection == "main_menu":
             await self.settings_main_menu(language_file, interaction, message, settings)
+
         else:
             await self.settings_main_menu(language_file, interaction, message, settings)
+
 
     class timed_out(discord.ui.View):
         def __init__(self, language_file):
@@ -179,40 +180,6 @@ class server_settings(commands.Cog):
         async def settings_dropdown(self, interaction: discord.Interaction):
             await interaction.response.defer()
             self.selection = interaction.data['values'][0] if interaction.data['values'][0] else None
-            self.stop()
-
-    class language_dropdown(discord.ui.View):
-        def __init__(self, language_file, timeout=120):
-            super().__init__(timeout=timeout)
-            self.selection = None
-            self.page = None
-            self.language_file = language_file
-
-            languages = [('english', 'en', '🇺🇸'), ('french', 'fr', '🇫🇷'), ('spanish', 'es', '🇪🇸'), ('german', 'de', '🇩🇪')]
-
-            language_options = [discord.SelectOption(
-                label=self.language_file['language_settings']['dropdown'][lang_name], 
-                value=lang_code, 
-                emoji=emoji, 
-                default=lang_code == self.language_file['language']
-            ) for lang_name, lang_code, emoji in languages]
-
-            self.select = discord.ui.Select(placeholder=self.language_file['language_settings']['dropdown']['dropdown_placeholder'], options=language_options, min_values=1, max_values=1)
-            self.select.callback = self.language_dropdown
-            self.add_item(self.select)
-
-            self.back_button = discord.ui.Button(label=self.language_file['language_settings']['back_button'], style=discord.ButtonStyle.blurple, emoji="<:help_back:1028918526238523433>")
-            self.back_button.callback = self.language_back
-            self.add_item(self.back_button)
-
-        async def language_dropdown(self, interaction: discord.Interaction):
-            await interaction.response.defer()
-            self.selection = interaction.data['values'][0] if interaction.data['values'][0] else None
-            self.stop()
-
-        async def language_back(self, interaction: discord.Interaction):
-            await interaction.response.defer()
-            self.page = 'main_menu'
             self.stop()
 
 async def setup(bot: commands.Bot) -> None:
