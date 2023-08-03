@@ -3,6 +3,8 @@ from discord import app_commands
 from discord.ext import commands
 import os
 import json
+import psycopg2.extras
+
 
 class language(commands.Cog):
     def __init__(self, bot: commands.Bot) -> None:
@@ -17,9 +19,9 @@ class language(commands.Cog):
         #connect to database
         conn = database.connect()
         #set database cursor
-        c = conn.cursor()
+        c = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
         #create query to get user informtion
-        command = f"select language from guilds where guild_id={guild_id}"
+        command = f"select language from guild_settings where guild_id={guild_id}"
         #execute command
         c.execute(command)
         #get results of query
@@ -34,7 +36,7 @@ class language(commands.Cog):
             server_settings = "en"
         else:
             #if language setting exists set to that
-            server_settings = server_settings[0][0]
+            server_settings = server_settings[0]['language']
 
         #return the server language setting
         return server_settings
