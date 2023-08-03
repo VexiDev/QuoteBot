@@ -24,7 +24,7 @@ class channel_settings(commands.Cog):
             alerts_channel = f"<#{alerts_channel.id}>"
 
         # create embeds
-        channel_settings_alert = discord.Embed(title="", description=f"{language_file['channel_settings']['alert_message']}", color=0xff9b21)
+        channel_settings_alert = discord.Embed(title="", description=f"{language_file['system_messages']['alert_message']}", color=0xff9b21)
         description = f"{language_file['channel_settings']['description']['header']}\n**{language_file['channel_settings']['description']['quotes_channel']}**{added_quotes_channel}\n**{language_file['channel_settings']['description']['logs_channel']}**{logs_channel}\n**{language_file['channel_settings']['description']['alerts_channel']}**{alerts_channel}\n{language_file['channel_settings']['description']['end']}"
         channel_embed = discord.Embed(title=f"{language_file['channel_settings']['title']}", description=description, color=0x6eb259)
         channel_embed.set_author(name=f"{interaction.guild.name}", icon_url=interaction.guild.icon.url)
