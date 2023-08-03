@@ -7,7 +7,8 @@
         "back_button": "Back",
         "error_title": "An error has occurred, please try again later",
         "error_desc": "If this error persists, please contact @v3xi",
-        "embed_footer": "QuoteBot • ID: {0}"
+        "alert_message": "If you want to lock QuoteBot commands to certain channels/roles please use the Discord server settings at:\n **Your Server > Server Settings > Integrations > QuoteBot**",
+        "embed_footer": "QuoteBot • ID: 1234567891012345"
     },
     "settings_main_menu": {
         "title": "Server Settings",
@@ -42,7 +43,6 @@
             "alerts_channel": "Mod Alerts Channel:  ",
             "end":"\n-\nPlease choose what channels you would like certain QuoteBot messages to be sent too."
     },
-        "alert_message": "If you want to lock QuoteBot commands to certain channels/roles please use the Discord server settings at:\n **Your Server > Server Settings > Integrations > QuoteBot**",
         "channel_change_success": ["<:yes:892537190347837450>","Changed Successfully"],
         "placeholders": {
             "added_quotes": "Select the channel for added quote messages",
@@ -53,6 +53,7 @@
     "command_settings": {
         "title": "Command Settings",
         "description": "-\nPlease select the command you would like to edit",
+        "setting_change_success": ["<:yes:892537190347837450>","Changed Successfully"],
         "mm_buttons": {
             "add": "/add",
             "edit": "/edit",
@@ -61,9 +62,16 @@
         "add_settings": {
             "title": "Add Command Settings",
             "description": "Use the dropdown menus below to edit the add command settings.\n-",
-            "field_cooldown": "Cooldown: ",
-            "field_channel": "Channels: ",
-            "field_role": "Roles: ",
+            "cooldown_field": {"name": "Command Cooldown: ","value": "How long users have to wait before using the add command again"},
+            "add_to_self_field": {"name": "Self-Quote: ","value": "Can users add quotes to their own profile"},
+            "add_to_self_field_status": ["Enabled","Disabled"],
+            "add_to_self": {
+                "placeholder": "Select whether users can add quotes to themselves",
+                "dropdown": {
+                    "enabled": "Enabled",
+                    "disabled": "Disabled"
+                }
+            },
             "cooldown": {
                 "label": "Cooldown",
                 "placeholder": "Set a cooldown for the add command",

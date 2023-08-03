@@ -35,8 +35,8 @@ class server_command_settings(commands.Cog):
         #update the server language setting
         elif command_buttons.page == 'command_add':
             
-            add_settings = self.bot.get_cog("add_command_settings")
-            await add_settings.command_add(language_file, interaction, message, settings, main_menu)
+            add_settings = self.bot.get_cog("add_settings")
+            await add_settings.add_command_settings_menu(language_file, interaction, message, settings)
 
         #update the server language setting
         elif command_buttons.page == 'command_edit':
@@ -73,7 +73,7 @@ class server_command_settings(commands.Cog):
             self.delete_button.callback = self.command_delete
             self.add_item(self.delete_button)
 
-            self.back_button = discord.ui.Button(label=self.language_file['command_settings']['back_button'], style=discord.ButtonStyle.blurple, emoji="<:info_back:1028918526238523433>", row=2)
+            self.back_button = discord.ui.Button(label=self.language_file['system_messages']['back_button'], style=discord.ButtonStyle.blurple, emoji="<:info_back:1028918526238523433>", row=2)
             self.back_button.callback = self.command_back
             self.add_item(self.back_button)
 
