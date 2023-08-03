@@ -43,7 +43,7 @@
             "alerts_channel": "Mod Alerts Channel:  ",
             "end":"\n-\nPlease choose what channels you would like certain QuoteBot messages to be sent too."
     },
-        "channel_change_success": ["<:yes:892537190347837450>","Changed Successfully"],
+        "channel_change_success": ["<:yes:892537190347837450>","changed successfully"],
         "placeholders": {
             "added_quotes": "Select the channel for added quote messages",
             "logs": "Select the channel for log messages",
@@ -53,11 +53,13 @@
     "command_settings": {
         "title": "Command Settings",
         "description": "-\nPlease select the command you would like to edit",
-        "setting_change_success": ["<:yes:892537190347837450>","Changed Successfully"],
-        "mm_buttons": {
+        "setting_change_success": ["<:yes:892537190347837450>","setting changed successfully"],
+        "dropdown": {
+            "placeholder": "Select a command",
             "add": "/add",
             "edit": "/edit",
-            "delete": "/delete"
+            "delete": "/delete",
+            "profile": "/profile"
         },
         "add_settings": {
             "title": "Add Command Settings",
@@ -66,7 +68,44 @@
             "add_to_self_field": {"name": "Self-Quote: ","value": "Can users add quotes to their own profile"},
             "add_to_self_field_status": ["Enabled","Disabled"],
             "add_to_self": {
-                "placeholder": "Select whether users can add quotes to themselves",
+                "dropdown": {
+                    "enabled": "Enabled",
+                    "disabled": "Disabled"
+                }
+            },
+            "cooldown": {
+                "label": "Cooldown",
+                "dropdown": {
+                    "None": "None",
+                    "5sec": "5 seconds",
+                    "10sec": "10 seconds",
+                    "30sec": "30 seconds",
+                    "1min": "1 minute",
+                    "5min": "5 minutes",
+                    "10min": "10 minutes",
+                    "30min": "30 minutes",
+                    "1hr": "1 hour",
+                    "6hr": "6 hours",
+                    "12hr": "12 hours",
+                    "1day": "1 day"
+                }
+            }
+        },
+        "delete_settings": {
+            "title": "Delete Command Settings",
+            "description": "Use the dropdown menus below to edit the delete command settings.\n-",
+            "cooldown_field": {"name": "Command Cooldown: ","value": "How long users have to wait before using the delete command again"},
+            "delete_from_self_field": {"name": "Delete Own: ","value": "Can users delete quotes from their own profile\n__Independent of Added Only__"},
+            "delete_from_self_field_status": ["Enabled","Disabled"],
+            "only_delete_added_field": {"name": "Added Only: ","value": "Can users only delete quotes they've added"},
+            "only_delete_added_field_status": ["Enabled","Disabled"],
+            "delete_from_self": {
+                "dropdown": {
+                    "enabled": "Enabled",
+                    "disabled": "Disabled"
+                }
+            },
+            "only_delete_added": {
                 "dropdown": {
                     "enabled": "Enabled",
                     "disabled": "Disabled"
@@ -88,6 +127,73 @@
                     "6hr": "6 hours",
                     "12hr": "12 hours",
                     "1day": "1 day"
+                }
+            }
+        },
+        "edit_settings": {
+            "title": "Edit Command Settings",
+            "description": "Use the dropdown menus below to edit the edit command settings.\n-",
+            "cooldown_field": {"name": "Command Cooldown: ","value": "How long users have to wait before using the edit command again"},
+            "edit_timeout_field": {"name": "Edit Timeout: ","value": "How long until users can no longer edit a quote"},
+            "edit_timeout_field_status": ["Enabled","Disabled"],
+            "only_edit_added_field": {"name": "Added Only: ","value": "Can users only edit quotes they've added"},
+            "only_edit_added_field_status": ["Enabled","Disabled"],
+            "only_edit_added": {
+                "dropdown": {
+                    "enabled": "Enabled",
+                    "disabled": "Disabled"
+                }
+            },
+            "edit_timeout": {
+                "label": "Edit Timeout",
+                "placeholder": "Set a timeout time for the edit command",
+                "dropdown": {
+                    "None": "None",
+                    "5min": "5 minutes",
+                    "10min": "10 minutes",
+                    "30min": "30 minutes",
+                    "1hr": "1 hour",
+                    "6hr": "6 hours",
+                    "12hr": "12 hours",
+                    "1day": "1 day"
+                }
+            },
+            "cooldown": {
+                "label": "Cooldown",
+                "placeholder": "Set a cooldown for the add command",
+                "dropdown": {
+                    "None": "None",
+                    "5sec": "5 seconds",
+                    "10sec": "10 seconds",
+                    "30sec": "30 seconds",
+                    "1min": "1 minute",
+                    "5min": "5 minutes",
+                    "10min": "10 minutes",
+                    "30min": "30 minutes",
+                    "1hr": "1 hour",
+                    "6hr": "6 hours",
+                    "12hr": "12 hours",
+                    "1day": "1 day"
+                }
+            }
+        },
+        "profile_settings": {
+            "title": "Profile Command Settings",
+            "description": "Use the dropdown menus below to edit the profile command settings.\n-",
+            "force_hidden_profile_field": {"name": "Force Hidden: ","value": "Make the /profile command only viewable to the user who used it"},
+            "force_hidden_profile_field_status": ["Enabled","Disabled"],
+            "lock_nsfw_profile_field": {"name": "Lock NSFW: ","value": "Prevent viewing the NSFW category on your server"},
+            "lock_nsfw_profile_field_status": ["Enabled","Disabled"],
+            "force_hidden_profile": {
+                "dropdown": {
+                    "enabled": "Enabled",
+                    "disabled": "Disabled"
+                }
+            },
+            "lock_nsfw_profile": {
+                "dropdown": {
+                    "enabled": "Enabled",
+                    "disabled": "Disabled"
                 }
             }
         }

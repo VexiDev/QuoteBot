@@ -37,14 +37,28 @@ class server_command_settings(commands.Cog):
             
             add_settings = self.bot.get_cog("add_settings")
             await add_settings.add_command_settings_menu(language_file, interaction, message, settings)
+            return
 
         #update the server language setting
         elif command_buttons.page == 'command_edit':
-            pass
+            
+            edit_settings = self.bot.get_cog("edit_settings")
+            await edit_settings.edit_command_settings_menu(language_file, interaction, message, settings)
+            return
 
         #update the server language setting
         elif command_buttons.page == 'command_delete':
-            pass
+
+            delete_settings = self.bot.get_cog("delete_settings")
+            await delete_settings.delete_command_settings_menu(language_file, interaction, message, settings)
+            return
+
+        #update the server language setting
+        elif command_buttons.page == 'command_profile':
+            
+            profile_settings = self.bot.get_cog("profile_settings")
+            await profile_settings.profile_command_settings_menu(language_file, interaction, message, settings)
+            return
 
         elif command_buttons.page != None:
             await main_menu.display_settings_page(language_file, interaction, message, settings, command_buttons.page)
@@ -63,38 +77,25 @@ class server_command_settings(commands.Cog):
             # self.select.callback = self.command_buttons
             # self.add_item(self.select)
 
-            self.add_button = discord.ui.Button(label=self.language_file['command_settings']['mm_buttons']['add'], style=discord.ButtonStyle.green, emoji="<:qbadd:1130279496390553710> ")
-            self.add_button.callback = self.command_add
-            self.add_item(self.add_button)
-            self.edit_button = discord.ui.Button(label=self.language_file['command_settings']['mm_buttons']['edit'], style=discord.ButtonStyle.grey, emoji="<:qbedit:1130279525587103884> ")
-            self.edit_button.callback = self.command_edit
-            self.add_item(self.edit_button)
-            self.delete_button = discord.ui.Button(label=self.language_file['command_settings']['mm_buttons']['delete'], style=discord.ButtonStyle.red, emoji="<:qbdelete:1130279555517653103>")
-            self.delete_button.callback = self.command_delete
-            self.add_item(self.delete_button)
+            command_select_options = [discord.SelectOption( label=self.language_file['command_settings']['dropdown']['add'], value="command_add",emoji="<:qbadd:1130279496390553710>"),
+            discord.SelectOption(label=self.language_file['command_settings']['dropdown']['delete'],value="command_delete",emoji="<:qbdelete:1130279555517653103>"),
+            discord.SelectOption(label=self.language_file['command_settings']['dropdown']['edit'],value="command_edit",emoji="<:qbedit:1130279525587103884>"),
+            discord.SelectOption(label=self.language_file['command_settings']['dropdown']['profile'],value="command_profile",emoji="<:profile:1030032830891311174>")
+            ]
+
+            self.command_select = discord.ui.Select(custom_id="command_select", placeholder=self.language_file['command_settings']['dropdown']['placeholder'], options=command_select_options, min_values=1, max_values=1)
+
+            self.command_select.callback = self.command_selection
+
+            self.add_item(self.command_select)
 
             self.back_button = discord.ui.Button(label=self.language_file['system_messages']['back_button'], style=discord.ButtonStyle.blurple, emoji="<:info_back:1028918526238523433>", row=2)
             self.back_button.callback = self.command_back
             self.add_item(self.back_button)
 
-        # async def command_buttons(self, interaction: discord.Interaction):
-        #     await interaction.response.defer()
-        #     self.selection = interaction.data['values'][0] if interaction.data['values'][0] else None
-        #     self.stop()
-
-        async def command_add(self, interaction: discord.Interaction):
+        async def command_selection(self, interaction: discord.Interaction):
             await interaction.response.defer()
-            self.page = 'command_add'
-            self.stop()
-
-        async def command_edit(self, interaction: discord.Interaction):
-            await interaction.response.defer()
-            self.page = 'command_edit'
-            self.stop()
-            
-        async def command_delete(self, interaction: discord.Interaction):
-            await interaction.response.defer()
-            self.page = 'command_delete'
+            self.page = interaction.data['values'][0] if interaction.data['values'] else "main_menu"
             self.stop()
 
         async def command_back(self, interaction: discord.Interaction):

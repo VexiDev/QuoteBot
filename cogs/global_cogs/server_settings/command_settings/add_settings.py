@@ -18,7 +18,7 @@ class add_settings(commands.Cog):
         add_to_self_raw = settings['add_to_self']
 
         if command_cooldown_raw == 0:
-            command_cooldown == "None"
+            command_cooldown = "None"
         else:
             command_cooldown = f"{precisedelta(command_cooldown_raw, format='%0.0f')}"
         if add_to_self_raw == True:
@@ -30,12 +30,7 @@ class add_settings(commands.Cog):
         add_command_settings_alert = discord.Embed(title="", description=f"{language_file['system_messages']['alert_message']}", color=0xff9b21)
        
         description = f"-\n{language_file['command_settings']['add_settings']['cooldown_field']['name']}**{command_cooldown}**\n*{language_file['command_settings']['add_settings']['cooldown_field']['value']}*\n\n{language_file['command_settings']['add_settings']['add_to_self_field']['name']}**{add_to_self}**\n*{language_file['command_settings']['add_settings']['add_to_self_field']['value']}*\n-\n{language_file['command_settings']['add_settings']['description']}"
-
         add_command_embed = discord.Embed(title=f"{language_file['command_settings']['add_settings']['title']}", description=description, color=0x6eb259)
-        
-        # add_command_embed.add_field(name=f"{language_file['command_settings']['add_settings']['cooldown_field']['name']}**{command_cooldown}**", value=f"{language_file['command_settings']['add_settings']['cooldown_field']['value']}", inline=False)
-        # add_command_embed.add_field(name=f"{language_file['command_settings']['add_settings']['add_to_self_field']['name']}**{add_to_self}**", value=f"{language_file['command_settings']['add_settings']['add_to_self_field']['value']}", inline=False)
-
         add_command_embed.set_author(name=f"{interaction.guild.name}", icon_url=interaction.guild.icon.url)
         add_command_embed.timestamp = datetime.datetime.utcnow()
         add_command_embed.set_footer(text=f"{language_file['system_messages']['embed_footer']}", icon_url="https://cdn.discordapp.com/attachments/916091272186454076/1017973024680579103/quote_botttt.png")
@@ -78,9 +73,23 @@ class add_settings(commands.Cog):
             await message.edit(view=timed_out)
             return
 
-        #update the server language setting
+        #update the server setting setting
         elif add_command_dropdown.selection != None and add_command_dropdown.back == None:
-            pass
+            
+            #get the updated setting db key and embed name
+            updated_setting = add_command_dropdown.selection[1].split(":")
+            updated_setting_id = add_command_dropdown.selection[0]
+            updated_setting_key = updated_setting[0]
+            updated_setting_name = updated_setting[1]
+
+            #update the corresponding channel setting
+            await server_settings.update_server_settings(interaction.guild_id, updated_setting_key, updated_setting_id)
+            
+            settings = await server_settings.get_server_settings(interaction.guild_id)
+
+            # reload the menu and inform user of setting change
+            await self.add_command_settings_menu(language_file, interaction, message, settings, setting_changed=(True, updated_setting_name))
+            return
 
         elif add_command_dropdown.back != None and add_command_dropdown.selection == None:
             await command_selection_menu.command_settings(language_file, interaction, message, settings)
@@ -111,8 +120,8 @@ class add_settings(commands.Cog):
                 discord.SelectOption(label=self.language_file['command_settings']['add_settings']['add_to_self']['dropdown']['disabled'], value=False, default=(True if self.current_a2s == False else False))
                 ]
 
-            self.add_to_self = discord.ui.Select(custom_id="add_command_add_to_self:Add To Self",min_values=1, max_values=1, placeholder=self.language_file['command_settings']['add_settings']['add_to_self']['placeholder'], options=add_to_self_options)
-            self.cooldown = discord.ui.Select(custom_id="add_command_cooldown:Command Cooldown",min_values=1, max_values=1, placeholder=self.language_file['command_settings']['add_settings']['cooldown']['placeholder'], options=cooldown_options)
+            self.add_to_self = discord.ui.Select(custom_id="add_to_self:Add to Self",min_values=1, max_values=1, options=add_to_self_options)
+            self.cooldown = discord.ui.Select(custom_id="add_command_cooldown:Command Cooldown",min_values=1, max_values=1, options=cooldown_options)
             
             self.cooldown.callback = self.cooldown_dropdown
             self.add_to_self.callback = self.a2s_dropdown
