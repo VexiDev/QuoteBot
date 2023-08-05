@@ -104,18 +104,5 @@ class server_command_settings(commands.Cog):
             self.stop()
             
 
-#------------------EDIT COMMAND------------------
-
-
-    async def command_edit(self, language_file, interaction, message, settings):
-        pass
-
-
-#------------------DELETE COMMAND------------------
-    async def command_delete(self, language_file, interaction, message, settings):
-        pass
-    
-
-
 async def setup(bot: commands.Bot) -> None:
     await bot.add_cog(server_command_settings(bot), guilds=commands.Greedy[discord.Object])
