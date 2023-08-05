@@ -1,6 +1,6 @@
 aiohttp==3.7.4
 async-timeout==3.0.1
-asyncio==3.4.3
+asyncio==3.8.5
 discord.py==1.7.1
 pipreqs==0.4.12
 psycopg2==2.8.6
