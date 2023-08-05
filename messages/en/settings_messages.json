@@ -25,7 +25,7 @@
     "language_settings": {
         "title": "Language Settings",
         "description": "-\nPlease select the language for QuoteBot messages",
-        "language_change_success": "<:yes:892537190347837450> Language Changed Successfully",
+        "language_change_success": "<:yes:892537190347837450> Language changed successfully",
         "dropdown": {
             "dropdown_placeholder": "Select a language",
             "english": "English",
@@ -37,18 +37,18 @@
     "channel_settings": {
         "title": "Channel Settings",
         "description": {
-            "header": "*Current channel settings:*\n",
+            "header": "-\n*Current channel settings:*\n",
             "quotes_channel": "Added Quotes Channel:  ",
             "logs_channel": "Action Log Channel:  ",
             "alerts_channel": "Mod Alerts Channel:  ",
             "end":"\n-\nPlease choose what channels you would like certain QuoteBot messages to be sent too."
-    },
+            },
         "channel_change_success": ["<:yes:892537190347837450>","changed successfully"],
         "placeholders": {
-            "added_quotes": "Select the channel for added quote messages",
-            "logs": "Select the channel for log messages",
-            "alerts": "Select the channel for alert messages"
-        }
+            "added_quotes": "Select a new channel for added quote messages",
+            "logs": "Select a new channel for log messages",
+            "alerts": "Select a new channel for alert messages"
+            }
     },
     "command_settings": {
         "title": "Command Settings",
@@ -196,6 +196,86 @@
                     "disabled": "Disabled"
                 }
             }
+            }
+        },
+        "filter_settings": {
+            "inaccuracy_warning": "<:alert:994765426829561928> **QuoteBot will always block personal information & links from being added**\n\n*While QuoteBot does its best to accurately filter, it is not 100% perfect and may sometimes fail to filter or filter incorrectly.* Use the **/review** command...wip",
+            "title": "Filter Settings",
+            "description": {
+                "header": "-\n*Current filter settings*\n\n",
+                "preset": "Using Preset: ",
+                "preset_desc": {
+                    "Default": "*The default filter settings for QuoteBot*",
+                    "Custom": "*Custom filter settings to suite your server's needs (full list of filters in /help)*",
+                    "Light": "*QuoteBot will only detect slurs*",
+                    "Medium": "*QuoteBot will detect excessive profanity, sexual content, slurs, and deragatory phrases*",
+                    "Strict": "*QuoteBot will detect all profanity, all sexual content, slurs, deragatory phrases, and threats*"
+                },
+                "end": "\n\n-\nUse the dropdown menus below to either choose your preset filtering or select your custom filter needs"
+            },
+            "preset_dropdown": {
+                "applied": ["<:yes:892537190347837450>","filters applied successfully"],
+                "placeholder": "Select a filter preset or customize your own",
+                "Default": {
+                    "label": "Default",
+                    "desc": "Recommended for non community servers"
+                    },
+                "Custom": {
+                    "label": "Custom",
+                    "desc": "Recommended for large communities"
+                    },
+                "Light": {
+                    "label": "Light",
+                    "desc": "Recommended for small servers"
+                    },
+                "Medium": {
+                    "label": "Medium",
+                    "desc": "Recommended for most community servers"
+                    },
+                "Strict": {
+                    "label": "Strict",
+                    "desc": "Recommended for child friendly servers"
+                    }
+                },
+            "custom_dropdown": {
+                "applied": "<:yes:892537190347837450> Updated filters successfully",
+                "placeholder": "Select active filters",
+                "l_profanity": {
+                    "label": "Low Profanity",
+                    "desc": "Filter out general profanity"
+                    },
+                "h_profanity": {
+                    "label": "Heavy Profanity",
+                    "desc": "Filter out excessive use of profanity"
+                    },
+                "light_sexual_content": {
+                    "label": "Light Sexual Content",
+                    "desc": "Filter out light sexual content or innuendos"
+                    },
+                "sexual_content": {
+                    "label": "Sexual Content",
+                    "desc": "Filter out general sexual content"
+                    },
+                "l_threats": {
+                    "label": "Light Threats",
+                    "desc": "Filter out lightly threating phrases"
+                    },
+                "h_threats": {
+                    "label": "High Threats",
+                    "desc": "Filter out excessively threating phrases"
+                    },
+                "l_derogatory": {
+                    "label": "Lower Derogatory",
+                    "desc": "Filter out general derogatory phrases"
+                    },
+                "h_derogatory": {
+                    "label": "High Derogatory",
+                    "desc": "Filter out slurs"
+                    },
+                "sensitive": {
+                    "label": "Sensitive",
+                    "desc": "Filter out sensitive topics (drugs, violence, politics, etc.)"
+                    }
+                }
         }
     }
-}

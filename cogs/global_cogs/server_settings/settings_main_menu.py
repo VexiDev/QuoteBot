@@ -139,10 +139,11 @@ class server_settings(commands.Cog):
             await server_command_settings.command_settings(language_file, interaction, message, settings)
 
         elif selection == "detection_settings":
-            await self.detection_settings(language_file, interaction, message, settings)
+            server_filter_settings = self.bot.get_cog('server_filter_settings')
+            await server_filter_settings.filter_settings(language_file, interaction, message, settings)
 
-        elif selection == "automod_settings":
-            await self.automod_settings(language_file, interaction, message, settings)
+        # elif selection == "automod_settings":
+        #     await self.automod_settings(language_file, interaction, message, settings)
 
         elif selection == "main_menu":
             await self.settings_main_menu(language_file, interaction, message, settings)
