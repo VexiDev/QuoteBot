@@ -88,6 +88,7 @@ class channel_settings(commands.Cog):
             return
 
         elif channel_dropdown.back != None and channel_dropdown.selection == None:
+            
             await server_settings.settings_main_menu(language_file, interaction, message, settings)
             return
 
