@@ -7,6 +7,35 @@ from discord.ext import commands
 class server_filter_settings(commands.Cog):
     def __init__(self, bot: commands.Bot) -> None:
         self.bot = bot
+        self.PRESET_ACTIONS = {
+        "Default": {
+            "h_derogatory": ["Warn"],
+            "h_threats": ["Warn"],
+            "sexual_content": ["Warn"],
+            "sensitive": ["Warn"]
+        },
+        "Light": {
+            "h_derogatory": ["Cancel", "Notify"]
+        },
+        "Medium": {
+            "h_profanity": ["Warn", "Hold"],
+            "sexual_content": ["Warn", "Hold"],
+            "h_derogatory": ["Warn", "Hold"],
+            "l_derogatory": ["Warn", "Hold"]
+        },
+        "Strict": {
+            "l_threats": ["Warn", "Hold"],
+            "h_threats": ["Cancel", "Notify"],
+            "light_sexual_content": ["Warn", "Hold"],
+            "sexual_content": ["Cancel", "Notify"],
+            "l_profanity": ["Warn", "Hold"],
+            "h_profanity": ["Cancel", "Notify"],
+            "sensitive": ["Warn", "Hold"],
+            "h_derogatory": ["Cancel", "Notify"],
+            "l_derogatory": ["Cancel", "Notify"]
+        },
+        "Custom": {}
+    }
 
     async def filter_settings(self, language_file, interaction, message, settings, filter_changed=(False, None)):
         server_settings = self.bot.get_cog('server_settings')
@@ -82,31 +111,33 @@ class server_filter_settings(commands.Cog):
             return
 
         elif filter_dropdown.selection == None and filter_dropdown.preset != None and filter_dropdown.back == None:
+            if filter_dropdown.preset == 'Custom':
+                preset_actions = {}
+            else:
+                preset_actions = self.PRESET_ACTIONS.get(filter_dropdown.preset, self.PRESET_ACTIONS["Default"])
 
-            #update the server filter settings with the new preset/filter
-            await server_settings.update_server_settings(interaction.guild_id, "filter_preset_name", f"\'{filter_dropdown.preset}\'")
+            updates = []
 
-            if filter_dropdown.preset == "Light":
-                type_list = '{' + ', '.join(f'"{item}"' for item in ["h_derogatory"]) + '}'
-                await server_settings.update_server_settings(interaction.guild_id, "filter_detection_types", f"\'{type_list}\'")
-            
-            elif filter_dropdown.preset == "Medium":
-                type_list = '{' + ', '.join(f'"{item}"' for item in ["h_profanity", "sexual_content", "h_derogatory", "l_deragatory"]) + '}'
-                await server_settings.update_server_settings(interaction.guild_id, "filter_detection_types", f"\'{type_list}\'")
-            
-            elif filter_dropdown.preset == "Strict":
-                type_list = '{' + ', '.join(f'"{item}"' for item in ["h_profanity", "l_profanity", "sexual_content", "innuendoes" ,"h_derogatory", "l_deragatory", "h_threats"]) + '}'
-                await server_settings.update_server_settings(interaction.guild_id, "filter_detection_types", f"\'{type_list}\'")
-            
-            elif filter_dropdown.preset == "Default":    
-                type_list = '{' + ', '.join(f'"{item}"' for item in ["h_profanity", "h_derogatory", "l_derogatory", "sexual_content"]) + '}'
-                await server_settings.update_server_settings(interaction.guild_id, "filter_detection_types", f"\'{type_list}\'")
-            
+            # If preset_actions is not empty, add its keys to type_list and perform the updates
+            if preset_actions:
+                type_list = '{"' + '", "'.join(preset_actions.keys()) + '"}'
+                for detection_type, actions in preset_actions.items():
+                    action_list = '{"' + '", "'.join(actions) + '"}'
+                    updates.append((f"automod_{detection_type}_actions", f"\'{action_list}\'"))
+
+                updates.append(("filter_detection_types", f"\'{type_list}\'"))
+            else:
+                # If preset_actions is empty (which means the 'Custom' preset was selected), set type_list to '{}'
+                updates.append(("filter_detection_types", "'{}'"))
+
+            updates.append(("filter_preset_name", f"\'{filter_dropdown.preset}\'"))
+
+            await server_settings.update_server_settings_batch(interaction.guild_id, updates)
+
             settings = await server_settings.get_server_settings(interaction.guild_id)
-
             await self.filter_settings(language_file, interaction, message, settings, filter_changed=(True, filter_dropdown.preset))
             return
-
+        
         elif filter_dropdown.back != None and filter_dropdown.selection == None and filter_dropdown.preset == None:
             await server_settings.settings_main_menu(language_file, interaction, message, settings)
             return
@@ -146,7 +177,7 @@ class server_filter_settings(commands.Cog):
                 default=True if f_type in self.current_filter_settings['settings'] else False
             ) for f_type in filter_types]
 
-            self.custom_select = discord.ui.Select(placeholder=self.language_file['filter_settings']['custom_dropdown']['placeholder'], options=filter_options, min_values=1, max_values=len(filter_types))
+            self.custom_select = discord.ui.Select(placeholder=self.language_file['filter_settings']['custom_dropdown']['placeholder'], options=filter_options, min_values=0, max_values=len(filter_types))
             self.custom_select.callback = self.custom_dropdown
             self.add_item(self.custom_select)           
             if self.current_filter_settings['preset'] != 'Custom':
@@ -158,11 +189,33 @@ class server_filter_settings(commands.Cog):
 
         async def custom_dropdown(self, interaction: discord.Interaction):
             await interaction.response.defer()
+            message = await interaction.original_response()
+            loading_embed = discord.Embed(description=f"{self.language_file['system_messages']['processing_request']}", color=0x068acc)
+
+            # Keep only the first 2 embeds
+            message.embeds = message.embeds[:2]
+
+            message.embeds.append(loading_embed)
+
+            # Make sure to edit the message to actually display the new embed
+            await message.edit(embeds=message.embeds, view=None)
             self.selection = interaction.data['values'] if interaction.data['values'] else 'error'
             self.stop()
 
         async def preset_dropdown(self, interaction: discord.Interaction):
             await interaction.response.defer()
+            
+            message = await interaction.original_response()
+            loading_embed = discord.Embed(description=f"{self.language_file['system_messages']['processing_request']}", color=0x068acc)
+
+            # Keep only the first 2 embeds
+            message.embeds = message.embeds[:2]
+
+            message.embeds.append(loading_embed)
+
+            # Make sure to edit the message to actually display the new embed
+            await message.edit(embeds=message.embeds, view=None)
+
             self.preset = interaction.data['values'][0] if interaction.data['values'][0] else 'Default'
             self.stop()
 

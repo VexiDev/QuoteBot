@@ -9,6 +9,45 @@ class server_settings(commands.Cog):
     def __init__(self, bot: commands.Bot) -> None:
         self.bot = bot
 
+    async def update_server_settings_batch(self, guild_id, updates):
+        # Set database variable
+        database = self.bot.get_cog("database")
+
+        # Connect to database
+        conn = database.connect()
+
+        # Set database cursor
+        c = conn.cursor()
+
+        # Initialize command string
+        command = f"UPDATE guild_settings SET "
+
+        # Add each update to the command string
+        for i, (setting, new_value) in enumerate(updates):
+            if new_value is None and (setting == "added_quotes_channel" or setting == "action_log_channel" or setting == "alerts_channel"):
+                new_value = -1
+            elif new_value is None:
+                new_value = "None"
+
+            # If it's not the first update, add a comma to separate it from the previous update
+            if i > 0:
+                command += ", "
+
+            command += f"{setting}={new_value}"
+
+        command += f" WHERE guild_id={guild_id}"
+
+        # Execute command
+        c.execute(command)
+        
+        # Commit changes
+        conn.commit()
+
+        # Close database connection
+        c.close()
+        conn.close()
+
+
     async def get_server_settings(self, guild_id):
         #check db for server settings
         #set database variable
@@ -142,8 +181,9 @@ class server_settings(commands.Cog):
             server_filter_settings = self.bot.get_cog('server_filter_settings')
             await server_filter_settings.filter_settings(language_file, interaction, message, settings)
 
-        # elif selection == "automod_settings":
-        #     await self.automod_settings(language_file, interaction, message, settings)
+        elif selection == "automod_settings":
+            server_automod_settings = self.bot.get_cog('server_automod_settings')
+            await server_automod_settings.automod_settings(language_file, interaction, message, settings)
 
         elif selection == "main_menu":
             await self.settings_main_menu(language_file, interaction, message, settings)
