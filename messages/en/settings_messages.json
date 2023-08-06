@@ -63,7 +63,7 @@
         },
         "add_settings": {
             "title": "Add Command Settings",
-            "description": "Use the dropdown menus below to edit the add command settings.\n-",
+            "description": "Use the dropdown menus below to edit the add command settings.",
             "cooldown_field": {"name": "Command Cooldown: ","value": "How long users have to wait before using the add command again"},
             "add_to_self_field": {"name": "Self-Quote: ","value": "Can users add quotes to their own profile"},
             "add_to_self_field_status": ["Enabled","Disabled"],
@@ -93,7 +93,7 @@
         },
         "delete_settings": {
             "title": "Delete Command Settings",
-            "description": "Use the dropdown menus below to edit the delete command settings.\n-",
+            "description": "Use the dropdown menus below to edit the delete command settings.",
             "cooldown_field": {"name": "Command Cooldown: ","value": "How long users have to wait before using the delete command again"},
             "delete_from_self_field": {"name": "Delete Own: ","value": "Can users delete quotes from their own profile\n__Independent of Added Only__"},
             "delete_from_self_field_status": ["Enabled","Disabled"],
@@ -132,7 +132,7 @@
         },
         "edit_settings": {
             "title": "Edit Command Settings",
-            "description": "Use the dropdown menus below to edit the edit command settings.\n-",
+            "description": "Use the dropdown menus below to edit the edit command settings.",
             "cooldown_field": {"name": "Command Cooldown: ","value": "How long users have to wait before using the edit command again"},
             "edit_timeout_field": {"name": "Edit Timeout: ","value": "How long until users can no longer edit a quote"},
             "edit_timeout_field_status": ["Enabled","Disabled"],
@@ -177,25 +177,25 @@
                 }
             }
         },
-        "profile_settings": {
-            "title": "Profile Command Settings",
-            "description": "Use the dropdown menus below to edit the profile command settings.\n-",
-            "force_hidden_profile_field": {"name": "Force Hidden: ","value": "Make the /profile command only viewable to the user who used it"},
-            "force_hidden_profile_field_status": ["Enabled","Disabled"],
-            "lock_nsfw_profile_field": {"name": "Lock NSFW: ","value": "Prevent viewing the NSFW category on your server"},
-            "lock_nsfw_profile_field_status": ["Enabled","Disabled"],
-            "force_hidden_profile": {
-                "dropdown": {
-                    "enabled": "Enabled",
-                    "disabled": "Disabled"
+            "profile_settings": {
+                "title": "Profile Command Settings",
+                "description": "Use the dropdown menus below to edit the profile command settings.",
+                "force_hidden_profile_field": {"name": "Force Hidden: ","value": "Make the /profile command only viewable to the user who used it"},
+                "force_hidden_profile_field_status": ["Enabled","Disabled"],
+                "lock_nsfw_profile_field": {"name": "Lock NSFW: ","value": "Prevent viewing the NSFW category on your server"},
+                "lock_nsfw_profile_field_status": ["Enabled","Disabled"],
+                "force_hidden_profile": {
+                    "dropdown": {
+                        "enabled": "Enabled",
+                        "disabled": "Disabled"
+                    }
+                },
+                "lock_nsfw_profile": {
+                    "dropdown": {
+                        "enabled": "Enabled",
+                        "disabled": "Disabled"
+                    }
                 }
-            },
-            "lock_nsfw_profile": {
-                "dropdown": {
-                    "enabled": "Enabled",
-                    "disabled": "Disabled"
-                }
-            }
             }
         },
         "filter_settings": {
@@ -239,7 +239,7 @@
                 },
             "custom_dropdown": {
                 "applied": "<:yes:892537190347837450> Updated filters successfully",
-                "placeholder": "Select active filters",
+                "placeholder": "Select what filters you want to use",
                 "l_profanity": {
                     "label": "Low Profanity",
                     "desc": "Filter out general profanity"
@@ -277,5 +277,78 @@
                     "desc": "Filter out sensitive topics (drugs, violence, politics, etc.)"
                     }
                 }
+        },
+        "automod_settings": {
+            "title": "Auto Mod Settings",
+            "description": "-\nPlease select a detection to edit automod actions for",
+            "no_detections_enabled": ["<:alert:994765426829561928> **You're server does not have any filters enabled, please enable a filter to edit that filters automod action**", "-\nPress on the button below to go to the filter settings page", "Go to Filter Settings"],
+            "dropdown": {
+                "placeholder": "Select a detection",
+                "l_profanity": {
+                    "label": "Low Profanity",
+                    "desc": "Filter out general profanity"
+                    },
+                "h_profanity": {
+                    "label": "Heavy Profanity",
+                    "desc": "Filter out excessive use of profanity"
+                    },
+                "light_sexual_content": {
+                    "label": "Light Sexual Content",
+                    "desc": "Filter out light sexual content or innuendos"
+                    },
+                "sexual_content": {
+                    "label": "Sexual Content",
+                    "desc": "Filter out general sexual content"
+                    },
+                "l_threats": {
+                    "label": "Light Threats",
+                    "desc": "Filter out lightly threating phrases"
+                    },
+                "h_threats": {
+                    "label": "High Threats",
+                    "desc": "Filter out excessively threating phrases"
+                    },
+                "l_derogatory": {
+                    "label": "Lower Derogatory",
+                    "desc": "Filter out general derogatory phrases"
+                    },
+                "h_derogatory": {
+                    "label": "High Derogatory",
+                    "desc": "Filter out slurs"
+                    },
+                "sensitive": {
+                    "label": "Sensitive",
+                    "desc": "Filter out sensitive topics (drugs, violence, politics, etc.)"
+                    }
+                }
+            },
+            "automod_actions": {
+                "title": "AutoMod Actions",
+                "description": {
+                    "header":"QuoteBot will:",
+                    "no_actions": "Do Nothing",
+                    "end":"Use the dropdown menus below to select actions"
+                    },
+                "action_change_success": "<:yes:892537190347837450> AutoMod actions updated successfully",
+                "dropdown": {
+                    "placeholder": "Select an action to apply to this detection",
+                    "Notify": {
+                        "label": "Notify",
+                        "desc": "Send notification to the alerts channel"
+                        },
+                    "Cancel": {
+                        "label": "Cancel",
+                        "desc": "Block the quote from being added"
+                        },
+                    "Warn": {
+                        "label": "Warn",
+                        "desc": "Notify user of detection"
+                        },
+                    "Hold": {
+                        "label": "Hold",
+                        "desc": "Hold the quote for review"
+                        }
+                    }
+                }
+                
         }
-    }
