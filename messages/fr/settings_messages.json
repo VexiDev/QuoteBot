@@ -4,9 +4,11 @@
         "processing_request": "<a:loading:892534287415525386> **Traitement de la demande**",
         "no_bots": "Les bots ne peuvent pas utiliser QuoteBot",
         "timed_out": "Ce message a expir\u00e9",
+        "back_button": "Retour",
         "error_title": "Une erreur est survenue, veuillez r\u00e9essayer plus tard",
         "error_desc": "Si cette erreur persiste, veuillez contacter @v3xi",
-        "embed_footer": "QuoteBot | ID: {interaction.user.id}"
+        "alert_message": "Si vous souhaitez verrouiller les commandes de QuoteBot \u00e0 certains canaux/r\u00f4les, veuillez utiliser les param\u00e8tres du serveur Discord sur:\n **Votre serveur > Param\u00e8tres du serveur > Int\u00e9grations > QuoteBot**",
+        "embed_footer": "QuoteBot • ID: 1234567891012345"
     },
     "settings_main_menu": {
         "title": "Param\u00e8tres du serveur",
@@ -14,23 +16,340 @@
         "dropdown": {
             "dropdown_placeholder": "S\u00e9lectionnez une cat\u00e9gorie de param\u00e8tres",
             "language": ["Langue", "D\u00e9finir la langue de QuoteBot"],
-            "channel": ["Canaux", "S\u00e9lectionnez les canaux pour les messages sp\u00e9cifiques aux canaux"],
-            "commands": ["Ajouter/Modifier/Supprimer", "Modifier les param\u00e8tres d'utilisation pour les commandes Ajouter/Modifier/Supprimer"],
-            "detection": ["Filtrage", "Modifiez les param\u00e8tres de filtre pour les citations ajout\u00e9es \u00e0 QuoteBot"],
-            "automod": ["AutoMod", "Modifiez les actions AutoMod pour QuoteBot"]
+            "channel": ["Canaux", "S\u00e9lectionnez les canaux pour les messages sp\u00e9cifiques \u00e0 un canal"],
+            "commands": ["Commandes", "Modifier les param\u00e8tres d'utilisation pour certaines commandes de QuoteBot"],
+            "detection": ["Filtrage", "Modifier les param\u00e8tres de filtrage pour les citations ajout\u00e9es \u00e0 QuoteBot"],
+            "automod": ["AutoMod", "Modifier les actions AutoMod pour QuoteBot"]
         }
     },
     "language_settings": {
         "title": "Param\u00e8tres de langue",
         "description": "-\nVeuillez s\u00e9lectionner la langue pour les messages de QuoteBot",
-        "language_change_success": ["<:yes:892537190347837450> Changement de langue", "La langue de QuoteBot a \u00e9t\u00e9 chang\u00e9e avec succ\u00e8s en fran\u00e7ais"],
+        "language_change_success": "<:yes:892537190347837450> Langue chang\u00e9e avec succ\u00e8s",
         "dropdown": {
-            "dropdown_placeholder": "S\u00e9lectionnez une langue",
-            "english": "English",
+            "dropdown_placeholder": "S\u00e9lectionner une langue",
+            "english": "Anglais",
             "french": "Fran\u00e7ais",
-            "spanish": "Espa\u00f1ol",
-            "german": "Deutsch"
+            "spanish": "Espagnol",
+            "german": "Allemand"
+        }
+    },
+    "channel_settings": {
+            "title": "Param\u00e8tres du canal",
+            "description": {
+                "header": "-\n*Param\u00e8tres actuels du canal:*\n",
+                "quotes_channel": "Canal pour les citations ajout\u00e9es:  ",
+                "logs_channel": "Canal des journaux d'action:  ",
+                "alerts_channel": "Canal des alertes de mod\u00e9ration:  ",
+                "end":"\n-\nVeuillez choisir quels canaux vous aimeriez utiliser pour certains messages de QuoteBot."
+                },
+            "channel_change_success": ["<:yes:892537190347837450>","chang\u00e9 avec succ\u00e8s"],
+            "placeholders": {
+                "added_quotes": "S\u00e9lectionnez un nouveau canal pour les messages de citation ajout\u00e9s",
+                "logs": "S\u00e9lectionnez un nouveau canal pour les messages de journal",
+                "alerts": "S\u00e9lectionnez un nouveau canal pour les messages d'alerte"
+                }
         },
-        "back_button": "Retour"
+        "command_settings": {
+            "title": "Param\u00e8tres de la commande",
+            "description": "-\nVeuillez s\u00e9lectionner la commande que vous aimeriez modifier",
+            "setting_change_success": ["<:yes:892537190347837450>","param\u00e8tre chang\u00e9 avec succ\u00e8s"],
+            "dropdown": {
+                "placeholder": "S\u00e9lectionnez une commande",
+                "add": "/add",
+                "edit": "/edit",
+                "delete": "/delete",
+                "profile": "/profile"
+            },
+            "add_settings": {
+                "title": "Param\u00e8tres de la commande Add",
+                "description": "Utilisez les menus d\u00e9roulants ci-dessous pour modifier les param\u00e8tres de la commande add.\n-",
+                "cooldown_field": {"name": "D\u00e9lai d'attente de la commande: ","value": "Combien de temps les utilisateurs doivent attendre avant d'utiliser la commande add \u00e0 nouveau"},
+                "add_to_self_field": {"name": "Auto-citation: ","value": "Les utilisateurs peuvent-ils ajouter des citations \u00e0 leur propre profil"},
+                "add_to_self_field_status": ["Activ\u00e9","D\u00e9sactiv\u00e9"],
+                "add_to_self": {
+                    "dropdown": {
+                        "enabled": "Activ\u00e9",
+                        "disabled": "D\u00e9sactiv\u00e9"
+                    }
+                },
+                "cooldown": {
+                    "label": "D\u00e9lai d'attente",
+                    "dropdown": {
+                        "None": "Aucun",
+                        "5sec": "5 secondes",
+                        "10sec": "10 secondes",
+                        "30sec": "30 secondes",
+                        "1min": "1 minute",
+                        "5min": "5 minutes",
+                        "10min": "10 minutes",
+                        "30min": "30 minutes",
+                        "1hr": "1 heure",
+                        "6hr": "6 heures",
+                        "12hr": "12 heures",
+                        "1day": "1 jour"
+                    }
+                }
+            },
+            "delete_settings": {
+                "title": "Param\u00e8tres de la commande Delete",
+                "description": "Utilisez les menus d\u00e9roulants ci-dessous pour modifier les param\u00e8tres de la commande delete.\n-",
+                "cooldown_field": {"name": "D\u00e9lai d'attente de la commande: ","value": "Combien de temps les utilisateurs doivent attendre avant d'utiliser la commande delete \u00e0 nouveau"},
+                "delete_from_self_field": {"name": "Supprimer ses propres citations: ","value": "Les utilisateurs peuvent-ils supprimer des citations de leur propre profil\n__Ind\u00e9pendamment de seulement ajout\u00e9__"},
+                "delete_from_self_field_status": ["Activ\u00e9","D\u00e9sactiv\u00e9"],
+                "only_delete_added_field": {"name": "Seulement ajout\u00e9: ","value": "Les utilisateurs peuvent-ils seulement supprimer des citations qu'ils ont ajout\u00e9es"},
+                "only_delete_added_field_status": ["Activ\u00e9","D\u00e9sactiv\u00e9"],
+                "delete_from_self": {
+                    "dropdown": {
+                        "enabled": "Activ\u00e9",
+                        "disabled": "D\u00e9sactiv\u00e9"
+                    }
+                },
+                "only_delete_added": {
+                    "dropdown": {
+                        "enabled": "Activ\u00e9",
+                        "disabled": "D\u00e9sactiv\u00e9"
+                    }
+                },
+                "cooldown": {
+                    "label": "D\u00e9lai d'attente",
+                    "placeholder": "D\u00e9finir un d\u00e9lai d'attente pour la commande add",
+                    "dropdown": {
+                        "None": "Aucun",
+                        "5sec": "5 secondes",
+                        "10sec": "10 secondes",
+                        "30sec": "30 secondes",
+                        "1min": "1 minute",
+                        "5min": "5 minutes",
+                        "10min": "10 minutes",
+                        "30min": "30 minutes",
+                        "1hr": "1 heure",
+                        "6hr": "6 heures",
+                        "12hr": "12 heures",
+                        "1day": "1 jour"
+                    }
+                }
+            },
+            "edit_settings": {
+                "title": "Param\u00e8tres de la commande Edit",
+                "description": "Utilisez les menus d\u00e9roulants ci-dessous pour modifier les param\u00e8tres de la commande edit.\n-",
+                "cooldown_field": {"name": "D\u00e9lai d'attente de la commande: ","value": "Combien de temps les utilisateurs doivent attendre avant d'utiliser la commande edit \u00e0 nouveau"},
+                "edit_timeout_field": {"name": "D\u00e9lai avant de ne plus pouvoir modifier: ","value": "Combien de temps avant que les utilisateurs ne puissent plus modifier une citation"},
+                "edit_timeout_field_status": ["Activ\u00e9","D\u00e9sactiv\u00e9"],
+                "only_edit_added_field": {"name": "Seulement ajout\u00e9: ","value": "Les utilisateurs peuvent-ils seulement modifier des citations qu'ils ont ajout\u00e9es"},
+                "only_edit_added_field_status": ["Activ\u00e9","D\u00e9sactiv\u00e9"],
+                "only_edit_added": {
+                    "dropdown": {
+                        "enabled": "Activ\u00e9",
+                        "disabled": "D\u00e9sactiv\u00e9"
+                    }
+                },
+                "edit_timeout": {
+                    "label": "D\u00e9lai d'expiration de modification",
+                    "placeholder": "D\u00e9finir un d\u00e9lai d'expiration pour la commande edit",
+                    "dropdown": {
+                        "None": "Aucun",
+                        "5min": "5 minutes",
+                        "10min": "10 minutes",
+                        "30min": "30 minutes",
+                        "1hr": "1 heure",
+                        "6hr": "6 heures",
+                        "12hr": "12 heures",
+                        "1day": "1 jour"
+                    }
+                },
+                "cooldown": {
+                    "label": "D\u00e9lai d'attente",
+                    "placeholder": "D\u00e9finir un d\u00e9lai d'attente pour la commande add",
+                    "dropdown": {
+                        "None": "Aucun",
+                        "5sec": "5 secondes",
+                        "10sec": "10 secondes",
+                        "30sec": "30 secondes",
+                        "1min": "1 minute",
+                        "5min": "5 minutes",
+                        "10min": "10 minutes",
+                        "30min": "30 minutes",
+                        "1hr": "1 heure",
+                        "6hr": "6 heures",
+                        "12hr": "12 heures",
+                        "1day": "1 jour"
+                    }
+                }
+            },
+            "profile_settings": {
+                "title": "Paramètres de la commande de profil",
+                "description": "Utilisez les menus déroulants ci-dessous pour modifier les paramètres de la commande de profil.\n-",
+                "force_hidden_profile_field": {"name": "Forcer masqué : ","value": "Rendre la commande /profile uniquement visible par l'utilisateur qui l'a utilisée"},
+                "force_hidden_profile_field_status": ["Activé","Désactivé"],
+                "lock_nsfw_profile_field": {"name": "Verrouiller NSFW : ","value": "Empêcher la visualisation de la catégorie NSFW sur votre serveur"},
+                "lock_nsfw_profile_field_status": ["Activé","Désactivé"],
+                "force_hidden_profile": {
+                    "dropdown": {
+                        "enabled": "Activé",
+                        "disabled": "Désactivé"
+                    }
+                },
+                "lock_nsfw_profile": {
+                    "dropdown": {
+                        "enabled": "Activé",
+                        "disabled": "Désactivé"
+                    }
+                }
+            }
+        },
+        "filter_settings": {
+            "inaccuracy_warning": "<:alert:994765426829561928> **QuoteBot bloquera toujours les informations personnelles & les liens ajoutés**\n\n*Bien que QuoteBot fasse de son mieux pour filtrer précisément, il n'est pas 100% parfait et peut parfois échouer à filtrer ou filtrer incorrectement.* Utilisez la commande **/review**...wip",
+            "title": "Paramètres de filtre",
+            "description": {
+                "header": "-\n*Paramètres de filtre actuels*\n\n",
+                "preset": "Utiliser le préréglage : ",
+                "preset_desc": {
+                    "Default": "*Les paramètres de filtre par défaut pour QuoteBot*",
+                    "Custom": "*Paramètres de filtre personnalisés pour répondre aux besoins de votre serveur (liste complète des filtres dans /help)*",
+                    "Light": "*QuoteBot détectera uniquement les injures*",
+                    "Medium": "*QuoteBot détectera la profanité excessive, le contenu sexuel, les injures et les expressions dérogatoires*",
+                    "Strict": "*QuoteBot détectera toutes les profanités, tout le contenu sexuel, les injures, les expressions dérogatoires et les menaces*"
+                },
+                "end": "\n\n-\nUtilisez les menus déroulants ci-dessous pour choisir votre filtrage prédéfini ou sélectionner vos besoins en filtre personnalisé"
+            },
+            "preset_dropdown": {
+                "applied": ["<:yes:892537190347837450>","filtres appliqués avec succès"],
+                "placeholder": "Sélectionnez un préréglage de filtre ou personnalisez le vôtre",
+                "Default": {
+                    "label": "Par défaut",
+                    "desc": "Recommandé pour les serveurs non communautaires"
+                    },
+                "Custom": {
+                    "label": "Personnalisé",
+                    "desc": "Recommandé pour les grandes communautés"
+                    },
+                "Light": {
+                    "label": "Léger",
+                    "desc": "Recommandé pour les petits serveurs"
+                    },
+                "Medium": {
+                    "label": "Moyen",
+                    "desc": "Recommandé pour la plupart des serveurs communautaires"
+                    },
+                "Strict": {
+                    "label": "Strict",
+                    "desc": "Recommandé pour les serveurs adaptés aux enfants"
+                    }
+                },
+            "custom_dropdown": {
+                "applied": "<:yes:892537190347837450> Filtres mis à jour avec succès",
+                "placeholder": "Sélectionnez les filtres que vous souhaitez utiliser",
+                "l_profanity": {
+                    "label": "Profanité légère",
+                    "desc": "Filtrer la profanité générale"
+                    },
+                "h_profanity": {
+                    "label": "Profanité lourde",
+                    "desc": "Filtrer l'utilisation excessive de profanité"
+                    },
+                "light_sexual_content": {
+                    "label": "Contenu sexuel léger",
+                    "desc": "Filtrer le contenu sexuel léger ou les sous-entendus"
+                    },
+                "sexual_content": {
+                    "label": "Contenu sexuel",
+                    "desc": "Filtrer le contenu sexuel général"
+                    },
+                "l_threats": {
+                    "label": "Menaces légères",
+                    "desc": "Filtrer les phrases légèrement menaçantes"
+                    },
+                "h_threats": {
+                    "label": "Menaces élevées",
+                    "desc": "Filtrer les phrases fortement menaçantes"
+                    },
+                "l_derogatory": {
+                    "label": "Dénigrement bas",
+                    "desc": "Filtrer les expressions dénigrantes générales"
+                    },
+                "h_derogatory": {
+                    "label": "Dénigrement élevé",
+                    "desc": "Filtrer les injures"
+                    },
+                "sensitive": {
+                    "label": "Sensible",
+                    "desc": "Filtrer les sujets sensibles (drogues, violence, politique, etc.)"
+                    }
+                }
+        },
+        "automod_settings": {
+            "title": "Paramètres Auto Mod",
+            "description": "-\nVeuillez sélectionner une détection pour modifier les actions d'automod pour",
+            "no_detections_enabled": ["<:alert:994765426829561928> **Votre serveur n'a aucun filtre activé, veuillez activer un filtre pour modifier l'action d'automod de ce filtre**", "-\nAppuyez sur le bouton ci-dessous pour accéder à la page des paramètres de filtre", "Aller aux paramètres de filtre"],
+            "dropdown": {
+                "placeholder": "Sélectionnez une détection",
+                "l_profanity": {
+                    "label": "Profanité légère",
+                    "desc": "Filtrer la profanité générale"
+                    },
+                "h_profanity": {
+                    "label": "Profanité lourde",
+                    "desc": "Filtrer l'utilisation excessive de profanité"
+                    },
+                "light_sexual_content": {
+                    "label": "Contenu sexuel léger",
+                    "desc": "Filtrer le contenu sexuel léger ou les sous-entendus"
+                    },
+                "sexual_content": {
+                    "label": "Contenu sexuel",
+                    "desc": "Filtrer le contenu sexuel général"
+                    },
+                    "l_threats": {
+                        "label": "Menaces légères",
+                        "desc": "Filtrer les phrases légèrement menaçantes"
+                        },
+                    "h_threats": {
+                        "label": "Menaces élevées",
+                        "desc": "Filtrer les phrases fortement menaçantes"
+                        },
+                    "l_derogatory": {
+                        "label": "Dénigrement bas",
+                        "desc": "Filtrer les expressions dénigrantes générales"
+                        },
+                    "h_derogatory": {
+                        "label": "Dénigrement élevé",
+                        "desc": "Filtrer les injures"
+                        },
+                    "sensitive": {
+                        "label": "Sensible",
+                        "desc": "Filtrer les sujets sensibles (drogues, violence, politique, etc.)"
+                        }
+                }
+        },
+        "automod_actions": {
+            "title": "Actions AutoMod",
+            "description": {
+                "header":"QuoteBot fera :",
+                "no_actions": "Ne rien faire",
+                "end":"Utilisez les menus déroulants ci-dessous pour sélectionner des actions"
+                },
+            "action_change_success": "<:yes:892537190347837450> Les actions AutoMod ont été mises à jour avec succès",
+            "dropdown": {
+                "placeholder": "Sélectionnez une action à appliquer à cette détection",
+                "Notify": {
+                    "label": "Notifier",
+                    "desc": "Envoyer une notification au canal d'alertes"
+                    },
+                "Cancel": {
+                    "label": "Annuler",
+                    "desc": "Bloquer l'ajout de la citation"
+                    },
+                "Warn": {
+                    "label": "Avertir",
+                    "desc": "Notifier l'utilisateur de la détection"
+                    },
+                "Hold": {
+                    "label": "Maintenir",
+                    "desc": "Mettre la citation en attente de vérification"
+                    }
+                }
+            }
+            
     }
-}
+    
