@@ -135,11 +135,31 @@ class add_settings(commands.Cog):
 
         async def cooldown_dropdown(self, interaction: discord.Interaction):
             await interaction.response.defer()
+            message = await interaction.original_response()
+            loading_embed = discord.Embed(description=f"{self.language_file['system_messages']['processing_request']}", color=0x068acc)
+
+            # Keep only the first 2 embeds
+            message.embeds = message.embeds[:2]
+
+            message.embeds.append(loading_embed)
+
+            # Make sure to edit the message to actually display the new embed
+            await message.edit(embeds=message.embeds, view=None)
             self.selection = (interaction.data['values'][0] if interaction.data['values'] else 0, interaction.data['custom_id'])
             self.stop()
 
         async def a2s_dropdown(self, interaction: discord.Interaction):
             await interaction.response.defer()
+            message = await interaction.original_response()
+            loading_embed = discord.Embed(description=f"{self.language_file['system_messages']['processing_request']}", color=0x068acc)
+
+            # Keep only the first 2 embeds
+            message.embeds = message.embeds[:2]
+
+            message.embeds.append(loading_embed)
+
+            # Make sure to edit the message to actually display the new embed
+            await message.edit(embeds=message.embeds, view=None)
             self.selection = (interaction.data['values'][0] if interaction.data['values'] else True, interaction.data['custom_id'])
             self.stop()
 

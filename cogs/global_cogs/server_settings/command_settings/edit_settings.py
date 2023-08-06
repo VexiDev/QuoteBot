@@ -23,10 +23,11 @@ class edit_settings(commands.Cog):
             command_cooldown = "None"
         else:
             command_cooldown = f"{precisedelta(command_cooldown_raw, format='%0.0f')}"
-        if edit_timeout_raw == True:
-            edit_timeout = language_file['command_settings']['edit_settings']['edit_timeout_field_status'][0]
+        if edit_timeout_raw == 0:
+            edit_timeout = "None"
         else:
-            edit_timeout = language_file['command_settings']['edit_settings']['edit_timeout_field_status'][1]
+            edit_timeout = f"{precisedelta(edit_timeout_raw, format='%0.0f')}"
+
         if only_edit_added_raw == True:
             only_edit_added = language_file['command_settings']['edit_settings']['only_edit_added_field_status'][0]
         else:
@@ -39,10 +40,10 @@ class edit_settings(commands.Cog):
             "-\n" +
             f"{language_file['command_settings']['edit_settings']['cooldown_field']['name']}**{command_cooldown}**\n" +
             f"*{language_file['command_settings']['edit_settings']['cooldown_field']['value']}*\n\n" +
-            f"{language_file['command_settings']['edit_settings']['only_edit_added_field']['name']}**{only_edit_added}**\n" +
-            f"*{language_file['command_settings']['edit_settings']['only_edit_added_field']['value']}*\n\n" +
             f"{language_file['command_settings']['edit_settings']['edit_timeout_field']['name']}**{edit_timeout}**\n" +
-            f"*{language_file['command_settings']['edit_settings']['edit_timeout_field']['value']}*\n" +
+            f"*{language_file['command_settings']['edit_settings']['edit_timeout_field']['value']}*\n\n" +
+            f"{language_file['command_settings']['edit_settings']['only_edit_added_field']['name']}**{only_edit_added}**\n" +
+            f"*{language_file['command_settings']['edit_settings']['only_edit_added_field']['value']}*\n" +
             "-\n" +
             f"{language_file['command_settings']['edit_settings']['description']}"
         )
@@ -133,13 +134,13 @@ class edit_settings(commands.Cog):
                 default=True if cd_value == self.current_cooldown else False
             ) for cd_label, cd_value in cooldowns]
 
-            edit_timeout = [("None", 0), ("5sec", 5), ("10sec", 10), ("30sec", 30), ("1min", 60), ("5min", 300), ("10min", 600), ("30min", 1800), ("1hr", 3600), ("6hr", 21600), ("12hr", 43200), ("1day", 86400)]
+            edit_timeout = [("None", 0), ("1min", 60), ("5min", 300), ("10min", 600), ("30min", 1800), ("1hr", 3600), ("6hr", 21600), ("12hr", 43200), ("1day", 86400)]
 
             edit_timeout_options = [discord.SelectOption(
                 label=self.language_file['command_settings']['edit_settings']['cooldown']['dropdown'][f'{et_label}'], 
                 value=et_value,
                 default=True if et_value == self.current_edit_timeout else False
-            ) for et_label, et_value in cooldowns]
+            ) for et_label, et_value in edit_timeout]
             
             only_edit_added_options = [
                 discord.SelectOption(label=self.language_file['command_settings']['edit_settings']['only_edit_added']['dropdown']['enabled'], value=True, default=(True if self.current_oea == True else False)),
@@ -155,8 +156,8 @@ class edit_settings(commands.Cog):
             self.only_edit_added.callback = self.oea_dropdown
             
             self.add_item(self.cooldown)
-            self.add_item(self.only_edit_added)
             self.add_item(self.edit_timeout)
+            self.add_item(self.only_edit_added)
 
             self.back_button = discord.ui.Button(label=self.language_file['system_messages']['back_button'], style=discord.ButtonStyle.blurple, emoji="<:help_back:1028918526238523433>")
             self.back_button.callback = self.edit_command_back
@@ -164,16 +165,46 @@ class edit_settings(commands.Cog):
 
         async def cooldown_dropdown(self, interaction: discord.Interaction):
             await interaction.response.defer()
+            message = await interaction.original_response()
+            loading_embed = discord.Embed(description=f"{self.language_file['system_messages']['processing_request']}", color=0x068acc)
+
+            # Keep only the first 2 embeds
+            message.embeds = message.embeds[:2]
+
+            message.embeds.append(loading_embed)
+
+            # Make sure to edit the message to actually display the new embed
+            await message.edit(embeds=message.embeds, view=None)
             self.selection = (interaction.data['values'][0] if interaction.data['values'] else 0, interaction.data['custom_id'])
             self.stop()
 
         async def edit_timeout_dropdown(self, interaction: discord.Interaction):
             await interaction.response.defer()
+            message = await interaction.original_response()
+            loading_embed = discord.Embed(description=f"{self.language_file['system_messages']['processing_request']}", color=0x068acc)
+
+            # Keep only the first 2 embeds
+            message.embeds = message.embeds[:2]
+
+            message.embeds.append(loading_embed)
+
+            # Make sure to edit the message to actually display the new embed
+            await message.edit(embeds=message.embeds, view=None)
             self.selection = (interaction.data['values'][0] if interaction.data['values'] else True, interaction.data['custom_id'])
             self.stop()
 
         async def oea_dropdown(self, interaction: discord.Interaction):
             await interaction.response.defer()
+            message = await interaction.original_response()
+            loading_embed = discord.Embed(description=f"{self.language_file['system_messages']['processing_request']}", color=0x068acc)
+
+            # Keep only the first 2 embeds
+            message.embeds = message.embeds[:2]
+
+            message.embeds.append(loading_embed)
+
+            # Make sure to edit the message to actually display the new embed
+            await message.edit(embeds=message.embeds, view=None)
             self.selection = (interaction.data['values'][0] if interaction.data['values'] else True, interaction.data['custom_id'])
             self.stop()
 
