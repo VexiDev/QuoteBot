@@ -8,6 +8,20 @@ import traceback as trace
 import topgg
 import os
 
+def read_env(file_path='.env'):
+    env_vars = {}
+
+    with open(file_path, 'r') as f:
+        for line in f:
+            line = line.strip()
+            if line and not line.startswith('#'):  # Exclude comments and empty lines
+                key, value = line.split('=', 1)
+                env_vars[key.strip()] = value.strip()
+
+    return env_vars
+
+env_vars = read_env()
+
 class QuoteBot(commands.Bot):
 
     def __init__(self) -> None:
@@ -20,21 +34,24 @@ class QuoteBot(commands.Bot):
     async def load_cogs(self):
         print("---\ Loading Quotebot")
 
-        for cog in os.listdir(f'./cogs'): #loop through all folders in ./cogs
-
+        for cog in os.listdir(f'./cogs'):
             print(f"   |---\ loading {cog}")
 
-            for subdir, dirs, files in os.walk(f'./cogs/{cog}'): #get all folders in cog folder
+            for subdir, dirs, files in os.walk(f'./cogs/{cog}'):
 
-                for filename in files: #loop through each file in folders
+                for filename in files:
 
-                    filepath = subdir + os.sep + filename #create filepath
+                    filepath = subdir + os.sep + filename
 
-                    if filepath.endswith('.py'): 
+                    if filepath.endswith('.py'):
                         
-                        load_path = str(filepath).replace("/",".").replace("\\",".")[2:][:-3] #convert path to load path
-                        
-                        await self.load_extension(f'{load_path}') #load the cog
+                        load_path = str(filepath).replace("/",".").replace("\\",".")[2:][:-3]
+
+                        if "database" in load_path:
+                            from cogs.system_cogs.db.database import database
+                            await bot.add_cog(database(bot, env_vars))
+                        else:
+                            await self.load_extension(f'{load_path}')
 
                         console = load_path.split(".")
                         indent="   |    "
@@ -105,7 +122,7 @@ async def update_stats(ctx):
     print('syncing server count with Bot lists...')
     try:
         #sync with topgg
-        dbl_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjgxNDM3OTIzOTkzMDMzMTE1NyIsImJvdCI6dHJ1ZSwiaWF0IjoxNjM3MTE2MTg5fQ.XHw1GJmlmspDotwYYWKBSpID2C4e0BTDIUvmb_Gmm4g"  # set this to your bot's Top.gg token
+        dbl_token = f"{env_vars['Tgg_token']}"  # set this to your bot's Top.gg token
         bot.topggpy = topgg.DBLClient(bot, dbl_token)
         await bot.topggpy.post_guild_count()
         print(f"Posted TOPGG server count ({bot.topggpy.guild_count})")
@@ -115,7 +132,7 @@ async def update_stats(ctx):
         print(server_count, type(server_count))
 
         async with aiohttp.ClientSession() as session:
-            headers = {"Authorization": 'eyJhbGciOiJIUzI1NiJ9.eyJhcGkiOnRydWUsImlkIjoiMjc0MjEzOTg3NTE0NTgwOTkzIiwiaWF0IjoxNjc0MzAwMDg0fQ.BrmEDPAuSUN_ulHd0mN_X5cg9cvNfLpZ8zj_azGU9ZA', "Content-Type": 'application/json'}
+            headers = {"Authorization": f'{env_vars["DBL_token"]}', "Content-Type": 'application/json'}
             data = {"guildCount": server_count}
 
             async with await session.post(f"https://discord.bots.gg/api/v1/bots/814379239930331157/stats", headers=headers, json=data) as resp:
@@ -157,7 +174,8 @@ async def reload(ctx, extension):
     except:
         trace.print_exc()
 
+
 #main token
-# bot.run('ODE0Mzc5MjM5OTMwMzMxMTU3.G5Szyd.Bm7QwEI84R-PcLz0hRTkd1qQ8E4540N_HSvl_g')
+# bot.run(f"{env_vars['qb_prod_token']}")
 #dev token
-bot.run('ODMxNjI2MDY5Nzg5NjM4NjU2.G3ZZO5.o55KqPwjt1z3NXt_xVjF0_Cgge7ZIJaA9qKssI')
+bot.run(f"{env_vars['qb_dev_token']}")
