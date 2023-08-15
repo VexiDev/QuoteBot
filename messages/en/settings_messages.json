@@ -199,7 +199,8 @@
             }
         },
         "filter_settings": {
-            "inaccuracy_warning": "<:alert:994765426829561928> **QuoteBot will always block personal information & links from being added**\n\n*While QuoteBot does its best to accurately filter, it is not 100% perfect and may sometimes fail to filter or filter incorrectly.* Use the **/review** command...wip",
+            "personal_links_warning": "<:alert:994765426829561928> **QuoteBot will always block personal information & links from being added**",
+            "inaccuracy_warning": "*While QuoteBot does its best to accurately filter, it is not 100% perfect and may sometimes fail to filter or filter incorrectly.* Use the **/review** command...wip",
             "title": "Filter Settings",
             "description": {
                 "header": "-\n*Current filter settings*\n\n",
@@ -323,6 +324,8 @@
                 }
             },
             "automod_actions": {
+                "no_alerts_channel": "<:alert:994765426829561928> **You have no channel set for alert messages!**\n\n **Notify** and **Hold** actions will **__not__** be sent!\n\n*Please set an alert channel in the channel settings page to enable these actions*",
+                "jump_to_channel_settings_button": "Channel Settings",
                 "title": "AutoMod Actions",
                 "description": {
                     "header":"QuoteBot will:",
@@ -334,19 +337,23 @@
                     "placeholder": "Select an action to apply to this detection",
                     "Notify": {
                         "label": "Notify",
-                        "desc": "Send notification to the alerts channel"
+                        "desc": "Send notification to the alerts channel",
+                        "example": "[(example)](link_here)"
                         },
                     "Cancel": {
                         "label": "Cancel",
-                        "desc": "Block the quote from being added"
+                        "desc": "Block the quote from being added",
+                        "example": "[(example)](link_here)"
                         },
                     "Warn": {
                         "label": "Warn",
-                        "desc": "Notify user of detection"
+                        "desc": "Warn user of detection",
+                        "example": "[(example)](link_here)"
                         },
                     "Hold": {
                         "label": "Hold",
-                        "desc": "Hold the quote for review"
+                        "desc": "Hold the quote for review",
+                        "example": "[(example)](link_here)"
                         }
                     }
                 }

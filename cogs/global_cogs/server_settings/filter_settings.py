@@ -56,7 +56,7 @@ class server_filter_settings(commands.Cog):
         filter_dropdown = self.filter_dropdown(language_file, current_filter_settings)
 
         # warn user of possible ( but unlikely i hope :] ) filter inaccuracy
-        inaccuracy_warning_embed = discord.Embed(title="", description=f"{language_file['filter_settings']['inaccuracy_warning']}", color=0xff9b21)
+        inaccuracy_warning_embed = discord.Embed(title="", description=f"{language_file['filter_settings']['personal_links_warning']}\n\n{language_file['filter_settings']['inaccuracy_warning']}", color=0xff9b21)
         
         # edit message with dropdown and changed notif if filter was changed
         if filter_changed != (False, None):
@@ -98,6 +98,8 @@ class server_filter_settings(commands.Cog):
 
         #update the server filter setting
         elif filter_dropdown.selection != None and settings['filter_preset_name'] == "Custom" and filter_dropdown.back == None:
+
+            print(filter_dropdown.selection)
 
             #prepare list for postegres
             type_list = '{' + ', '.join(f'"{item}"' for item in filter_dropdown.selection) + '}'
@@ -199,7 +201,7 @@ class server_filter_settings(commands.Cog):
 
             # Make sure to edit the message to actually display the new embed
             await message.edit(embeds=message.embeds, view=None)
-            self.selection = interaction.data['values'] if interaction.data['values'] else 'error'
+            self.selection = interaction.data['values'] if interaction.data['values'] else []
             self.stop()
 
         async def preset_dropdown(self, interaction: discord.Interaction):
