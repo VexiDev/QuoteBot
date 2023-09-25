@@ -18,7 +18,7 @@
 
 > If you don't want to figure out how to host QuoteBot yourself you can always use the version I host. 
 This version will get updates sooner and more consistently then this github.
-> if you are in a server that has QuoteBot already running you can use the q!invite command to get the link
+> if you are in a server that has QuoteBot already running you can use the button on QuoteBot's profile to get the link
 
   if not
 
