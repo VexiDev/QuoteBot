@@ -3,7 +3,8 @@
   <img src="https://top.gg/api/widget/814379239930331157.svg">
 </a>
 
-> ! This repo will be updated along side implementation of discord slash commands !
+### This branch is outdated!
+> For the most up to date code and to track the progress of QuoteBot v5 please switch to the v5 branch
 
 ## Info
 
